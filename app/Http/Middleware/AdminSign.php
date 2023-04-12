@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use app\Common\Rsa;
+use App\Common\Rsa;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Closure;
 use Illuminate\Http\Response;
@@ -15,12 +15,11 @@ class AdminSign
         if ($sign == null || $sign == "") {
             return $this->baseReturn();
         }
-        $r = new Rsa();
-        $sign = $r->decodeByPrivateKey($sign);
+        $sign = Rsa::decodeByPrivateKey($sign);
         if ($sign == "") {
             return $this->baseReturn();
         }
-        $infos = explode(",", $sign);
+        $infos = explode("_", $sign);
         if(count($infos) != 2 || $infos[0] != "bee"){
             return $this->baseReturn();
         }
