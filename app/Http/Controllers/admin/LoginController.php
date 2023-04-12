@@ -12,6 +12,6 @@ use app\Common\baseReturn;
 class LoginController extends Controller
 {
     public function login(Request $request){
-        return baseReturn(1,'请求成功');
+        return $this->success("登录");
     }
 }
