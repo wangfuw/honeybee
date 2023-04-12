@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use app\Common\Rsa;
+use App\Common\Rsa;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Closure;
 use Illuminate\Http\Response;
