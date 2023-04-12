@@ -18,7 +18,7 @@ class LoginController extends Controller
         $username = $request->input("username");
         $password = $request->input("password");
         $adminUser = AdminUser::where('username', $username)->first();
-        if (!$adminUser == null) {
+        if ($adminUser == null) {
             return $this->baseResponse(0, "账号不存在");
         }
         if (Rsa::encryptPass($password, $adminUser->salt()) != $adminUser->password) {
