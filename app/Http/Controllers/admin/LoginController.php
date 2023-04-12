@@ -21,14 +21,13 @@ class LoginController extends Controller
         if ($adminUser == null) {
             return $this->baseResponse(0, "账号不存在");
         }
-        if (Rsa::encryptPass($password, $adminUser->salt()) != $adminUser->password) {
+        if (Rsa::encryptPass($password, $adminUser->salt) != $adminUser->password) {
             return $this->error("密码");
         }
         $adminLogin = AdminLogin::first();
         $googleCode = $request->input("google");
         var_dump($googleCode);
         if($adminLogin->google == 2){
-
 
         }
         $token = auth()->tokenById(123);
