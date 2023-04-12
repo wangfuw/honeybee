@@ -14,7 +14,8 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        var_dump(env("DB_PASSWORD"));
+        var_dump(getenv("DB_PASSWORD"));
+        var_dump(getenv("DB_HOST"));
         $username = $request->input("username");
         $password = $request->input("password");
         $adminUser = AdminUser::where('username', $username)->first();
