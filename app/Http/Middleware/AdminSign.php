@@ -15,8 +15,7 @@ class AdminSign
         if ($sign == null || $sign == "") {
             return $this->baseReturn();
         }
-        $r = new Rsa();
-        $sign = $r->decodeByPrivateKey($sign);
+        $sign = Rsa::decodeByPrivateKey($sign);
         if ($sign == "") {
             return $this->baseReturn();
         }

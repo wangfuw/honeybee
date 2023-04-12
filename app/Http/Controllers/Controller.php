@@ -29,4 +29,9 @@ class Controller extends BaseController
     {
         return $this->baseResponse(0, $msg);
     }
+
+    public function error($name)
+    {
+        return $this->baseResponse(0, $name . "错误");
+    }
 }
