@@ -1,13 +1,39 @@
 <?php
+
 namespace App\Http\Middleware;
+
+use app\Common\Rsa;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Closure;
+use Illuminate\Http\Response;
 
-class AdminSign {
+class AdminSign
+{
     public function handle($request, Closure $next)
     {
         $sign = $request->header('sign');
-
+        if ($sign == null || $sign == "") {
+            return $this->baseReturn();
+        }
+        $r = new Rsa();
+        $sign = $r->decodeByPrivateKey($sign);
+        if ($sign == "") {
+            return $this->baseReturn();
+        }
+        $infos = explode(",", $sign);
+        if(count($infos) != 2 || $infos[0] != "bee"){
+            return $this->baseReturn();
+        }
+        if(time() - (int)$infos[1] > 10){
+            return $this->baseReturn();
+        }
         return $next($request);
+    }
+
+    private function baseReturn(){
+        return response()->json([
+            "status" => 0,
+            "info" => "签名错误",
+        ]);
     }
 }

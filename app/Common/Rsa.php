@@ -19,7 +19,7 @@ DW1SD1RlNteu5oFDoF9xN9vfH30t8yDZVNAkEAwGAv2tDMK+lq7kiuPQZBqOT6ib/+mgBiCSJ
 YZ58ARTjHNVHJ5YrkJadGB5IvWANRb8r9ecnyDX+x1Cb/ZcUlhg==
 -----END PRIVATE KEY-----";
 
-    protected function decodeByPrivateKey($data)
+    public function decodeByPrivateKey($data)
     {
         $decrypted = '';
         $private_key = openssl_pkey_get_private($this->privateKey);
