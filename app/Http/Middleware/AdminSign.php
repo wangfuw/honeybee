@@ -20,7 +20,7 @@ class AdminSign
         if ($sign == "") {
             return $this->baseReturn();
         }
-        $infos = explode(",", $sign);
+        $infos = explode("_", $sign);
         if(count($infos) != 2 || $infos[0] != "bee"){
             return $this->baseReturn();
         }
