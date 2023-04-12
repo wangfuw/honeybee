@@ -17,6 +17,8 @@ class LoginController extends Controller
     {
         $username = $request->input("username");
         $password = $request->input("password");
+        $googleCode = $request->input("google");
+        var_dump($googleCode);
         $adminUser = AdminUser::where('username', $username)->first();
         if ($adminUser == null) {
             return $this->baseResponse(0, "账号不存在");
@@ -25,8 +27,7 @@ class LoginController extends Controller
             return $this->error("密码");
         }
         $adminLogin = AdminLogin::first();
-        $googleCode = $request->input("google");
-        var_dump($googleCode);
+
         if($adminLogin->google == 2){
 
         }
