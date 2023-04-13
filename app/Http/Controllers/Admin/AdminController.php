@@ -148,8 +148,9 @@ class AdminController extends AdminBaseController
         if (!$au) {
             return $this->fail('用户错误');
         }
-
-        if ($id == $au->id) {
+        $admin = auth("admin")->user();
+        var_dump($admin);
+        if ($id == $admin->id) {
             return $this->fail( '不能删除自己');
         }
         try {
