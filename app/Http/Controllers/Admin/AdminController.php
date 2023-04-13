@@ -24,4 +24,9 @@ class AdminController extends AdminBaseController
         }
         return $this->success("请求成功", $groups);
     }
+
+    public function groups(Request  $request){
+        $data = AdminGroup::orderByDesc("id")->select("id","name")->get();
+        return $this->success('请求',$data);
+    }
 }

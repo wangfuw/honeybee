@@ -12,6 +12,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
         });
         Route::controller(AdminController::class)->group(function () {
             Route::get("admins", 'admins');
+            Route::get("groups", 'groups');
         });
     });
 });
