@@ -51,14 +51,13 @@ trait AdminResponse
     {
         //list($code, $message) = $codeResponse;
         $newToken = auth("admin")->refresh();
-        return response()->header(
-            'token', $newToken,
-
-        )->json([
+        return response()->json([
             'status' => $status,
             //'code'    => $code,
             'info' => $message,
             'result' => $data ?? null,
+        ])->withHeaders([
+            'token' => $newToken
         ]);
     }
 
