@@ -128,7 +128,7 @@ class AdminController extends AdminBaseController
             AdminUser::insert([
                 'username' => $param['username'],
                 'password' => Hash::make($request->password),
-                'group_id' => $param['groupId']
+                'group_id' => $param['group_id']
             ]);
             return $this->success('添加成功');
         } catch (\Exception$exception) {
