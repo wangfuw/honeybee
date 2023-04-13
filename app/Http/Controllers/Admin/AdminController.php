@@ -71,8 +71,9 @@ class AdminController extends AdminBaseController
         if (!$group) {
             return $this->fail(0, '管理组不存在');
         }
-        $au = AdminUser::find($id);
-        if ($au->group_id == $id) {
+        $admin = auth("admin")->user();
+
+        if ($admin->group_id == $id) {
             return $this->fail(0, '不能删除自己所在的组');
         }
         DB::beginTransaction();
