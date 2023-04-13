@@ -13,10 +13,10 @@ class LoginController extends BaseController
     public function login(Request $request)
     {
 
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
+//        $request->validate([
+//            'username' => 'required|string',
+//            'password' => 'required|string',
+//        ]);
         $credentials = $request->only('username', 'password');
 //        $username = $request->input("username");
 //        $password = $request->input("password");
@@ -31,7 +31,8 @@ class LoginController extends BaseController
 //        if (Rsa::encryptPass($password, $adminUser->salt) != $adminUser->password) {
 //            return $this->error("密码");
 //        }
-        $token = auth()->guard("admin")->attempt($credentials);
+//        return $credentials;
+        $token = auth('admin')->attempt($credentials);
         if (!$token) {
             return $this->fail('登录失败');
         }
