@@ -12,11 +12,10 @@ class LoginController extends BaseController
 {
     public function login(Request $request)
     {
-
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
+//        $request->validate([
+//            'username' => 'required|string',
+//            'password' => 'required|string',
+//        ]);
         $credentials = $request->only('username', 'password');
 //        $username = $request->input("username");
 //        $password = $request->input("password");
