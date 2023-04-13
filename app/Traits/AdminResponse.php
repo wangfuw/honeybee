@@ -50,7 +50,12 @@ trait AdminResponse
     private function jsonResponse($status, $message, $data, $error): JsonResponse
     {
         //list($code, $message) = $codeResponse;
-        $newToken = auth("admin")->refresh();
+        try{
+            $newToken = auth("admin")->refresh();
+        }catch (\Exception $exception){
+            $newToken = "";
+        }
+
         return response()->json([
             'status' => $status,
             //'code'    => $code,
