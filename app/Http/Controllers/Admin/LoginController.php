@@ -31,12 +31,12 @@ class LoginController extends BaseController
 //        if (Rsa::encryptPass($password, $adminUser->salt) != $adminUser->password) {
 //            return $this->error("密码");
 //        }
-        $token = auth()->attempt($credentials);
+        $token = auth()->guard("admin")->attempt($credentials);
         if (!$token) {
             return $this->fail('登录失败');
         }
 
-        $user = auth()->user();
+        $user = auth()->guard("admin")->user();
         return $this->success('登录成功',[
             'user'=>$user,
             'access_token'=>[
