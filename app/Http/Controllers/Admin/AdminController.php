@@ -113,11 +113,14 @@ class AdminController extends AdminBaseController
         if (!$this->validate->scene('add')->check($param)) {
             return $this->fail($this->validate->getError());
         }
-        $group = AdminGroup::find($param->group_id);
+        if($request->password != $request->password_confirm){
+            return $this->fail("两次输入的密码不一致");
+        }
+        $group = AdminGroup::find($request->group_id);
         if (!$group) {
             return $this->fail('管理组不存在');
         }
-        $au = AdminUser::where(['username' => $param->username])->first();
+        $au = AdminUser::where(['username' => $request->username])->first();
         if ($au) {
             return $this->fail('用户名已存在');
         }

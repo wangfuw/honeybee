@@ -12,6 +12,7 @@ class AdminUserValidate extends BaseValidate
         'group_id' => 'required',
         'username' => 'required|string|max:255',
         'password' => 'required|string|min:6',
+        'password_confirm' => 'required|string|min:6',
     ];
     //自定义验证信息
     protected $message = [
@@ -25,6 +26,6 @@ class AdminUserValidate extends BaseValidate
     protected $scene = [
         'modify' => "id,username,password",
         'login' => "username,password",
-        'add'=>"group_id,username,password"
+        'add'=>"group_id,username,password,password_confirm"
     ];
 }
