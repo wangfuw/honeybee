@@ -44,7 +44,7 @@ class LoginController extends AdminBaseController
 
         $rules = explode(",", $ag->rules);
         foreach ($menuOne as $k => &$v) {
-            $exist = AdminRule::where("nav_id", $v["id"])->where("id", "in", $rules)->first();
+            $exist = AdminRule::where("nav_id", $v["id"])->whereIn('id', $rules)->first();
             dd($exist);
             $menuTwo = AdminNav::where("pid", $v["id"])->select("id","title","icon","path")->get()->toArray();
             foreach ($menuTwo as $a => &$m) {
