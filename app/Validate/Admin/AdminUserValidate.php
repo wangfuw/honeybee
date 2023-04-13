@@ -9,6 +9,7 @@ class AdminUserValidate extends BaseValidate
     //验证规则
     protected $rule = [
         'id' => 'required',
+        'group_id' => 'required',
         'username' => 'required|string|max:255',
         'password' => 'required|string|min:6',
     ];
@@ -24,5 +25,6 @@ class AdminUserValidate extends BaseValidate
     protected $scene = [
         'modify' => "id,username,password",
         'login' => "username,password",
+        'add'=>"group_id,username,password"
     ];
 }
