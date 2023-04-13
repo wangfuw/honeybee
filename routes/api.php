@@ -23,5 +23,6 @@ Route::controller(UserController::class)->group(function () {
         Route::post('refresh', 'refresh');
         Route::get('me', 'me');
     });
+
 });
 
