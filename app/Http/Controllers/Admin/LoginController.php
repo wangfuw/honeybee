@@ -39,7 +39,7 @@ class LoginController extends AdminBaseController
     public function menuList(Request $request)
     {
         $admin = auth("admin")->user();
-        dd($admin);
+        dd($admin->group_id);
         $ag = AdminGroup::where("group_id", $admin->group_id);
         dd($ag);
         $menuOne = AdminNav::where("pid", 0)->orderBy("order_number", "desc")->select("id","title","icon","path")->get()->toArray();
