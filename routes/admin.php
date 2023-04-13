@@ -13,9 +13,9 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
 
         Route::post("addGroup", [AdminController::class, "addGroup"]);
         Route::post("delGroup", [AdminController::class, "delGroup"]);
-        Route::post("addAdmin", [AdminController::class, "addAdmin"]);
-        Route::post("delAdmin", [AdminController::class, "delAdmin"]);
-        Route::post("banAdmin", [AdminController::class, "banAdmin"]);
+        Route::post("addAdmin", [AdminController::class, "addUser"]);
+        Route::post("delAdmin", [AdminController::class, "delUser"]);
+        Route::post("banAdmin", [AdminController::class, "banUser"]);
     });
 });
 
