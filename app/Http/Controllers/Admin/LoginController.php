@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Common\Rsa;
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\AdminUser;
 use Illuminate\Http\Request;
 
-class LoginController extends Controller
+class LoginController extends BaseController
 {
     public function login(Request $request)
     {
@@ -16,7 +17,7 @@ class LoginController extends Controller
 
         $adminUser = AdminUser::where('username', $username)->first();
         if ($adminUser == null) {
-            return $this->baseResponse(0, "账号不存在");
+            return $this->fail(0, "账号不存在");
         }
         if (Rsa::encryptPass($password, $adminUser->salt) != $adminUser->password) {
             return $this->error("密码");
