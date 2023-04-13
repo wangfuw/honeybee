@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterAuthRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use App\Validate\UserValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends BaseController
 {
-
-    public function __construct()
+    private $validate;
+    public function __construct(UserValidate $validate)
     {
+        $this->validate = $validate;
         $this->middleware('auth:api', ['except' => ['register', 'login']]);
     }
 
@@ -24,12 +25,10 @@ class UserController extends BaseController
      */
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
         $credentials = $request->only('email', 'password');
-
+        if(!$this->validate->scene('login')->check($credentials)){
+            return $this->fail($this->validate->getError());
+        }
         $token = Auth::attempt($credentials);
         if (!$token) {
             return $this->fail('登录失败');
@@ -51,12 +50,9 @@ class UserController extends BaseController
      * @return \Illuminate\Http\JsonResponse
      */
     public function register(Request $request){
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-
+        if(!$this->validate->scene('register')->check($request->toArray())){
+            return $this->fail($this->validate->getError());
+        }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -64,6 +60,7 @@ class UserController extends BaseController
         ]);
 
         $token = Auth::login($user);
+
         return $this->success('注册成功',[
             'user' => $user,
             'access_token' => [
