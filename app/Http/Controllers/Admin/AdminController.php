@@ -108,7 +108,7 @@ class AdminController extends AdminBaseController
 
     public function addUser(Request $request)
     {
-        $param = $request->only('username', 'password', 'group_id');;
+        $param = $request->only('username', 'password', 'password_confirm','group_id');;
 
         if (!$this->validate->scene('add')->check($param)) {
             return $this->fail($this->validate->getError());
