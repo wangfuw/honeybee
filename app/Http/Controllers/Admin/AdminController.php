@@ -102,6 +102,7 @@ class AdminController extends AdminBaseController
             $au->save();
             return $this->success('禁用成功');
         } catch (\Exception $exception) {
+            var_dump($exception);
             return $this->fail('禁用失败');
         }
     }
