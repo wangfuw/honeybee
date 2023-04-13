@@ -29,14 +29,14 @@ trait AdminResponse
      * @param null $error
      * @return JsonResponse
      */
-    public function fail($msg, $data = null, $error = null): JsonResponse
+    public function fail($msg, $data = null): JsonResponse
     {
         return $this->jsonResponse(0, $msg, $data, $error);
     }
 
-    public function error($name, $data = null, $error = null): JsonResponse
+    public function error($name, $data = null): JsonResponse
     {
-        return $this->jsonResponse(0, $name . "错误", $data, $error);
+        return $this->jsonResponse(0, $name . "错误", $data);
     }
 
     /**
@@ -47,7 +47,7 @@ trait AdminResponse
      * @param $error
      * @return JsonResponse
      */
-    private function jsonResponse($status, $message, $data, $error): JsonResponse
+    private function jsonResponse($status, $message, $data=null): JsonResponse
     {
         //list($code, $message) = $codeResponse;
         try{
@@ -60,7 +60,7 @@ trait AdminResponse
             'status' => $status,
             //'code'    => $code,
             'info' => $message,
-            'result' => $data ?? null,
+            'result' => $data,
         ])->withHeaders([
             'token' => $newToken
         ]);
