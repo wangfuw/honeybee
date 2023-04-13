@@ -15,7 +15,7 @@ class AdminController extends AdminBaseController
         foreach ($groups as $k => &$v) {
             $v["group"] = 1;
             $v["index"] = $v["id"];
-            $users = AdminUser::where("group_id", $v["id"])->select('id', 'username as name', 'status');
+            $users = AdminUser::where("group_id", $v["id"])->select('id', 'username as name', 'status')->get()->toArray();
             foreach ($users as $m => &$n) {
                 $n["index"] = $v["id"] . "_" . $n["id"];
                 $n["group"] = 2;
