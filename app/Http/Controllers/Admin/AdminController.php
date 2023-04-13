@@ -20,7 +20,7 @@ class AdminController extends AdminBaseController
 
     public function admins(Request $request)
     {
-        $groups = AdminGroup::orderByDesc("id")->select("id", "name")->get()->toArray();
+        $groups = AdminGroup::orderBy("id")->select("id", "name")->get()->toArray();
         foreach ($groups as $k => &$v) {
             $v["group"] = 1;
             $v["index"] = $v["id"];
@@ -96,7 +96,7 @@ class AdminController extends AdminBaseController
         if ($id == $request->adminId) {
             return $this->fail("不能禁用自己");
         }
-        $au = AdminUser::first($id);
+        $au = AdminUser::find($id);
         $au->status = 3 - $au->status;
         try {
             $au->save();
