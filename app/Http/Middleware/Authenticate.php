@@ -6,7 +6,7 @@ use App\Traits\ApiResponse;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-class Authenticate extends Middleware
+class Authenticate
 {
     use ApiResponse;
     /**
