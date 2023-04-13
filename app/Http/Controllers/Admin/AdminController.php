@@ -71,7 +71,7 @@ class AdminController extends AdminBaseController
         if (!$group) {
             return $this->fail(0, '管理组不存在');
         }
-        $au = AdminUser::first($request->adminId);
+        $au = AdminUser::find($request->adminId);
         if ($au->group_id == $id) {
             return $this->fail(0, '不能删除自己所在的组');
         }
@@ -133,7 +133,6 @@ class AdminController extends AdminBaseController
             ]);
             return $this->success('添加成功');
         } catch (\Exception$exception) {
-            var_dump($exception);
             return $this->fail('添加');
         }
     }
@@ -154,9 +153,9 @@ class AdminController extends AdminBaseController
         }
         try {
             AdminUser::destroy($id);
-            return $this->success('删除');
+            return $this->success('删除成功');
         } catch (\Exception $exception) {
-            return $this->fail('删除');
+            return $this->fail('删除失败');
         }
     }
 }
