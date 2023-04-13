@@ -14,6 +14,8 @@ class LoginController extends BaseController
         $username = $request->input("username");
         $password = $request->input("password");
 
+        $token = auth()->tokenById(1);
+        var_dump($token);
         $adminUser = AdminUser::where('username', $username)->first();
         if ($adminUser == null) {
             return $this->fail(0, "账号不存在");
@@ -21,8 +23,7 @@ class LoginController extends BaseController
         if (Rsa::encryptPass($password, $adminUser->salt) != $adminUser->password) {
             return $this->error("密码");
         }
-        $token = auth()->tokenById(1);
-        var_dump($token);
+
         return $this->success("登录");
     }
 
