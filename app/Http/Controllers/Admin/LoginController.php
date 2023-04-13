@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Common\Rsa;
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Models\AdminUser;
 use Illuminate\Http\Request;
 
