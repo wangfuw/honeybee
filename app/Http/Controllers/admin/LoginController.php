@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Common\Rsa;
 use App\Http\Controllers\Controller;
