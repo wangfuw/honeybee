@@ -40,11 +40,11 @@ class LoginController extends AdminBaseController
     {
         $admin = auth("admin")->user();
         $ag = AdminGroup::where("group_id", $admin->group_id);
-        $menuOne = AdminNav::where("pid", 0)->orderBy("order_number", "desc")->select("id,title,icon,path")->get()->toArray();
+        $menuOne = AdminNav::where("pid", 0)->orderBy("order_number", "desc")->select("id","title","icon","path")->get()->toArray();
         $rules = explode(",", $ag->rules);
         foreach ($menuOne as $k => &$v) {
             $exist = AdminRule::where("nav_id", $v["id"])->where("id", "in", $rules)->first();
-            $menuTwo = AdminNav::where("pid", $v["id"])->select("id,title,icon,path")->get()->toArray();
+            $menuTwo = AdminNav::where("pid", $v["id"])->select("id","title","icon","path")->get()->toArray();
             foreach ($menuTwo as $a => &$m) {
                 $existTwo = AdminRule::where("nav_id", $m["id"])->where("id", "in", $rules)->first();
                 if (!$existTwo) {
