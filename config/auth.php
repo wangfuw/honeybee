@@ -44,6 +44,10 @@ return [
             'driver' => 'jwt',      // 原来是 token 改成jwt
             'provider' => 'users',
         ],
+        'admin' => [
+            'driver' => 'jwt',      // 原来是 token 改成jwt
+            'provider' => 'users',
+        ],
     ],
 
     /*
@@ -64,10 +68,10 @@ return [
     */
 
     'providers' => [
-//        'admins' => [
-//            'driver' => 'eloquent',
-//            'model' => App\Models\User::class,
-//        ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\AdminUser::class,
+        ],
 
          'users' => [
              'driver' => 'eloquent',
