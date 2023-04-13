@@ -100,9 +100,9 @@ class AdminController extends AdminBaseController
         $au->status = 3 - $au->status;
         try {
             $au->save();
-            return $this->fail('禁用');
+            return $this->success('禁用成功');
         } catch (\Exception $exception) {
-            return $this->fail('禁用');
+            return $this->fail('禁用失败');
         }
     }
 
