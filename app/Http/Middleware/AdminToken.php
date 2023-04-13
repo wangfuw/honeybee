@@ -19,7 +19,7 @@ class AdminToken{
         $token = $request->token = $request->header('Authorization');
 
         if (!$token) {
-            return $this->fail('请求token缺失');
+            return $this->fail('长时间未操作,请重新登录');
         }
         try {
             //重新设置请求头把token修改成
@@ -37,7 +37,7 @@ class AdminToken{
             }
 
             if($e->getMessage() == 'Token Signature could not be verified.') {
-                return $this->fail('无法验证令牌签名,请重新登录',);
+                return $this->fail('无法验证令牌签名,请重新登录');
             }
 
             return $this->fail('token验证意外错误：' . $e->getMessage());
