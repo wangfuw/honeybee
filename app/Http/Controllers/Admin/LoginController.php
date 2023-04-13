@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Common\Rsa;
-use App\Http\Controllers\BaseController;
-use App\Models\AdminUser;
 use App\Validate\Admin\AdminUserValidate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class LoginController extends BaseController
+
+class LoginController extends AdminBaseController
 {
     private $validate;
     public function __construct(AdminUserValidate $validate)
@@ -24,18 +21,14 @@ class LoginController extends BaseController
         if(!$this->validate->scene('login')->check($credentials)){
             return $this->fail($this->validate->getError());
         }
-        $token = auth('admin')->attempt($credentials);
+        $token = auth('admin')->setTTl(10)->attempt($credentials);
         if (!$token) {
             return $this->fail('登录失败');
         }
 
-        $user = auth()->guard("admin")->user();
+        $user = auth('admin')->user();
         return $this->success('登录成功',[
             'user'=>$user,
-            'access_token'=>[
-                'token' => $token,
-                'type' => 'bearer',
-            ]
         ]);
     }
 
