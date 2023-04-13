@@ -20,6 +20,7 @@ class LoginController extends BaseController
     public function login(Request $request)
     {
         $credentials = $request->only('username', 'password');
+        dd($credentials);
         if(!$this->validate->scene('login')->check($credentials)){
             return $this->fail($this->validate->getError());
         }
