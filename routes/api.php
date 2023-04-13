@@ -18,8 +18,11 @@ use App\Http\Controllers\Api\ProductController;
 Route::controller(UserController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
-    Route::post('logout', 'logout');
-    Route::post('refresh', 'refresh');
-    Route::get('me', 'me');
+    Route::group(['middleware' => 'auth'], function () {
+        Route::post('logout', 'logout');
+        Route::post('refresh', 'refresh');
+        Route::get('me', 'me');
+    });
+
 });
 

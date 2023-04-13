@@ -11,27 +11,4 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function baseResponse($status, $msg, $data = null)
-    {
-        return response()->json([
-            'status' => $status,
-            'info' => $msg,
-            'result' => $data,
-        ]);
-    }
-
-    public function success($msg, $data = [])
-    {
-        return $this->baseResponse(1, $msg, $data);
-    }
-
-    public function fail($msg)
-    {
-        return $this->baseResponse(0, $msg);
-    }
-
-    public function error($name)
-    {
-        return $this->baseResponse(0, $name . "错误");
-    }
 }

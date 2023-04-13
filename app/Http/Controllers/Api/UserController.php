@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterAuthRequest;
 use App\Models\User;
@@ -10,9 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
-    //
+
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['register', 'login']]);
@@ -31,22 +32,17 @@ class UserController extends Controller
 
         $token = Auth::attempt($credentials);
         if (!$token) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
+            return $this->fail('登录失败');
         }
 
         $user = Auth::user();
-        return response()->json([
-            'status' => 'success',
-            'user' => $user,
-            'authorisation' => [
+        return $this->success('登录成功',[
+            'user'=>$user,
+            'access_token'=>[
                 'token' => $token,
                 'type' => 'bearer',
             ]
         ]);
-
     }
 
     /**
@@ -68,11 +64,9 @@ class UserController extends Controller
         ]);
 
         $token = Auth::login($user);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User created successfully',
+        return $this->success('注册成功',[
             'user' => $user,
-            'authorisation' => [
+            'access_token' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
@@ -82,29 +76,18 @@ class UserController extends Controller
     public function logout()
     {
         Auth::logout();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out',
-        ]);
+        return $this->fail('登出成功');
     }
 
     public function me()
     {
-        return response()->json([
-            'status' => 'success',
-            'user' => Auth::user(),
-        ]);
+        return $this->success('success',['user' => Auth::user()]);
+
     }
 
     public function refresh()
     {
-        return response()->json([
-            'status' => 'success',
-            'user' => Auth::user(),
-            'authorisation' => [
-                'token' => Auth::refresh(),
-                'type' => 'bearer',
-            ]
-        ]);
+        return $this->success('刷新成功',['user' => Auth::user(),'access_token'=>['token' => Auth::refresh(),
+            'type' => 'bearer',]]);
     }
 }

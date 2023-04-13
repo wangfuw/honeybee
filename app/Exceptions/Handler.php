@@ -38,4 +38,34 @@ class Handler extends ExceptionHandler
             //
         });
     }
+    public function render($request, Throwable $exception)
+    {
+        // 如果是生产环境则返回500
+        if (!config('app.debug')) {
+            $this->throwBusinessException(ResponseEnum::SYSTEM_ERROR);
+        }
+        // 请求类型错误异常抛出
+        if ($exception instanceof MethodNotAllowedHttpException) {
+            $this->throwBusinessException(ResponseEnum::CLIENT_METHOD_HTTP_TYPE_ERROR);
+        }
+        // 参数校验错误异常抛出
+        if ($exception instanceof ValidationException) {
+            $this->throwBusinessException(ResponseEnum::CLIENT_PARAMETER_ERROR);
+        }
+        // 路由不存在异常抛出
+        if ($exception instanceof NotFoundHttpException) {
+            $this->throwBusinessException(ResponseEnum::CLIENT_NOT_FOUND_ERROR);
+        }
+        // 自定义错误异常抛出
+        if ($exception instanceof BusinessException) {
+            return response()->json([
+                'status'  => 'fail',
+                'code'    => $exception->getCode(),
+                'message' => $exception->getMessage(),
+                'data'    => null,
+                'error'  => null,
+            ]);
+        }
+        return parent::render($request, $exception);
+    }
 }
