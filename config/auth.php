@@ -46,7 +46,7 @@ return [
         ],
         'admin' => [
             'driver' => 'jwt',      // 原来是 token 改成jwt
-            'provider' => 'users',
+            'provider' => 'admins',
         ],
     ],
 
