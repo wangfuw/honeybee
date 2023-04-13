@@ -27,7 +27,7 @@ class LoginController extends AdminBaseController
         }
         $token = auth('admin')->setTTl(10)->attempt($credentials);
         if (!$token) {
-            return $this->fail('登录失败');
+            return $this->fail('登录失败，请确认账号密码是否正确');
         }
 
         $user = auth('admin')->user();
