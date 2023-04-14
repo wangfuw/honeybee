@@ -20,7 +20,6 @@ class News extends Base
         'text',
         'path',
         'author',
-        'publish_time',
         'type',
         'created_at',
         'updated_at'
@@ -44,7 +43,6 @@ class News extends Base
             'face',
             'text',
             'author',
-            'publish_time',
             'type')
             ->where('type',$type)
             ->orderBy('publish_time','desc')
@@ -61,7 +59,6 @@ class News extends Base
             'text',
             'path',
             'author',
-            'publish_time',
             'type')->where('id',$id)->first()->toArray();
     }
 }
