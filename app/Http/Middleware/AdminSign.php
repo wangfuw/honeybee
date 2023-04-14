@@ -15,18 +15,17 @@ class AdminSign
         if ($sign == null || $sign == "") {
             return $this->baseReturn();
         }
-        var_dump($sign);
         $sign = Rsa::decodeByPrivateKey($sign);
         if ($sign == "") {
             return $this->baseReturn();
         }
-        var_dump($sign);
         $infos = explode("_", $sign);
         if(count($infos) != 2 || $infos[0] != "beeadmin"){
             return $this->baseReturn();
         }
+        printf("%s\n",time() - (int)$infos[1]);
         if(time() - (int)$infos[1] > 10){
-            printf("%s\n",time() - (int)$infos[1]);
+
             return $this->baseReturn();
         }
         return $next($request);
