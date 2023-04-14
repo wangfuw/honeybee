@@ -19,6 +19,7 @@ class Banner extends Base
         'title',
         'path'
     ];
+
     public function getCreatedAtAttribute($value)
     {
         $date = Carbon::parse($value);
