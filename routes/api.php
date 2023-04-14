@@ -33,10 +33,9 @@ Route::group([],function (){
     Route::post('banners',[BannerController::class,'getBanners']);
     Route::post('create',[BannerController::class,'create']);
     //获取公告
+
     Route::post('notices',[NoticeController::class,'getNotices']);
     Route::post('notice_info',[NoticeController::class,'getInfo']);
-    Route::group(['middleware'=>'auth'],function (){
-    });
 });
 
 
