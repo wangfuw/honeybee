@@ -25,6 +25,7 @@ class AuthController extends AdminBaseController
         $menu = AdminNav::select("id", "title")->get()->toArray();
         foreach ($menu as $m => &$n) {
             $rule = AdminRule::where("nav_id", $n["id"])->select("id", "title")->get();
+            var_dump($rule);
             if (!$rule) {
                 unset($menu[$m]);
             } else {
