@@ -23,15 +23,11 @@ class Banner extends Base
         if(!is_numeric($value)){
             return  $value;
         }
-        $date = Carbon::parse($value);
-        return $date->format('Y-m-d H:i:s',$value);
-//        return date("Y-m-d h:i:s",$value);
+//        $date = Carbon::parse($value);
+//        return $date->format('Y-m-d H:i:s',$value);
+        return date("Y-m-d h:i:s",$value);
     }
 
-    protected function serializeDate(DateTimeInterface $date)
-    {
-        return $date->format($this->dateFormat ?: 'Y-m-d H:i:s');
-    }
 
     public function getBanners()
     {
