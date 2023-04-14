@@ -56,7 +56,7 @@ class AuthController extends AdminBaseController
             return $this->error("组");
         }
         $ruleList = explode(",", $group->rules);
-        if ($param['authId']) {
+        if ($request->authId) {
             $authId = $param['authId'];
             $auth = AdminRule::find($authId);
             if (!$auth) {
@@ -73,7 +73,7 @@ class AuthController extends AdminBaseController
                 return $this->executeFail('添加');
             }
         }
-        if($param['menuId']){
+        if($request->menuId){
             $menuId = $param['menuId'];
             $auths = AdminRule::where('nav_id',$menuId)->select("id")->get()->toArray();
             $newRule = $group->rules;
@@ -106,7 +106,7 @@ class AuthController extends AdminBaseController
             return $this->error('组ID');
         }
         $ruleList = explode(",", $group->rules);
-        if($param['authId']){
+        if($request->authId){
             $authId = $param['authId'];
             if(!in_array($authId,$ruleList)){
                 return $this->fail('权限已删除');
@@ -119,7 +119,7 @@ class AuthController extends AdminBaseController
                 return $this->executeFail('删除');
             }
         }
-        if($param['menuId']){
+        if($request->menuId){
             $menuId = $param['menuId'];
             $auths = AdminRule::where('nav_id',$menuId)->select("id")->get()->toArray();
             $newRule = $group->rules;
