@@ -74,7 +74,7 @@ trait AdminResponse
             'status' => $status,
             'info' => $message,
             'result' => $data,
-        ])->withHeaders(["token" => $token]);
+        ]);
     }
 
 
