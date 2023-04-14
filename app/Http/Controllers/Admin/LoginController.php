@@ -92,6 +92,7 @@ class LoginController extends AdminBaseController
     public function uploadOne(Request $request)
     {
         $file = $request->file('image');
+        var_dump($file->getExtension());
         $path = $file->storeAs('banners',md5($file->getContent()).".".$file->getExtension());
         var_dump($path);
     }
