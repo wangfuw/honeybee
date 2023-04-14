@@ -37,7 +37,7 @@ class News extends Base
         $page = $params['page']??1;
         $page_size = $params['page_size']??8;
         $type = $params['type']??1;
-        return self::query()->select( 'id',
+        $data = self::query()->select( 'id',
             'title',
             'face',
             'text',
@@ -48,6 +48,7 @@ class News extends Base
             ->orderBy('publish_time','desc')
             ->get()
             ->forPage($page,$page_size);
+        return collect([])->merge($data);
     }
 
     public function getInfo($id)
