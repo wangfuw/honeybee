@@ -18,6 +18,7 @@ class CreateAdminActionTable extends Migration
             $table->integer("admin_id")->comment("管理员id");
             $table->integer("rule_id")->comment("权限id");
             $table->string("ip")->comment("操作时的ip地址");
+            $table->dateTime("created_at")->comment("操作的时间");
         });
     }
 
