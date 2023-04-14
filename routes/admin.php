@@ -31,6 +31,9 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("delBanner", [BannerController::class, "delBanner"]);
 
             Route::get("noticeList", [NoticeController::class, "noticeList"]);
+            Route::post("delNotice", [NoticeController::class, "delNotice"]);
+            Route::post("addNotice", [NoticeController::class, "addNotice"]);
+            Route::post("editNotice", [NoticeController::class, "editNotice"]);
         });
     });
 });
