@@ -17,4 +17,9 @@ class Banner extends Base
         }
         return date("Y-m-d h:i:s",$value);
     }
+
+    public function getBanners()
+    {
+        return self::query()->select('id','path','title')->orderBy('created_at','desc')->get()->toArray();
+    }
 }
