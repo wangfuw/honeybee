@@ -60,13 +60,6 @@ trait AdminResponse
      */
     private function jsonResponse($status, $message, $data = null): JsonResponse
     {
-        //list($code, $message) = $codeResponse;
-//        try {
-//            $newToken = auth("admin")->setRefreshTTL(1)->refresh();
-//        } catch (\Exception $exception) {
-//            $newToken = "";
-//        }
-
         return response()->json([
             'status' => $status,
             'info' => $message,

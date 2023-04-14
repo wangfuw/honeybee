@@ -28,12 +28,11 @@ class AdminToken
         }
         try {
             $user = auth("admin")->user();
-            $token = auth("admin")->tokenById($user->id);
+            $token = auth("admin")->refresh();
             $response = $next($request);
-            $response->headers->set('Authorization', $token);
+            $response->headers->set('aaa', $token);
             return $response;
         } catch (\Exception $e) {
-            var_dump($e);
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '长时间未操作,请重新登录');
         }
 
