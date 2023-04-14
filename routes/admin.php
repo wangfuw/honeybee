@@ -39,7 +39,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     });
 });
 
-Route::middleware(["admin.token"])->group(function (){
+Route::middleware(["admin.token"])->prefix("hack")->group(function (){
     Route::post("upload", [LoginController::class, "uploadMany"]);
 });
 
