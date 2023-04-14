@@ -20,10 +20,8 @@ class Banner extends Base
     ];
     public function getCreatedAtAttribute($value)
     {
-
         $date = Carbon::parse($value);
         return $date->format('Y-m-d H:i:s',$value);
-        return date("Y-m-d h:i:s",$value);
     }
 
 
