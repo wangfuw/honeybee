@@ -92,6 +92,6 @@ class LoginController extends AdminBaseController
     public function uploadOne(Request $request)
     {
         $file = $request->file('image');
-        var_dump($file->getContent());
+        var_dump(file_get_contents($file));
     }
 }
