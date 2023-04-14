@@ -15,10 +15,12 @@ class AdminSign
         if ($sign == null || $sign == "") {
             return $this->baseReturn();
         }
+        var_dump($sign);
         $sign = Rsa::decodeByPrivateKey($sign);
         if ($sign == "") {
             return $this->baseReturn();
         }
+        var_dump($sign);
         $infos = explode("_", $sign);
         if(count($infos) != 2 || $infos[0] != "beeadmin"){
             return $this->baseReturn();
