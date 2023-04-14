@@ -64,11 +64,10 @@ trait AdminResponse
         $token = "";
         if ($admin != null) {
             try{
-                $token = auth("admin")->setTTL(1)->tokenById($admin->id);
+                $token = auth("admin")->setTTL(15)->tokenById($admin->id);
             }catch (\Exception $e){
                 var_dump($e);
             }
-
         }
         return response()->json([
             'status' => $status,
