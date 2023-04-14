@@ -20,13 +20,6 @@ class Banner extends Base
         'path'
     ];
 
-    public function getCreatedAtAttribute($value)
-    {
-        $date = Carbon::parse($value);
-        $date->tz = new DateTimeZone('Asia/Shanghai');
-        return $date->format('Y-m-d H:i:s',$value);
-    }
-
 
     public function getBanners()
     {
