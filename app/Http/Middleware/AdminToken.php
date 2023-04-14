@@ -28,7 +28,6 @@ class AdminToken
         }
         try {
             $user = auth("admin")->user();
-            auth("admin")->invalidate();
             $token = auth("admin")->tokenById($user->id);
             $response = $next($request);
             $response->headers->set('Authorization', $token);
