@@ -39,6 +39,17 @@ trait AdminResponse
         return $this->jsonResponse(0, $name . "错误", $data);
     }
 
+
+    public function executeSuccess($msg, $data = null): JsonResponse
+    {
+        return $this->success($msg . "成功", $data);
+    }
+
+    public function executeFail($msg, $data = null): JsonResponse
+    {
+        return $this->fail($msg . "失败", $data);
+    }
+
     /**
      * json响应
      * @param $status
@@ -47,12 +58,12 @@ trait AdminResponse
      * @param $error
      * @return JsonResponse
      */
-    private function jsonResponse($status, $message, $data=null): JsonResponse
+    private function jsonResponse($status, $message, $data = null): JsonResponse
     {
         //list($code, $message) = $codeResponse;
-        try{
+        try {
             $newToken = auth("admin")->setTTL(1)->refresh();
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             $newToken = "";
         }
 
