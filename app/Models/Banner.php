@@ -22,6 +22,7 @@ class Banner extends Base
     {
         var_dump($value);
         if(!is_numeric($value)){
+            var_dump(111);
             return  $value;
         }
 //        $date = Carbon::parse($value);
