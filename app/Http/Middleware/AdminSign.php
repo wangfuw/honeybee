@@ -23,9 +23,9 @@ class AdminSign
         if(count($infos) != 2 || $infos[0] != "beeadmin"){
             return $this->baseReturn();
         }
-        printf("%s\n",time() - (int)$infos[1]);
-        if(time() - (int)$infos[1] > 10){
 
+        if(time() - (int)$infos[1] > 10){
+            printf("%s\n",time() - (int)$infos[1]);
             return $this->baseReturn();
         }
         return $next($request);
