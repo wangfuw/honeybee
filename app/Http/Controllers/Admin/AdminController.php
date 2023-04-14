@@ -36,7 +36,7 @@ class AdminController extends AdminBaseController
 
     public function groups(Request $request)
     {
-        $data = AdminGroup::orderByDesc("id")->select("id", "name")->get();
+        $data = AdminGroup::orderBy("id")->select("id", "name")->get();
         return $this->success('请求', $data);
     }
 
