@@ -24,6 +24,6 @@ class NoticeValidate extends BaseValidate
     //自定义场景
     protected $scene = [
         'modify' => "title,text,id",
-        'add' => "id,title,text",
+        'add' => "title,text",
     ];
 }
