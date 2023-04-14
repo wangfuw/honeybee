@@ -7,7 +7,7 @@ use Closure;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Traits\ResponseEnum;
 
-class AdminToken extends BaseMiddleware
+class AdminToken
 {
     use AdminResponse;
 
