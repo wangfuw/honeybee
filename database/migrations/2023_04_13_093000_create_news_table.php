@@ -19,7 +19,6 @@ class CreateNewsTable extends Migration
             $table->longText('text')->nullable()->comment('正文');
             $table->string('author')->nullable()->comment('作者');
             $table->string('face')->nullable()->comment('封面');
-            $table->integer('publish_time')->nullable()->comment('发布时间');
             $table->tinyInteger('type')->default(1)->comment('1-资讯 2-上陶文化3-行业新闻 4-学习园地');
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
