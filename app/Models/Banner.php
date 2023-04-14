@@ -26,7 +26,7 @@ class Banner extends Base
 
     public function getBanners()
     {
-        return self::query()->select('id','path','title')->orderBy('created_at','desc')->get()->toArray();
+        return self::query()->select('id','path','title','created_at')->orderBy('created_at','desc')->get()->toArray();
     }
 
 }
