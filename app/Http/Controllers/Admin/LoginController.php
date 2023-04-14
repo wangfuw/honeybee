@@ -102,7 +102,7 @@ class LoginController extends AdminBaseController
             $file = $request->file($k);
             try {
                 $path = $this->uploadFile($file, "banners");
-                $scavenge[] = ["url" => getenv('APP_URL') . "/storage" . $path];
+                $scavenge[] = ["url" => getenv('APP_URL') . $path];
             } catch (\Exception $exception) {
                 return response()->json([
                     'error' => 1

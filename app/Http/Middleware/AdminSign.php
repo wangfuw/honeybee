@@ -25,7 +25,6 @@ class AdminSign
         }
 
         if(time() - (int)$infos[1] > 10){
-            printf("%s\n",time() - (int)$infos[1]);
             return $this->baseReturn();
         }
         return $next($request);
