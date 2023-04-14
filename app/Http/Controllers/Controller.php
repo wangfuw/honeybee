@@ -11,4 +11,11 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+
+    protected function uploadFile($file, $subDirPath)
+    {
+        $filename = md5($file->getContent()) . "." . $file->extension();
+        $file->storeAs('public/' . $subDirPath, $filename);
+        return "/storage/".$subDirPath.$filename;
+    }
 }

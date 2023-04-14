@@ -92,8 +92,25 @@ class LoginController extends AdminBaseController
     public function uploadOne(Request $request)
     {
         $file = $request->file('image');
-        var_dump($file->extension());
-        $path = $file->storeAs('public/banners',md5($file->getContent()).".".$file->extension());
-        var_dump($path);
+        $path = $this->uploadFile($file, "banners");
+        return $this->executeSuccess("上传", ["path" => $path]);
+    }
+
+    public function uploadMany(Request $request)
+    {
+        foreach ($_FILES as $k => $v) {
+            $file = $request->file($k);
+            try {
+                $path = $this->uploadFile($file, "banners");
+                $scavenge[] = ["url" => getenv('APP_URL') . "/storage" . $path];
+            } catch (\Exception $exception) {
+                return response()->json([
+                    'error' => 1
+                ]);
+            }
+        }
+        return response()->json([
+            'errno' => 0, 'data' => $scavenge
+        ]);
     }
 }
