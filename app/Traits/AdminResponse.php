@@ -64,7 +64,7 @@ trait AdminResponse
         $token = "";
         if ($admin != null) {
             try{
-                $token = auth("admin")->setTTL(1)->attempt($admin->toArray());
+                $token = auth("admin")->setTTL(1)->tokenById($admin->id);
             }catch (\Exception $e){
                 var_dump($e);
             }
