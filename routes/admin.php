@@ -2,10 +2,20 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LoginController;
+use  \App\Http\Controllers\Admin\AdminController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
-    Route::controller(LoginController::class)->group(function () {
-        Route::post("login", 'login');
+    Route::post("login", [LoginController::class, "login"]);
+    Route::middleware(['admin.token'])->group(function () {
+        Route::get("menuList", [LoginController::class, "menuList"]);
+        Route::get("admins", [AdminController::class, "admins"]);
+        Route::get("groups", [AdminController::class, "groups"]);
+
+        Route::post("addGroup", [AdminController::class, "addGroup"]);
+        Route::post("delGroup", [AdminController::class, "delGroup"]);
+        Route::post("addAdmin", [AdminController::class, "addUser"]);
+        Route::post("delAdmin", [AdminController::class, "delUser"]);
+        Route::post("banAdmin", [AdminController::class, "banUser"]);
     });
 });
 

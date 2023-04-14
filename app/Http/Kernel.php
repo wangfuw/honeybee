@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\AdminSign;
+use App\Http\Middleware\AdminToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -71,6 +72,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin.sign' => AdminSign::class,
+        'admin.token' => AdminToken::class
 //        'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
     ];
 }

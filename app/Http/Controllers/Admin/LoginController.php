@@ -2,53 +2,66 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Common\Rsa;
-use App\Http\Controllers\BaseController;
-use App\Models\AdminUser;
+use App\Models\AdminNav;
+use App\Models\AdminGroup;
+use App\Models\AdminRule;
+use App\Validate\Admin\AdminUserValidate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class LoginController extends BaseController
+
+class LoginController extends AdminBaseController
 {
+    private $validate;
+
+    public function __construct(AdminUserValidate $validate)
+    {
+        $this->validate = $validate;
+    }
+
     public function login(Request $request)
     {
-
-//        $request->validate([
-//            'username' => 'required|string',
-//            'password' => 'required|string',
-//        ]);
         $credentials = $request->only('username', 'password');
-//        $username = $request->input("username");
-//        $password = $request->input("password");
-//
-//        $token = auth()->tokenById(1);
-//        var_dump($token);
-//        var_dump(auth()->validate());
-//        $adminUser = AdminUser::where('username', $username)->first();
-//        if ($adminUser == null) {
-//            return $this->fail(0, "账号不存在");
-//        }
-//        if (Rsa::encryptPass($password, $adminUser->salt) != $adminUser->password) {
-//            return $this->error("密码");
-//        }
-//        return $credentials;
-        $token = auth('admin')->attempt($credentials);
+
+        if (!$this->validate->scene('login')->check($credentials)) {
+            return $this->fail($this->validate->getError());
+        }
+        $token = auth('admin')->setTTl(2)->attempt($credentials);
         if (!$token) {
-            return $this->fail('登录失败');
+            return $this->fail('登录失败，请确认账号密码是否正确');
         }
 
-        $user = auth()->guard("admin")->user();
-        return $this->success('登录成功',[
-            'user'=>$user,
-            'access_token'=>[
-                'token' => $token,
-                'type' => 'bearer',
-            ]
+        $user = auth('admin')->user();
+        return $this->success('登录成功', [
+            'user' => $user,
         ]);
     }
 
     public function menuList(Request $request)
     {
+        $admin = auth("admin")->user();
+        $ag = AdminGroup::where("id", $admin->group_id)->first();
+        $menuOne = AdminNav::where("pid", 0)->orderBy("order_number", "desc")->select("id","title","icon","path")->get()->toArray();
 
+        $rules = explode(",", $ag->rules);
+        foreach ($menuOne as $k => &$v) {
+            $exist = AdminRule::where("nav_id", $v["id"])->whereIn('id', $rules)->first();
+
+            $menuTwo = AdminNav::where("pid", $v["id"])->select("id","title","icon","path")->get()->toArray();
+            foreach ($menuTwo as $a => &$m) {
+                $existTwo = AdminRule::where("nav_id", $m["id"])->whereIn("id", $rules)->first();
+                if (!$existTwo) {
+                    unset($menuTwo[$a]);
+                }
+            }
+            if (!$exist && empty($menuTwo)) {
+                unset($menuOne[$k]);
+            }
+            if (!empty($menuTwo)) {
+                $menuTwo = array_values($menuTwo);
+                $v["children"] = $menuTwo;
+            }
+        }
+        $menuOne = array_values($menuOne);
+        return $this->success("请求成功", $menuOne);
     }
 }
