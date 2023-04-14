@@ -20,13 +20,6 @@ class Banner extends Base
     ];
     public function getCreatedAtAttribute($value)
     {
-        var_dump($value);
-        if(!is_numeric($value)){
-            var_dump(111);
-            return  $value;
-        }
-//        $date = Carbon::parse($value);
-//        return $date->format('Y-m-d H:i:s',$value);
         return date("Y-m-d h:i:s",$value);
     }
 
