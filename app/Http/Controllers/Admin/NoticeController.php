@@ -11,7 +11,7 @@ class NoticeController extends AdminBaseController
     {
         $page = $request->page ?? $this->page;
         $size = $request->size ?? $this->size;
-        $notices = Notice::paginate($size);
+        $notices = Notice::orderByDesc("id")->paginate($size);
         return $this->executeSuccess("请求", $notices);
     }
 }
