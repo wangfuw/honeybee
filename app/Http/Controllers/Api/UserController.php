@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\RegisterAuthRequest;
-use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\Validate\UserValidate;
 use Illuminate\Http\Request;
@@ -33,7 +31,6 @@ class UserController extends BaseController
         if (!$token) {
             return $this->fail('登录失败');
         }
-
         $user = Auth::user();
         return $this->success('登录成功',[
             'user'=>$user,
@@ -85,6 +82,6 @@ class UserController extends BaseController
     public function refresh()
     {
         return $this->success('刷新成功',['user' => Auth::user(),'access_token'=>['token' => Auth::refresh(),
-            'type' => 'bearer',]]);
+            'type' => 'bearer']]);
     }
 }

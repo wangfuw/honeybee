@@ -60,12 +60,12 @@ trait ApiResponse
 
     /**
      * 成功分页返回
-     * @param $page array
+     * @param $page
      * @return JsonResponse
      */
     protected function successPaginate($page): JsonResponse
     {
-        return $this->success($this->paginate($page));
+        return $this->success('success',$this->paginate($page));
     }
 
     private function paginate($page)
