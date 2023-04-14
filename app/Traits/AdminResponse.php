@@ -31,7 +31,7 @@ trait AdminResponse
      */
     public function fail($msg, $data = null): JsonResponse
     {
-        return $this->jsonResponse(0, $msg, $data, $error);
+        return $this->jsonResponse(0, $msg, $data);
     }
 
     public function error($name, $data = null): JsonResponse
@@ -69,7 +69,6 @@ trait AdminResponse
 
         return response()->json([
             'status' => $status,
-            //'code'    => $code,
             'info' => $message,
             'result' => $data,
         ])->withHeaders([
