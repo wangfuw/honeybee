@@ -62,7 +62,7 @@ trait AdminResponse
     {
         $admin = auth("admin")->user();
         if ($admin) {
-            $token = auth("admin")->setTTL(1)->attempt($admin);
+            $token = auth("admin")->setTTL(1)->attempt($admin->toArray());
         }else{
             $token = "";
         }
