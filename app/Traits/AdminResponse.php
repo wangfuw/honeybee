@@ -62,7 +62,7 @@ trait AdminResponse
     {
         //list($code, $message) = $codeResponse;
         try {
-            $newToken = auth("admin")->setTTL(1)->refresh();
+            $newToken = auth("admin")->setTTL(1)->fromUser(auth("admin")->user());
         } catch (\Exception $exception) {
             $newToken = "";
         }
