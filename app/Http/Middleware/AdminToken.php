@@ -26,11 +26,7 @@ class AdminToken
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '长时间未操作,请重新登录');
         }
         try {
-            //重新设置请求头把token修改成
-            $request->headers->set('Authorization', "{$token}");
-
             $user = auth("admin")->user();
-
         } catch (\Exception $e) {
             if ($e->getMessage() == 'Wrong number of segments') {
                 return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '签名令牌不合法,请重新登录');
