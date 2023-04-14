@@ -37,7 +37,7 @@ class AuthController extends AdminBaseController
                     $v["key"] = $n["id"] . "_" . $v["id"];
                 }
                 $n["children"] = $rule;
-                $n["key"] = $n["ud"];
+                $n["key"] = $n["id"];
             }
         }
         sort($menu);
