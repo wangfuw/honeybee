@@ -26,6 +26,8 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("delAuth", [AuthController::class, "delAuth"]);
 
             Route::get("bannerList",[BannerController::class,"bannerList"]);
+            Route::get("addBanner",[BannerController::class,"addBanner"]);
+            Route::get("delBanner",[BannerController::class,"delBanner"]);
         });
     });
 });
