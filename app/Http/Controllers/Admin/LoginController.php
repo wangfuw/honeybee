@@ -54,6 +54,7 @@ class LoginController extends AdminBaseController
             $admin->save();
             $this->executeSuccess("修改");
         } catch (\Exception $exception) {
+            var_dump($exception);
             $this->executeFail("修改");
         }
     }
