@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\LoginController;
 use  App\Http\Controllers\Admin\AdminController;
 use  App\Http\Controllers\Admin\AuthController;
 use  App\Http\Controllers\Admin\BannerController;
+use  App\Http\Controllers\Admin\NoticeController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -25,9 +26,11 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("addAuth", [AuthController::class, "addAuth"]);
             Route::post("delAuth", [AuthController::class, "delAuth"]);
 
-            Route::get("bannerList",[BannerController::class,"bannerList"]);
-            Route::post("addBanner",[BannerController::class,"addBanner"]);
-            Route::post("delBanner",[BannerController::class,"delBanner"]);
+            Route::get("bannerList", [BannerController::class, "bannerList"]);
+            Route::post("addBanner", [BannerController::class, "addBanner"]);
+            Route::post("delBanner", [BannerController::class, "delBanner"]);
+
+            Route::get("noticeList", [NoticeController::class, "noticeList"]);
         });
     });
 });

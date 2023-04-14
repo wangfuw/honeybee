@@ -6,4 +6,7 @@ use App\Traits\AdminResponse;
 
 class AdminBaseController extends Controller {
     use AdminResponse;
+
+    protected $page = 1;
+    protected $size = 10;
 }
