@@ -15,10 +15,11 @@ class CreateNewsTable extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->comment('标题');
-            $table->longText('text')->comment('正文');
-            $table->string('author')->comment('作者');
-            $table->integer('publish_time')->comment('发布时间');
+            $table->string('title')->nullable()->comment('标题');
+            $table->longText('text')->nullable()->comment('正文');
+            $table->string('author')->nullable()->comment('作者');
+            $table->string('face')->nullable()->comment('封面');
+            $table->integer('publish_time')->nullable()->comment('发布时间');
             $table->tinyInteger('type')->default(1)->comment('1-资讯 2-上陶文化3-行业新闻 4-学习园地');
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
