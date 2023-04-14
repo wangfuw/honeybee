@@ -49,7 +49,8 @@ class LoginController extends AdminBaseController
             return $this->fail("两次输入的密码不一致");
         }
         $admin = auth("admin")->user();
-        var_dump($admin);
+//        var_dump($admin);
+        var_dump($credentials);
         $password = Hash::make($credentials["password"]);
         try {
             AdminUser::where("id",$admin->id)->update(["password"=>$password]);
