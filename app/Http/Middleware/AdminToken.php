@@ -5,10 +5,9 @@ namespace App\Http\Middleware;
 use App\Traits\AdminResponse;
 use Closure;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 use App\Traits\ResponseEnum;
 
-class AdminToken
+class AdminToken extends BaseMiddleware
 {
     use AdminResponse;
 
