@@ -10,6 +10,6 @@ class BannerController extends AdminBaseController
     public function bannerList()
     {
         $banners = Banner::all();
-        $this->executeSuccess("请求", $banners);
+        return$this->executeSuccess("请求", $banners);
     }
 }
