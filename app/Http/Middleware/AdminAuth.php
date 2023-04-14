@@ -19,6 +19,7 @@ class AdminAuth
     {
         $uri = $request->path();
         $admin = auth("admin")->user();
+        var_dump($admin);
         $rule = AdminRule::where("uri", "/" . $uri)->first();
         $group = AdminGroup::find($admin->group_id);
         $rules = explode(",", $group->rules);
