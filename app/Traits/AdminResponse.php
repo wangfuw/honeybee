@@ -60,11 +60,20 @@ trait AdminResponse
      */
     private function jsonResponse($status, $message, $data = null): JsonResponse
     {
+        $admin = auth("admin")->user();
+        $token = "";
+        if ($admin != null) {
+            try{
+                $token = auth("admin")->setTTL(15)->tokenById($admin->id);
+            }catch (\Exception $e){
+                var_dump($e);
+            }
+        }
         return response()->json([
             'status' => $status,
             'info' => $message,
             'result' => $data,
-        ]);
+        ])->withHeaders(["Authorization" => $token]);
     }
 
 

@@ -4,9 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Traits\AdminResponse;
 use Closure;
-use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Traits\ResponseEnum;
-use Tymon\JWTAuth\JWT;
 
 class AdminToken
 {
@@ -26,10 +24,10 @@ class AdminToken
         if (!$token) {
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌缺失,请重新登录');
         }
+
         try {
-            auth("admin")->check();
+            auth("admin")->authenticate($token);
         } catch (\Exception $e) {
-            var_dump($e);
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌失效,请重新登录');
         }
 

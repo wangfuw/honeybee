@@ -8,9 +8,9 @@ class AdminUser extends Authenticatable implements JWTSubject
 {
     protected $table = 'admin_user';
 
-    protected $hidden = [
-        'password',
-    ];
+//    protected $hidden = [
+//        'password',
+//    ];
 
     public function getJWTIdentifier()
     {
