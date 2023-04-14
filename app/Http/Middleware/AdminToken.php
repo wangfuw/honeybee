@@ -43,12 +43,6 @@ class AdminToken
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED,'token验证意外错误：' . $e->getMessage());
         }
 
-        $request->setUserResolver(
-            function () use ($user) {
-                return $user;
-            }
-        );
-
         return $next($request);
     }
 }
