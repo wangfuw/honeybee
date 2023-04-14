@@ -34,6 +34,7 @@ class AdminToken
             $response->headers->set('Authorization', $token);
             return $response;
         } catch (\Exception $e) {
+            var_dump($e);
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '长时间未操作,请重新登录');
         }
 
