@@ -23,7 +23,7 @@ class AdminToken
         $token = $request->header('Authorization');
 
         if (!$token) {
-            return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌失效,请重新登录');
+            return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌缺失,请重新登录');
         }
         try {
             auth("admin")->parseToken()->authenticate();
