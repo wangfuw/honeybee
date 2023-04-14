@@ -10,6 +10,11 @@ class Banner extends Base
     use HasFactory;
 
 
+    protected $fillable = [
+        'id',
+        'title',
+        'path'
+    ];
     public function getCreatedAtAttribute($value)
     {
         if(!is_numeric($value)){
@@ -22,4 +27,5 @@ class Banner extends Base
     {
         return self::query()->select('id','path','title')->orderBy('created_at','desc')->get()->toArray();
     }
+
 }
