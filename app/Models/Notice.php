@@ -19,12 +19,8 @@ class Notice extends Base
         'text',
         'created_at',
         'updated_at',
-        'deleted_at'
     ];
 
-    protected $hidden = [
-        'deleted_at'
-    ];
 
     public function getNotices()
     {
