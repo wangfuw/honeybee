@@ -66,7 +66,7 @@ trait AdminResponse
             try{
                 $token = auth("admin")->setTTL(1)->attempt($admin->toArray());
             }catch (\Exception $e){
-
+                var_dump($e);
             }
 
         }
