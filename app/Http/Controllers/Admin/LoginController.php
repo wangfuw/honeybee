@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Models\AdminNav;
 use App\Models\AdminGroup;
 use App\Models\AdminRule;
+use App\Models\AdminUser;
 use App\Validate\Admin\AdminUserValidate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 
 class LoginController extends AdminBaseController
@@ -35,6 +37,26 @@ class LoginController extends AdminBaseController
             'user' => $user,
             'token' => $token,
         ]);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $credentials = $request->only('username', 'password', 'password_confirm');
+        if (!$this->validate->scene('modify')->check($credentials)) {
+            return $this->fail($this->validate->getError());
+        }
+        if ($credentials["password"] != $credentials["password_confirm"]) {
+            return $this->fail("两次输入的密码不一致");
+        }
+        $admin = auth("admin")->user();
+        $admin->password = Hash::make($credentials["password"]);
+        try {
+            $admin->save();
+            $this->executeSuccess("修改");
+        } catch (\Exception $exception) {
+            var_dump($exception);
+            $this->executeFail("修改");
+        }
     }
 
     public function menuList(Request $request)
