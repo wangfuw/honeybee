@@ -16,6 +16,6 @@ class Controller extends BaseController
     {
         $filename = md5($file->getContent()) . "." . $file->extension();
         $file->storeAs('public/' . $subDirPath, $filename);
-        return "/storage/".$subDirPath.$filename;
+        return "/storage/".$subDirPath."/".$filename;
     }
 }
