@@ -17,7 +17,7 @@ class AuthController extends AdminBaseController
             $v["auth"] = $this->authRule(explode(",", $v["rules"]));
             unset($v["rules"]);
         }
-        $this->executeSuccess("请求",$groups);
+        return $this->executeSuccess("请求",$groups);
     }
 
     private function authRule($rules)
