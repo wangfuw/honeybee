@@ -41,7 +41,7 @@ class LoginController extends AdminBaseController
 
     public function changePassword(Request $request)
     {
-        $credentials = $request->only('id', 'username', 'password', 'password_confirm');
+        $credentials = $request->only('username', 'password', 'password_confirm');
         if (!$this->validate->scene('modify')->check($credentials)) {
             return $this->fail($this->validate->getError());
         }
