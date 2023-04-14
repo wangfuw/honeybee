@@ -52,7 +52,7 @@ class LoginController extends AdminBaseController
 
         $password = Hash::make($credentials["password"]);
         try {
-            AdminUser::where("id",$admin->id)->update(["password"=>$password]);
+            AdminUser::where("id", $admin->id)->update(["password" => $password]);
             return $this->executeSuccess("修改");
         } catch (\Exception $exception) {
             var_dump($exception);
@@ -87,5 +87,11 @@ class LoginController extends AdminBaseController
         }
         $menuOne = array_values($menuOne);
         return $this->success("请求成功", $menuOne);
+    }
+
+    public function uploadOne(Request $request)
+    {
+        $file = $request->file('image');
+        var_dump($file);
     }
 }

@@ -1,6 +1,15 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
-class BannerController extends AdminBaseController {
+use App\Models\Banner;
 
+class BannerController extends AdminBaseController
+{
+
+    public function bannerList()
+    {
+        $banners = Banner::all();
+        $this->executeSuccess("请求", $banners);
+    }
 }
