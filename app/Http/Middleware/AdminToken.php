@@ -20,7 +20,7 @@ class AdminToken
     public function handle($request, Closure $next)
     {
         //检测会员是否已登录
-        $token = $request->token = $request->header('Authorization');
+        $token = $request->header('Authorization');
 
         if (!$token) {
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '长时间未操作,请重新登录');
