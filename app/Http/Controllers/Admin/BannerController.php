@@ -20,7 +20,7 @@ class BannerController extends AdminBaseController
             return $this->error("文件路径");
         }
         try {
-            Banner::created(["path"=>$filePath]);
+            Banner::insert(["path"=>$filePath]);
             return $this->executeSuccess("添加");
         }catch (\Exception $exception){
             return $this->executeFail("添加");
