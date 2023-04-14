@@ -78,8 +78,8 @@ class AuthController extends AdminBaseController
             $auths = AdminRule::where('nav_id',$menuId)->select("id")->get()->toArray();
             $newRule = $group->rules;
             foreach ($auths as $v){
-                if(!in_array($v,$ruleList)){
-                    $newRule = $newRule.$v.",";
+                if(!in_array($v["id"],$ruleList)){
+                    $newRule = $newRule.$v["id"].",";
                 }
             }
             $group->rules = $newRule;
@@ -124,8 +124,8 @@ class AuthController extends AdminBaseController
             $auths = AdminRule::where('nav_id',$menuId)->select("id")->get()->toArray();
             $newRule = $group->rules;
             foreach ($auths as $v){
-                if(in_array($v,$ruleList)){
-                    $newRule = str_replace(",".$v.",",",",$newRule);
+                if(in_array($v["id"],$ruleList)){
+                    $newRule = str_replace(",".$v["id"].",",",",$newRule);
                 }
             }
             $group->rules = $newRule;
