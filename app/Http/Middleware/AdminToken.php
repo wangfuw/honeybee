@@ -31,7 +31,7 @@ class AdminToken
 
             $user = auth("admin")->user();
 
-        } catch (JWTException $e) {
+        } catch (\Exception $e) {
             if ($e->getMessage() == 'Wrong number of segments') {
                 return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '签名令牌不合法,请重新登录');
             }
