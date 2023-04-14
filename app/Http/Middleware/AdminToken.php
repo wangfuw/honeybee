@@ -24,11 +24,11 @@ class AdminToken
         if (!$token) {
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌缺失,请重新登录');
         }
-        $admin = auth("admin")->user();
+
         try {
             auth("admin")->authenticate($token);
         } catch (\Exception $e) {
-            var_dump($e);
+
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌失效,请重新登录');
         }
 
