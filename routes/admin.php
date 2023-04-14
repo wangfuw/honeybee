@@ -13,7 +13,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
         Route::get("menuList", [LoginController::class, "menuList"]);
         Route::post("changePwd", [LoginController::class, "changePassword"]);
         Route::post("uploadOne", [LoginController::class, "uploadOne"]);
-        Route::post("upload", [LoginController::class, "uploadMany"]);
+
         Route::middleware(['admin.auth'])->group(function () {
             Route::get("admins", [AdminController::class, "admins"]);
             Route::get("groups", [AdminController::class, "groups"]);
@@ -37,5 +37,9 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("editNotice", [NoticeController::class, "editNotice"]);
         });
     });
+});
+
+Route::middlewate(["admin.token"])->group(function (){
+    Route::post("upload", [LoginController::class, "uploadMany"]);
 });
 
