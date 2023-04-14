@@ -29,6 +29,7 @@ class AdminToken
         try {
             auth("admin")->check();
         } catch (\Exception $e) {
+            var_dump($e);
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌失效,请重新登录');
         }
 
