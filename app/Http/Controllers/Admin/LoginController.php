@@ -33,6 +33,7 @@ class LoginController extends AdminBaseController
         $user = auth('admin')->user();
         return $this->success('登录成功', [
             'user' => $user,
+            'token' => $token,
         ]);
     }
 
@@ -40,13 +41,13 @@ class LoginController extends AdminBaseController
     {
         $admin = auth("admin")->user();
         $ag = AdminGroup::where("id", $admin->group_id)->first();
-        $menuOne = AdminNav::where("pid", 0)->orderBy("order_number", "desc")->select("id","title","icon","path")->get()->toArray();
+        $menuOne = AdminNav::where("pid", 0)->orderBy("order_number", "desc")->select("id", "title", "icon", "path")->get()->toArray();
 
         $rules = explode(",", $ag->rules);
         foreach ($menuOne as $k => &$v) {
             $exist = AdminRule::where("nav_id", $v["id"])->whereIn('id', $rules)->first();
 
-            $menuTwo = AdminNav::where("pid", $v["id"])->select("id","title","icon","path")->get()->toArray();
+            $menuTwo = AdminNav::where("pid", $v["id"])->select("id", "title", "icon", "path")->get()->toArray();
             foreach ($menuTwo as $a => &$m) {
                 $existTwo = AdminRule::where("nav_id", $m["id"])->whereIn("id", $rules)->first();
                 if (!$existTwo) {

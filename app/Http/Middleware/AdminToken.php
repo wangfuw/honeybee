@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Traits\AdminResponse;
 use Closure;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 use App\Traits\ResponseEnum;
 
 class AdminToken
@@ -27,20 +28,13 @@ class AdminToken
         }
         try {
             $user = auth("admin")->user();
+            auth("admin")->invalidate();
+            $token = auth("admin")->tokenById($user->id);
+            $response = $next($request);
+            $response->headers->set('Authorization', $token);
+            return $response;
         } catch (\Exception $e) {
-            if ($e->getMessage() == 'Wrong number of segments') {
-                return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '签名令牌不合法,请重新登录');
-            }
-
-            if ($e->getMessage() == 'Token has expired') {
-                return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '长时间未操作,请重新登录');
-            }
-
-            if ($e->getMessage() == 'Token Signature could not be verified.') {
-                return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED,'无法验证令牌签名,请重新登录');
-            }
-
-            return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED,'token验证意外错误：' . $e->getMessage());
+            return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '长时间未操作,请重新登录');
         }
 
         return $next($request);
