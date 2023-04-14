@@ -12,7 +12,7 @@ class AuthController extends AdminBaseController
 
     public function authList(Request $request)
     {
-        $groups = AdminGroup::orderByDesc("id")->select("id", "name", "rules")->get()->toArray();
+        $groups = AdminGroup::orderBy("id")->select("id", "name", "rules")->get()->toArray();
         foreach ($groups as $k => &$v) {
             $v["auth"] = $this->authRule(explode(",", $v["rules"]));
             unset($v["rules"]);
