@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,7 +22,9 @@ class Banner extends Base
         if(!is_numeric($value)){
             return  $value;
         }
-        return date("Y-m-d h:i:s",$value);
+        $date = Carbon::parse($value);
+        return $date->format('Y-m-d H:i:s',$value);
+//        return date("Y-m-d h:i:s",$value);
     }
 
     public function getBanners()
