@@ -27,11 +27,7 @@ class AdminToken
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '长时间未操作,请重新登录');
         }
         try {
-//            $user = auth("admin")->user();
-            $token = auth("admin")->refresh();
-            $response = $next($request);
-            $response->headers->set('aaa', $token);
-            return $response;
+            $user = auth("admin")->user();
         } catch (\Exception $e) {
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '长时间未操作,请重新登录');
         }
