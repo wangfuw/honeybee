@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Banner extends Model
+class Banner extends Base
 {
     use HasFactory;
 
-    public function getCreatedATAttribute($value)
+
+    public function getCreatedAtAttribute($value)
     {
         if(!is_numeric($value)){
             return  $value;
