@@ -93,7 +93,7 @@ class LoginController extends AdminBaseController
     {
         $file = $request->file('image');
         var_dump($file->extension());
-        $path = $file->storeAs('public',md5($file->getContent()).".".$file->extension());
+        $path = $file->storeAs('public/banners',md5($file->getContent()).".".$file->extension());
         var_dump($path);
     }
 }
