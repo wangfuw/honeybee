@@ -24,8 +24,8 @@ class AdminUserValidate extends BaseValidate
 
     //自定义场景
     protected $scene = [
-        'modify' => "id,username,password",
+        'modify' => "id,username,password,password_confirm",
         'login' => "username,password",
-        'add'=>"group_id,username,password,password_confirm"
+        'add'=>"group_id,username,password,password_confirm",
     ];
 }
