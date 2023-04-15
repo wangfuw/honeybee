@@ -12,7 +12,7 @@ class NoticeValidate extends BaseValidate
         'title' => 'required|string|max:255',
         'text' => 'required|string',
         'face' => 'required|string',
-        'type' => 'required|numeric|le:4'
+        'type' => 'required|numeric|lte:4'
     ];
     //自定义验证信息
     protected $message = [
@@ -21,7 +21,7 @@ class NoticeValidate extends BaseValidate
         'text.required' => '内容不能为空',
         'face.required' => '展示图不能为空',
         'type.required'=>'类型必须设置',
-        'type.le'=>'类型必须为数字',
+        'type.lte'=>'类型必须为数字',
 
     ];
 
