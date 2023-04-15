@@ -176,7 +176,7 @@ class AdminController extends AdminBaseController
             $condition["rule_id"] = $rule_id;
         }
         $rules = AdminRule::where("rule_type",2)->get()->toArray();
-        $notices = AdminAction::join("admin_rule", "admin_action.rule_id", "=", "admin_rule.id")->where($condition)->orderByDesc("id")->select("admin_action.id,admin_action.admin_id,admin_rule.title,admin_action.ip,admin_action.created_at")->paginate($size);
+        $notices = AdminAction::join("admin_rule", "admin_action.rule_id", "=", "admin_rule.id")->where($condition)->orderByDesc("admin_action.id")->select("admin_action.id","admin_id","admin_rule.title","ip","created_at")->paginate($size);
         return$this->executeSuccess("请求", ["data"=>$notices,"rules"=>$rules]);
     }
 }
