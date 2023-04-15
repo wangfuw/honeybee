@@ -17,6 +17,7 @@ class AdminResponse
             $rule = AdminRule::where("uri", "/" . $uri)->first();
             $param = $request->all();
             unset($param["rule_type"]);
+            date_default_timezone_set("Asia/Shanghai");
             AdminAction::create([
                 "admin_id" => $admin->id,
                 "rule_id" => $rule->id,
