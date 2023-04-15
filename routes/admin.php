@@ -40,7 +40,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("newsList", [NewsController::class, "newsList"]);
             Route::post("delNews", [NewsController::class, "delNews"]);
             Route::post("addNews", [NewsController::class, "addNews"]);
-            Route::post("editNews", [NewsController::class, "editNews"]);
+            Route::post("editNews", [NewsController::class, "editNews"])->middleware(["admin.response"]);
         });
     });
 });
