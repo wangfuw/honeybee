@@ -22,12 +22,14 @@ class CreateOrdersTable extends Migration
             $table->integer('store_id')->comment('商店id');
             $table->tinyInteger('status')->default(1)->comment('1--待支付 2 -- 已支付 3--撤单');
             $table->tinyInteger('express_status')->default(0)->comment('0--待发货 1--已发货 2--签收');
+            $table->tinyInteger('is_return')->default(0)->comment("0-no 1-申请退货 2-申请换货");
             $table->string('express_no')->default(null)->comment('运单单号');
             $table->string('express_name')->default(null)->comment('快递公司');
+            $table->decimal('express_fee',10)->default(0)->comment('运费');
             $table->integer('address_id')->default(0)->comment('收获地址id');
             $table->integer('created_at')->comment('下单时间');
             $table->integer('updated_at')->comment('修改时间');
-            $table->integer('deleted_at')->comment('撤单时间，15分钟未支付.env 设置');
+            $table->integer('deleted_at')->nullable()->comment('删除时间');
         });
         \DB::statement("ALTER TABLE `orders` comment '订单'");
     }

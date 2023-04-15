@@ -8,6 +8,7 @@ use App\Validate\UserValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use function PHPUnit\Framework\isEmpty;
 
 class UserController extends BaseController
 {
@@ -23,7 +24,7 @@ class UserController extends BaseController
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('phone', 'password');
         if(!$this->validate->scene('login')->check($credentials)){
             return $this->fail($this->validate->getError());
         }
@@ -50,11 +51,28 @@ class UserController extends BaseController
         if(!$this->validate->scene('register')->check($request->toArray())){
             return $this->fail($this->validate->getError());
         }
+        if(check_phone($request->phone) == false){
+            return $this->fail('请正确输入手机号');
+        }
+        $f_users = User::query()->where('invite_code',$request->invite_code)->first();
+        if(!$f_users->id){
+            return $this->fail('邀请码错误,请确认邀请码');
+        }
+        if(User::query()->where('phone',$request->phone)->exists()){
+            return $this->fail('改电话号码已被注册');
+        }
+
+        //--todo 短信验证
+
+        $myself_invite_code = inviteCode($request->phone);
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'phone' => $request->phone,
+            'invite_code' =>$myself_invite_code,
             'password' => Hash::make($request->password),
+            'master_pos'=>$f_users->id,
+            'master_pos'=>','.$f_users->id.$f_users->master_pos??'',
         ]);
+        //--todo 注册成功赠送幸运值
 
         $token = Auth::login($user);
 
@@ -66,6 +84,7 @@ class UserController extends BaseController
             ]
         ]);
     }
+
 
     public function logout()
     {

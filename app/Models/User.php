@@ -19,9 +19,8 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+    'id','nickname','phone','is_shop','image','green_score','sale_score',
+        'luck_score','coin_num','invite_code','master_id','master_pos','password','created_at','updated_at'
     ];
 
     /**
@@ -31,9 +30,17 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        'deleted_at'
     ];
+    public $timestamps = true;
 
+    protected $dateFormat = 'U';
+
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        $date->tz = new \DateTimeZone('Asia/Shanghai');
+        return $date->format('Y-m-d H:i:s');
+    }
     /**
      * The attributes that should be cast.
      *

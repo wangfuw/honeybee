@@ -31,7 +31,7 @@ class CreateMallSkuTable extends Migration
             $table->tinyInteger('enable')->default(1)->comment('是否有效(0-无效 1-有效)');
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
-            $table->integer('deleted_at')->comment('删除时间');
+            $table->integer('deleted_at')->nullable()->comment('删除时间');
         });
 
         \DB::statement("ALTER TABLE `mall_sku` comment '商品详情'");

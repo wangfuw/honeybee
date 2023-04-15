@@ -13,19 +13,6 @@ class CreateMallSpuTable extends Migration
      */
     public function up()
     {
-//        id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'SPU Id',
-//  `name` varchar(256) NOT NULL DEFAULT '' COMMENT '商品名称',
-//  `sub_title` varchar(256) DEFAULT '' COMMENT '副标题 (一般是促销信息)',
-//  `description` varchar(512) DEFAULT NULL COMMENT '商品描述',
-//  `category_one` bigint(20) NOT NULL COMMENT '1级分类Id',
-//  `category_two` bigint(20) NOT NULL COMMENT '2级分类Id',
-//  `category_three` bigint(20) NOT NULL COMMENT '3级分类Id',
-//  `brand_id` bigint(20) NOT NULL COMMENT '品牌Id (商品所属的品牌)',
-//  `saleable` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否上架 (0-下架，1-上架)',
-//  `logo` varchar(128) NOT NULL COMMENT '商品logo',
-//  `banners` varchar(1024) DEFAULT NULL COMMENT '商品轮播图，多个逗号分隔',
-//  `details` varchar(1024) NOT NULL COMMENT '商品详情图，多个逗号分隔',
-//  `special_spec` varchar(1024) DEFAULT NULL COMMENT '规格键值对json格式',
         Schema::create('mall_spu', function (Blueprint $table) {
             $table->id();
             $table->string('name')->comment('商品名称');
@@ -47,7 +34,7 @@ class CreateMallSpuTable extends Migration
 
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
-            $table->integer('deleted_at')->comment('删除时间');
+            $table->integer('deleted_at')->nullable()->comment('删除时间');
         });
 
         \DB::statement("ALTER TABLE `mall_spu` comment '商品'");

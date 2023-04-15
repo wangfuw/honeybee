@@ -26,7 +26,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files":[
+            "app/Helpers/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -58,6 +61,7 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
+
     "minimum-stability": "dev",
     "prefer-stable": true
 }
