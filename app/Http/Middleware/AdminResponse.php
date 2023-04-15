@@ -9,9 +9,8 @@ class AdminResponse
     public function handle($request, Closure $next)
     {
         $response = $next($request);
-        if($request->rule_type == 2){
-            var_dump($response->original["status"]);
-            var_dump($response->original["info"]);
+        if($request->rule_type == 2 && $response->original["status"] == 1){
+            var_dump($request->all());
         }
         return $response;
     }
