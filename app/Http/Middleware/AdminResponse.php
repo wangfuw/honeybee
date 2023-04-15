@@ -24,7 +24,6 @@ class AdminResponse
                 "ip" => $request->ip(),
                 "created_at" => date("Y-m-d H:i:s", time())
             ]);
-            var_dump($request->all());
         }
         return $response;
     }
