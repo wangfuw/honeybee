@@ -23,8 +23,9 @@ class AdminAuth
         $group = AdminGroup::find($admin->group_id);
         $rules = explode(",", $group->rules);
         if (!in_array($rule->id, $rules)) {
-            return $this->fail( "权限不足");
+            return $this->fail("权限不足");
         }
+        $request->offsetSet("rule_type", 2);
         return $next($request);
     }
 

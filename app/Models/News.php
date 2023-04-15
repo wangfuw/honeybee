@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class News extends Base
 {
     use HasFactory;
-    use SoftDeletes;
+
 
     protected $table = 'news';
 
@@ -18,8 +17,6 @@ class News extends Base
         'title',
         'face',
         'text',
-        'path',
-        'author',
         'type',
         'created_at',
         'updated_at'
@@ -42,10 +39,11 @@ class News extends Base
             'title',
             'face',
             'text',
-            'author',
-            'type')
+            'type',
+            'created_at'
+        )
             ->where('type',$type)
-            ->orderBy('publish_time','desc')
+            ->orderBy('id','desc')
             ->get()
             ->forPage($page,$page_size);
         return collect([])->merge($data);
@@ -57,8 +55,7 @@ class News extends Base
             'title',
             'face',
             'text',
-            'path',
-            'author',
+            'created_at',
             'type')->where('id',$id)->first()->toArray();
     }
 }

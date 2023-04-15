@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\AdminAuth;
+use App\Http\Middleware\AdminResponse;
 use App\Http\Middleware\AdminSign;
 use App\Http\Middleware\AdminToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -75,6 +76,7 @@ class Kernel extends HttpKernel
         'admin.sign' => AdminSign::class,
         'admin.token' => AdminToken::class,
         'admin.auth' => AdminAuth::class,
+        'admin.response' => AdminResponse::class,
 //        'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
     ];
 }

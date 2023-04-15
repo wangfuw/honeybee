@@ -6,6 +6,7 @@ use  App\Http\Controllers\Admin\AdminController;
 use  App\Http\Controllers\Admin\AuthController;
 use  App\Http\Controllers\Admin\BannerController;
 use  App\Http\Controllers\Admin\NoticeController;
+use  App\Http\Controllers\Admin\NewsController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -17,29 +18,33 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
         Route::middleware(['admin.auth'])->group(function () {
             Route::get("admins", [AdminController::class, "admins"]);
             Route::get("groups", [AdminController::class, "groups"]);
-            Route::post("addGroup", [AdminController::class, "addGroup"]);
-            Route::post("delGroup", [AdminController::class, "delGroup"]);
-            Route::post("addAdmin", [AdminController::class, "addUser"]);
-            Route::post("delAdmin", [AdminController::class, "delUser"]);
-            Route::post("banAdmin", [AdminController::class, "banUser"]);
+            Route::get("actionLog",[AdminController::class,"actionLog"]);
+            Route::post("addGroup", [AdminController::class, "addGroup"])->middleware(["admin.response"]);
+            Route::post("delGroup", [AdminController::class, "delGroup"])->middleware(["admin.response"]);
+            Route::post("addAdmin", [AdminController::class, "addUser"])->middleware(["admin.response"]);
+            Route::post("delAdmin", [AdminController::class, "delUser"])->middleware(["admin.response"]);
+            Route::post("banAdmin", [AdminController::class, "banUser"])->middleware(["admin.response"]);
 
             Route::get("authList", [AuthController::class, "authList"]);
-            Route::post("addAuth", [AuthController::class, "addAuth"]);
-            Route::post("delAuth", [AuthController::class, "delAuth"]);
+            Route::post("addAuth", [AuthController::class, "addAuth"])->middleware(["admin.response"]);
+            Route::post("delAuth", [AuthController::class, "delAuth"])->middleware(["admin.response"]);
 
             Route::get("bannerList", [BannerController::class, "bannerList"]);
-            Route::post("addBanner", [BannerController::class, "addBanner"]);
-            Route::post("delBanner", [BannerController::class, "delBanner"]);
+            Route::post("addBanner", [BannerController::class, "addBanner"])->middleware(["admin.response"]);
+            Route::post("delBanner", [BannerController::class, "delBanner"])->middleware(["admin.response"]);
 
             Route::get("noticeList", [NoticeController::class, "noticeList"]);
-            Route::post("delNotice", [NoticeController::class, "delNotice"]);
-            Route::post("addNotice", [NoticeController::class, "addNotice"]);
-            Route::post("editNotice", [NoticeController::class, "editNotice"]);
+            Route::post("delNotice", [NoticeController::class, "delNotice"])->middleware(["admin.response"]);
+            Route::post("addNotice", [NoticeController::class, "addNotice"])->middleware(["admin.response"]);
+            Route::post("editNotice", [NoticeController::class, "editNotice"])->middleware(["admin.response"]);
+
+            Route::get("newsList", [NewsController::class, "newsList"]);
+            Route::post("delNews", [NewsController::class, "delNews"])->middleware(["admin.response"]);
+            Route::post("addNews", [NewsController::class, "addNews"])->middleware(["admin.response"]);
+            Route::post("editNews", [NewsController::class, "editNews"])->middleware(["admin.response"]);
+
+
         });
     });
-});
-
-Route::middleware(["admin.token"])->prefix("hack")->group(function (){
-    Route::post("upload", [LoginController::class, "uploadMany"]);
 });
 
