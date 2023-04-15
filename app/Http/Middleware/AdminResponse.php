@@ -10,8 +10,7 @@ class AdminResponse
     {
         $response = $next($request);
         if($request->rule_type == 2){
-            var_dump($response->original->status);
-            var_dump($response->original->info);
+            var_dump($response->data);
         }
         return $response;
     }
