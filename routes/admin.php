@@ -6,6 +6,7 @@ use  App\Http\Controllers\Admin\AdminController;
 use  App\Http\Controllers\Admin\AuthController;
 use  App\Http\Controllers\Admin\BannerController;
 use  App\Http\Controllers\Admin\NoticeController;
+use  App\Http\Controllers\Admin\NewsController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -35,11 +36,12 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("delNotice", [NoticeController::class, "delNotice"]);
             Route::post("addNotice", [NoticeController::class, "addNotice"]);
             Route::post("editNotice", [NoticeController::class, "editNotice"]);
+
+            Route::get("newsList", [NewsController::class, "newsList"]);
+            Route::post("delNews", [NewsController::class, "delNews"]);
+            Route::post("addNews", [NewsController::class, "addNews"]);
+            Route::post("editNews", [NewsController::class, "editNews"]);
         });
     });
-});
-
-Route::middleware(["admin.token"])->prefix("hack")->group(function (){
-    Route::post("upload", [LoginController::class, "uploadMany"]);
 });
 
