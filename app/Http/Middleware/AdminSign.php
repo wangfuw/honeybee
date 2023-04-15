@@ -23,6 +23,7 @@ class AdminSign
         if(count($infos) != 2 || $infos[0] != "beeadmin"){
             return $this->baseReturn();
         }
+
         if(time() - (int)$infos[1] > 10){
             return $this->baseReturn();
         }
