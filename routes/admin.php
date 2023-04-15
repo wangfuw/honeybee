@@ -41,7 +41,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("delNews", [NewsController::class, "delNews"]);
             Route::post("addNews", [NewsController::class, "addNews"]);
             Route::post("editNews", [NewsController::class, "editNews"]);
-        })->middleware(['admin.response']);
+        });
     });
 });
 
