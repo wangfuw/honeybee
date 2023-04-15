@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\AdminAction;
 use App\Models\AdminGroup;
+use App\Models\AdminRule;
 use App\Models\AdminUser;
 use App\Validate\Admin\AdminUserValidate;
 use Illuminate\Http\Request;
@@ -174,7 +175,8 @@ class AdminController extends AdminBaseController
         if ($rule_id) {
             $condition["rule_id"] = $rule_id;
         }
+        $rules = AdminRule::where("rule_type",2)->get()->toArray();
         $notices = AdminAction::join("admin_rule", "admin_action.rule_id", "=", "admin_rule.id")->where($condition)->orderByDesc("admin_admin.id")->select("admin_action.id,admin_id,admin_rule.title,ip,created_at")->paginate($size);
-        $this->executeSuccess("请求", $notices);
+        $this->executeSuccess("请求", ["data"=>$notices,"rules"=>$rules]);
     }
 }
