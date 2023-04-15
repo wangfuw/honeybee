@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\AdminAction;
 use App\Models\AdminGroup;
 use App\Models\AdminUser;
 use App\Validate\Admin\AdminUserValidate;
@@ -110,12 +111,12 @@ class AdminController extends AdminBaseController
 
     public function addUser(Request $request)
     {
-        $param = $request->only('username', 'password', 'password_confirm','group_id');;
+        $param = $request->only('username', 'password', 'password_confirm', 'group_id');;
 
         if (!$this->validate->scene('add')->check($param)) {
             return $this->fail($this->validate->getError());
         }
-        if($request->password != $request->password_confirm){
+        if ($request->password != $request->password_confirm) {
             return $this->fail("两次输入的密码不一致");
         }
         $group = AdminGroup::find($request->group_id);
@@ -150,7 +151,7 @@ class AdminController extends AdminBaseController
         }
         $admin = auth("admin")->user();
         if ($id == $admin->id) {
-            return $this->fail( '不能删除自己');
+            return $this->fail('不能删除自己');
         }
         try {
             AdminUser::destroy($id);
@@ -158,5 +159,22 @@ class AdminController extends AdminBaseController
         } catch (\Exception $exception) {
             return $this->fail('删除失败');
         }
+    }
+
+    public function actionLog(Request $request)
+    {
+        $size = $request->size ?? $this->size;
+
+        $condition = [];
+        $admin_id = $request->admin_id;
+        if ($admin_id) {
+            $condition["admin_id"] = $admin_id;
+        }
+        $rule_id = $request->rule_id;
+        if ($rule_id) {
+            $condition["rule_id"] = $rule_id;
+        }
+        $notices = AdminAction::join("admin_rule", "admin_action.rule_id", "=", "admin_rule.id")->where($condition)->orderByDesc("admin_admin.id")->select("admin_action.id,admin_id,admin_rule.title,ip,created_at")->paginate($size);
+        $this->executeSuccess("请求", $notices);
     }
 }

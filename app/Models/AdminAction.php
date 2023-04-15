@@ -18,4 +18,6 @@ class AdminAction extends Model
         'param',
         'created_at',
     ];
+
+
 }
