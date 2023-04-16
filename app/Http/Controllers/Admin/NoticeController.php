@@ -18,7 +18,11 @@ class NoticeController extends AdminBaseController
     public function noticeList(Request $request)
     {
         $size = $request->size ?? $this->size;
-        $notices = Notice::orderByDesc("id")->paginate($size);
+        $condition = [];
+        if ($request->filled("type")) {
+            $condition["type"] = $request->type;
+        }
+        $notices = Notice::where($condition)->orderByDesc("id")->paginate($size);
         return $this->executeSuccess("请求", $notices);
     }
 
@@ -37,7 +41,7 @@ class NoticeController extends AdminBaseController
 
     public function addNotice(Request $request)
     {
-        $param = $request->only("title", "text","type");
+        $param = $request->only("title", "text", "type");
         if (!$this->validate->scene('add')->check($param)) {
             return $this->fail($this->validate->getError());
         }
@@ -51,12 +55,12 @@ class NoticeController extends AdminBaseController
 
     public function editNotice(Request $request)
     {
-        $param = $request->only("title", "text", "id","type");
+        $param = $request->only("title", "text", "id", "type");
         if (!$this->validate->scene('modify')->check($param)) {
             return $this->fail($this->validate->getError());
         }
         try {
-            Notice::where("id", $param["id"])->update(["title" => $param["title"], "text" => $param["text"]]);
+            Notice::where("id", $param["id"])->update(["title" => $param["title"], "text" => $param["text"], "type" => $param["type"]]);
             return $this->executeSuccess("修改");
         } catch (\Exception $exception) {
             return $this->executeFail("修改");
