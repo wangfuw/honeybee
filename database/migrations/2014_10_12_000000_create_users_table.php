@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             $table->integer('master_id')->default(0)->comment('直推人');
             $table->string('master_pos')->comment('所有上级:如,13,6,1');
             $table->string('password');
+            $table->string('sale_password')->nullable()->comment('通证密码');
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
             $table->integer('deleted_at')->nullable()->comment('删除时间');
