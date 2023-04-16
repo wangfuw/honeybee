@@ -60,7 +60,7 @@ class NoticeController extends AdminBaseController
             return $this->fail($this->validate->getError());
         }
         try {
-            Notice::where("id", $param["id"])->update(["title" => $param["title"], "text" => $param["text"]]);
+            Notice::where("id", $param["id"])->update(["title" => $param["title"], "text" => $param["text"], "type" => $param["type"]]);
             return $this->executeSuccess("修改");
         } catch (\Exception $exception) {
             return $this->executeFail("修改");
