@@ -37,7 +37,7 @@ class NoticeController extends AdminBaseController
 
     public function addNotice(Request $request)
     {
-        $param = $request->only("title", "text");
+        $param = $request->only("title", "text","type");
         if (!$this->validate->scene('add')->check($param)) {
             return $this->fail($this->validate->getError());
         }
@@ -51,7 +51,7 @@ class NoticeController extends AdminBaseController
 
     public function editNotice(Request $request)
     {
-        $param = $request->only("title", "text", "id");
+        $param = $request->only("title", "text", "id","type");
         if (!$this->validate->scene('modify')->check($param)) {
             return $this->fail($this->validate->getError());
         }
