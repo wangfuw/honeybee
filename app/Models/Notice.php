@@ -15,6 +15,7 @@ class Notice extends Base
         'id',
         'title',
         'text',
+        'type',
         'created_at',
         'updated_at',
     ];
