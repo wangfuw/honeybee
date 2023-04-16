@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use function PHPUnit\Framework\isEmpty;
 
 class News extends Base
 {
@@ -51,11 +52,13 @@ class News extends Base
 
     public function getInfo($id)
     {
-        return self::query()->select('id',
+        $info =  self::query()->select('id',
             'title',
             'face',
             'text',
             'created_at',
-            'type')->where('id',$id)->first()->toArray();
+            'type')->where('id',$id)->first();
+        if(isEmpty($info)) return [];
+        return  $info->toArray();
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -11,7 +12,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable,SoftDeletes;
     protected $table = 'users';
     /**
      * The attributes that are mass assignable.
@@ -20,7 +21,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
     'id','nickname','phone','is_shop','image','green_score','sale_score',
-        'luck_score','coin_num','invite_code','master_id','master_pos','password','created_at','updated_at'
+        'luck_score','coin_num','invite_code','master_id','master_pos','password','created_at','updated_at','sale_password'
     ];
 
     /**
@@ -30,7 +31,8 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $hidden = [
         'password',
-        'deleted_at'
+        'deleted_at',
+        'sale_password'
     ];
     public $timestamps = true;
 

@@ -3,22 +3,40 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Models\Notice;
+use App\Validate\NewsValidate;
 use Illuminate\Http\Request;
 
 class NoticeController extends BaseController
 {
     protected $model;
 
-    public function __construct(Notice $model)
+    protected $validate;
+    public function __construct(Notice $model,NewsValidate $validate)
     {
         $this->model = $model;
+        $this->validate = $validate;
     }
 
-    public function getNotices()
+    /**
+     * 公告列表
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getNotices(Request $request)
     {
-        $data = $this->model->getNotices();
+        if(!$this->validate->scene('getNews')->check($request->toArray())){
+            return  $this->fail($this->validate->getError());
+        }
+        $data = $this->model->getNotices($request->toArray());
         return $this->successPaginate($data);
+    }
+
+    public function getInfo(Request $request)
+    {
+        $id = $request->id;
+        $info = $this->model->getInfo((int)$id);
+        if(empty($info)) return $this->fail('暂无数据');
+        return $this->success('success',$info);
     }
 }

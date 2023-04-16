@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\NoticeController;
+use App\Http\Controllers\api\UploadController;
+use App\Http\Controllers\api\UserCompleteController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,21 +26,38 @@ Route::controller(UserController::class)->group(function () {
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
         Route::get('me', 'me');
+        Route::post('change_password', 'change');
+        //设置通证密码
+        Route::post('change_sale_password', 'change_sale_password');
+        //完善个人信息
+        Route::post('complete_self','complete_self');
+        //注销账号
+        Route::post('del_owner','del_self');
+
+    });
+    Route::middleware('auth')->group(function (){
+        //上传身份证
+        Route::post('upload_card',[UploadController::class,'uploadCard']);
+        //头像
+        Route::post('upload_header',[UploadController::class,'uploadHeader']);
+        //提交实名认证
+        Route::post('identity',[UserCompleteController::class,'identity']);
+    });
+    Route::group([],function (){
+        //获取新闻资讯
+        Route::post('news',[NewsController::class,'getNews']);
+        Route::post('news_info',[NewsController::class,'getInfo']);
+        //获取轮播图
+        Route::post('banners',[BannerController::class,'getBanners']);
+        Route::post('create',[BannerController::class,'create']);
+        //获取公告
+
+        Route::post('notices',[NoticeController::class,'getNotices']);
+        Route::post('notice_info',[NoticeController::class,'getInfo']);
     });
 });
 
-Route::group([],function (){
-    //获取新闻资讯
-    Route::post('news',[NewsController::class,'getNews']);
-    Route::post('news_info',[NewsController::class,'getInfo']);
-    //获取轮播图
-    Route::post('banners',[BannerController::class,'getBanners']);
-    Route::post('create',[BannerController::class,'create']);
-    //获取公告
 
-    Route::post('notices',[NoticeController::class,'getNotices']);
-    Route::post('notice_info',[NoticeController::class,'getInfo']);
-});
 
 
 
