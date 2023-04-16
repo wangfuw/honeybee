@@ -20,6 +20,7 @@ class CreateNoticeTable extends Migration
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
             $table->integer('deleted_at')->comment('删除时间');
+            $table->tinyInteger('type')->default(1)->comment('1-公告，2 注册协议 3隐私隐藏 4 关于我们');
         });
     }
 
