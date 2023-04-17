@@ -34,6 +34,23 @@ class UserController extends AdminBaseController
         return $this->executeSuccess("请求", $data);
     }
 
+    public function banUser(Request $request)
+    {
+        if (!$request->filled("id")) {
+            return $this->error("ID");
+        }
+        if ($request->filled("is_ban")) {
+            return $this->error("状态");
+        }
+
+        try {
+            User::where("id", $request->id)->update(["is_ban" => $request->is_ban]);
+            return $this->executeSuccess("操作");
+        } catch (\Exception $exception) {
+            return $this->executeFail("操作");
+        }
+    }
+
     public function teamTree(Request $request)
     {
         if ($request->filled("id")) {

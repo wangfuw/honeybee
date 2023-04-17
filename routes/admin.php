@@ -45,6 +45,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("editNews", [NewsController::class, "editNews"])->middleware(["admin.response"]);
 
             Route::get("userList", [UserController::class, "userList"]);
+            Route::post("banUser", [UserController::class, "banUser"]);
             Route::get("teamTree", [UserController::class, "teamTree"]);
             Route::get("userAuthList", [UserController::class, "userAuthList"]);
         });
