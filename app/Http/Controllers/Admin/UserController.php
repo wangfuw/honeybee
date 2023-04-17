@@ -45,7 +45,7 @@ class UserController extends AdminBaseController
         }
         $subs = User::where("master_pos", "like", "%," . $user->id . ",%")->get()->toArray();
         $data = [];
-        $data["name"] = $user->nickname;
+        $data["name"] = $user->phone;
         $data["desc"] = $user->id;
         $data["children"] = $this->getTeam($subs, $user->id);
 
