@@ -46,6 +46,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
 
             Route::get("userList", [UserController::class, "userList"]);
             Route::get("teamTree", [UserController::class, "teamTree"]);
+            Route::get("userAuthList", [UserController::class, "userAuthList"]);
         });
     });
 });

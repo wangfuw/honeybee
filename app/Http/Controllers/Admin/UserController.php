@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Notice;
 use App\Models\User;
+use App\Models\UserIdentity;
 use App\Validate\Admin\NoticeValidate;
 use Illuminate\Http\Request;
 
@@ -66,5 +67,40 @@ class UserController extends AdminBaseController
             }
         }
         return $tree;
+    }
+
+    public function userAuthList(Request $request)
+    {
+        $size = $request->size ?? $this->size;
+        $condition = [];
+        if ($request->filled("id")) {
+            $condition["user_id"] = $request->id;
+        }
+        if ($request->filled("phone")) {
+            $user = User::where("phone", $request->phone)->first();
+            if ($user) {
+                $condition["user_id"] = $request->id;
+            } else {
+                $condition["user_id"] = -1;
+            }
+        }
+        if ($request->filled("status")) {
+            $condition["status"] = $request->status;
+        }
+        $data = UserIdentity::join('users', 'users.id', '=', 'user_identity.user_id')
+            ->where($condition)
+            ->orderByDesc("user_identity.id")
+            ->select(
+                "user.id",
+                "user.phone",
+                "username",
+                "id_card",
+                "address",
+                "front_image",
+                "back_image",
+                "status",
+                "created_at"
+            )->paginate($size);
+        return $this->executeSuccess("请求", $data);
     }
 }
