@@ -39,7 +39,7 @@ class UserController extends AdminBaseController
         if (!$request->filled("id")) {
             return $this->error("ID");
         }
-        if ($request->filled("is_ban")) {
+        if (!$request->filled("is_ban")) {
             return $this->error("状态");
         }
 
