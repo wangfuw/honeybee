@@ -48,6 +48,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("banUser", [UserController::class, "banUser"]);
             Route::get("teamTree", [UserController::class, "teamTree"]);
             Route::get("userAuthList", [UserController::class, "userAuthList"]);
+            Route::post("editUserAuth", [UserController::class, "editUserAuth"])->middleware(["admin.response"]);
         });
     });
 });

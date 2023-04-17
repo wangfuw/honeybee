@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserIdentity;
 use App\Validate\Admin\NoticeValidate;
 use Illuminate\Http\Request;
+use PHPUnit\Exception;
 
 class UserController extends AdminBaseController
 {
@@ -119,5 +120,19 @@ class UserController extends AdminBaseController
                 "user_identity.created_at"
             )->paginate($size);
         return $this->executeSuccess("请求", $data);
+    }
+
+    public function editUserAuth(Request $request)
+    {
+        if (!$request->filled("id")) {
+            return $this->error("id");
+        }
+        $flag = $request->input("flag", 1);
+        try {
+            UserIdentity::where("id", $request->id)->update(["status" => $flag]);
+            return $this->executeSuccess("操作");
+        } catch (\Exception $exception) {
+            return $this->executeFail("操作");
+        }
     }
 }
