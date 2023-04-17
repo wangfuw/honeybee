@@ -38,19 +38,22 @@ class UserController extends AdminBaseController
         $data = [];
         $data["name"] = $user->nickname;
         $data["desc"] = $user->id;
-        $data["children"] = $this->getTeam($subs,$user->id);
+        $data["children"] = $this->getTeam($subs, $user->id);
+
+        return $this->executeSuccess("请求", $data);
     }
 
-    private function getTeam($users,$p_id){
+    private function getTeam($users, $p_id)
+    {
         $tree = [];
-        foreach($users as $u){
-            if($u["master_id"] == $p_id){
-                $child = $this->getTeam($users,$u["id"]);
-                $data = ["name"=>$u["phone"],"desc"=>$u["id"]];
-                if($child){
+        foreach ($users as $u) {
+            if ($u["master_id"] == $p_id) {
+                $child = $this->getTeam($users, $u["id"]);
+                $data = ["name" => $u["phone"], "desc" => $u["id"]];
+                if ($child) {
                     $data["children"] = $child;
                 }
-                array_push($tree,$data);
+                array_push($tree, $data);
             }
         }
         return $tree;
