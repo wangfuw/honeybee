@@ -23,7 +23,10 @@ class CategoryController extends AdminBaseController
             return $this->error("分类名");
         }
 
-        $parent_id = $request->input("parent_id", 0);
+        $parent_id = $request->input("parent_id");
+        if($parent_id == null){
+            $parent_id = 0;
+        }
         $cate = MallCategory::where("name", $request->name)->first();
         if ($cate) {
             return $this->fail("分类已经存在了");
