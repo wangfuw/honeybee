@@ -8,6 +8,7 @@ use  App\Http\Controllers\Admin\BannerController;
 use  App\Http\Controllers\Admin\NoticeController;
 use  App\Http\Controllers\Admin\NewsController;
 use  App\Http\Controllers\Admin\UserController;
+use  App\Http\Controllers\Admin\CategoryController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -49,6 +50,11 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("teamTree", [UserController::class, "teamTree"]);
             Route::get("userAuthList", [UserController::class, "userAuthList"]);
             Route::post("editUserAuth", [UserController::class, "editUserAuth"])->middleware(["admin.response"]);
+
+            Route::get("categoryList", [CategoryController::class, "categoryList"]);
+            Route::post("addCategory", [CategoryController::class, "addCategory"])->middleware(["admin.response"]);
+            Route::post("editCategory", [CategoryController::class, "editCategory"])->middleware(["admin.response"]);
+            Route::post("delCategory", [CategoryController::class, "delCategory"])->middleware(["admin.response"]);
         });
     });
 });
