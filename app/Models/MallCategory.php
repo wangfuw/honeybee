@@ -8,6 +8,7 @@ class MallCategory extends Base
 {
     protected $table = 'mall_category';
 
+
     protected $fillable = [
         'id',
         'name',
