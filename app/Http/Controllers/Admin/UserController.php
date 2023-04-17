@@ -22,6 +22,12 @@ class UserController extends AdminBaseController
         if ($request->filled("nickname")) {
             $condition[] = ["nickname", "like", "%$request->nickname%"];
         }
+        if($request->filled("create_at")){
+            $start = $request->input("create_at.0");
+            $end = $request->input("create_at.1");
+            var_dump($start);
+            var_dump($end);
+        }
 
         $data = User::where($condition)->orderByDesc("id")->paginate($size);
         return $this->executeSuccess("请求", $data);
