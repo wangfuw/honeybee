@@ -13,6 +13,9 @@ class UserController extends AdminBaseController
     {
         $size = $request->size ?? $this->size;
         $condition = [];
+        if ($request->filled("id")) {
+            $condition[] = ["id", "=", $request->id];
+        }
         if ($request->filled("phone")) {
             $condition[] = ["phone", "=", $request->phone];
         }
