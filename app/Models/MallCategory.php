@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MallCategory extends Model
+class MallCategory extends Base
 {
     protected $table = 'mall_category';
 
@@ -13,7 +13,6 @@ class MallCategory extends Model
         'name',
         'parent_id',
         'is_delete',
-        'sort',
         'created_at',
         'updated_at'
     ];
