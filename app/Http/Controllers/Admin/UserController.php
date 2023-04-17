@@ -108,8 +108,8 @@ class UserController extends AdminBaseController
             ->where($condition)
             ->orderByDesc("user_identity.id")
             ->select(
-                "user.id",
-                "user.phone",
+                "users.id",
+                "users.phone",
                 "username",
                 "id_card",
                 "address",
