@@ -25,8 +25,8 @@ class UserController extends AdminBaseController
         if($request->filled("create_at")){
             $start = $request->input("create_at.0");
             $end = $request->input("create_at.1");
-            var_dump($start);
-            var_dump($end);
+            var_dump(strtotime($start));
+            var_dump(strtotime($end));
         }
 
         $data = User::where($condition)->orderByDesc("id")->paginate($size);
