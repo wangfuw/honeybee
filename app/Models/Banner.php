@@ -2,11 +2,7 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use DateTimeInterface;
-use DateTimeZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 
 class Banner extends Base

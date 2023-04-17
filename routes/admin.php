@@ -7,6 +7,7 @@ use  App\Http\Controllers\Admin\AuthController;
 use  App\Http\Controllers\Admin\BannerController;
 use  App\Http\Controllers\Admin\NoticeController;
 use  App\Http\Controllers\Admin\NewsController;
+use  App\Http\Controllers\Admin\UserController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -18,7 +19,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
         Route::middleware(['admin.auth'])->group(function () {
             Route::get("admins", [AdminController::class, "admins"]);
             Route::get("groups", [AdminController::class, "groups"]);
-            Route::get("actionLog",[AdminController::class,"actionLog"]);
+            Route::get("actionLog", [AdminController::class, "actionLog"]);
             Route::post("addGroup", [AdminController::class, "addGroup"])->middleware(["admin.response"]);
             Route::post("delGroup", [AdminController::class, "delGroup"])->middleware(["admin.response"]);
             Route::post("addAdmin", [AdminController::class, "addUser"])->middleware(["admin.response"]);
@@ -43,7 +44,11 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("addNews", [NewsController::class, "addNews"])->middleware(["admin.response"]);
             Route::post("editNews", [NewsController::class, "editNews"])->middleware(["admin.response"]);
 
-
+            Route::get("userList", [UserController::class, "userList"]);
+            Route::post("banUser", [UserController::class, "banUser"]);
+            Route::get("teamTree", [UserController::class, "teamTree"]);
+            Route::get("userAuthList", [UserController::class, "userAuthList"]);
+            Route::post("editUserAuth", [UserController::class, "editUserAuth"])->middleware(["admin.response"]);
         });
     });
 });
