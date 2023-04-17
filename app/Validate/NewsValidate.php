@@ -9,7 +9,6 @@ class NewsValidate extends BaseValidate
         'type'=>'numeric',
         'page'=>'numeric',
         'page_size'=>'numeric',
-        'type'=>'numeric'
     ];
     //自定义验证信息
     protected $message = [

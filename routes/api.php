@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\NoticeController;
 use App\Http\Controllers\api\UploadController;
 use App\Http\Controllers\api\UserCompleteController;
+use App\Http\Controllers\Api\AddressController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,6 +43,16 @@ Route::controller(UserController::class)->group(function () {
         Route::post('upload_header',[UploadController::class,'uploadHeader']);
         //提交实名认证
         Route::post('identity',[UserCompleteController::class,'identity']);
+        //地址列表
+        Route::post('get_address',[AddressController::class,'get_Address']);
+        //新增地址
+        Route::post('add_address',[AddressController::class,'create_address']);
+        //删除地址
+        Route::post('del_address',[AddressController::class,'del_address']);
+        //编辑地址
+        Route::post('edit_address',[AddressController::class,'update_address']);
+        //设为默认地址
+        Route::post('default_address',[AddressController::class,'set_def']);
     });
     Route::group([],function (){
         //获取新闻资讯

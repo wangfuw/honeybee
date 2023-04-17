@@ -158,7 +158,7 @@ class UserController extends BaseController
         }
         //--todo 短信验证
         try {
-            $users->sale_password = Hash::make($request->sale_password);
+            $users->sale_password = $request->sale_password;
             $users->save();
             return  $this->success('修改成功');
         }catch (\Exception $e){

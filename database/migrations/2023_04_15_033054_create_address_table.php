@@ -21,7 +21,7 @@ class CreateAddressTable extends Migration
             $table->string('exp_person')->default(null)->comment('收货人');
             $table->string('exp_phone')->default(null)->comment('收货电话');
             $table->tinyInteger('is_def')->default(0)->comment('1--首选 0-待首选');
-            $table->integer('created_at')->comment('');
+            $table->integer('created_at')->default(null)->comment('');
             $table->integer('updated_at')->comment('修改时间');
             $table->integer('deleted_at')->nullable()->comment('删除时间');
         });
