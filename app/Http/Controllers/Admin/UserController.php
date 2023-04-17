@@ -116,7 +116,7 @@ class UserController extends AdminBaseController
                 "front_image",
                 "back_image",
                 "status",
-                "created_at"
+                "user_identity.created_at"
             )->paginate($size);
         return $this->executeSuccess("请求", $data);
     }
