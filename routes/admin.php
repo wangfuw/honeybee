@@ -9,6 +9,7 @@ use  App\Http\Controllers\Admin\NoticeController;
 use  App\Http\Controllers\Admin\NewsController;
 use  App\Http\Controllers\Admin\UserController;
 use  App\Http\Controllers\Admin\CategoryController;
+use  App\Http\Controllers\Admin\SpuController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -55,6 +56,8 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("addCategory", [CategoryController::class, "addCategory"])->middleware(["admin.response"]);
             Route::post("editCategory", [CategoryController::class, "editCategory"])->middleware(["admin.response"]);
             Route::post("delCategory", [CategoryController::class, "delCategory"])->middleware(["admin.response"]);
+
+            Route::post("addSpu", [SpuController::class, "addSpu"])->middleware(["admin.response"]);
         });
     });
 });
