@@ -18,8 +18,4 @@ class AreaController extends BaseController
         return $this->success('请求成功',$list);
     }
 
-    public function get_info(){
-        $list =  unserialize(Redis::get('AREZ'));
-        return $this->success('请求成功',$list);
-    }
 }
