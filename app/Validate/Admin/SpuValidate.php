@@ -15,7 +15,7 @@ class SpuValidate extends BaseValidate
         'logo' => 'required|string',
         'banner_imgs' => 'required',
         'detail_imgs' => 'required',
-        'special_spec' => 'required|string',
+        'special_spec' => 'required',
         'skus'=>'required',
         'saleable'=>'required|numeric|lte:1'
     ];
