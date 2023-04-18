@@ -16,11 +16,11 @@ class AsacController extends BaseController
     public function asac_login(Request $request)
     {
         $private_key = $request->private_key;
-        if(!AsacNode::query()->where('private_key',$request->$private_key)->exists()){
+        if(!AsacNode::query()->where('private_key',$request->private_key)->exists()){
             return $this->fail('不存在该用户');
         }
         $wallet_address = AsacNode::query()->select('wallet_address','number')
-            ->where('private_key',$request->$private_key)
+            ->where('private_key',$request->private_key)
             ->first()
             ->toArray();
         return $this->success('登陆成功',$wallet_address);
@@ -37,11 +37,16 @@ class AsacController extends BaseController
         $length = strlen($request->keyword);
         if(is_numeric($request->keyword)){
             //数字查区块
-            $trades = AsacNode::query()->where('id',$keyword)->value('trades');
-            $trades_arr = explode(',',$trades);
-            $list = AsacTrade::query()->whereIn('id',$trades_arr)->get()->toArray();
-            if(empty($list)) return $this->fail('暂无数据');
-            return $this->success('success',$list);
+            $trades = AsacBlock::query()->where('id',$keyword)->value('trades');
+            if($trades){
+                $trades_arr = explode(',',$trades);
+                $list = AsacTrade::query()->whereIn('id',$trades_arr)->get()->toArray();
+                if(empty($list)) return $this->fail('暂无数据');
+                return $this->success('success',$list);
+            }else{
+                return $this->fail('暂无数据');
+            }
+
         }
         if($length>50){
             //查hash
@@ -52,9 +57,9 @@ class AsacController extends BaseController
             //查交易地址
             $list = AsacTrade::query()->where(function ($query) use($keyword){
                 $query->orWhere('from_address',$keyword)->orWhere('to_address',$keyword);
-            })->get()->toArray();
+            })->get();
             if(empty($list)) return $this->fail('暂无数据');
-            return $this->success('success',$list);
+            return $this->success('success',$list->toArray());
         }
     }
 
@@ -76,15 +81,20 @@ class AsacController extends BaseController
     {
         $id = $request->id;
         $block = AsacBlock::query()->where('id',$id)->first();
-        $trade_ids = $block->trades;
-        $trade_id_arr = explode(',',$trade_ids);
-        $trades = AsacTrade::query()->whereIn('id',$trade_id_arr)->get()->toArray();
-        $data = [];
-        $data['id'] = $block->id;
-        $data['trade_num'] = $block->trade_num;
-        $data['number'] = $block->number;
-        $data['list'] = $trades;
-        return $this->success('success',$data);
+        if(!empty($block)){
+            $trade_ids = $block->trades;
+            $trade_id_arr = explode(',',$trade_ids);
+            $trades = AsacTrade::query()->whereIn('id',$trade_id_arr)->get()->toArray();
+            $data = [];
+            $data['id'] = $block->id;
+            $data['trade_num'] = $block->trade_num;
+            $data['number'] = $block->number;
+            $data['list'] = $trades;
+            return $this->success('success',$data);
+        }else{
+            return $this->fail('暂无数据');
+        }
+
     }
 
     /**首页

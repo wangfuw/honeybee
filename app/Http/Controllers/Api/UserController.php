@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
+use App\Models\AsacNode;
 use App\Models\User;
 use App\Validate\UserValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use function PHPUnit\Framework\isEmpty;
 
@@ -65,23 +67,37 @@ class UserController extends BaseController
 
 
         //--todo 短信验证
+        try{
+            DB::beginTransaction();
+            $myself_invite_code = inviteCode($request->phone);
+            $user = User::create([
+                'phone' => $request->phone,
+                'invite_code' =>$myself_invite_code,
+                'password' => Hash::make($request->password),
+                'master_pos'=>$f_users->id,
+                'master_pos'=>','.$f_users->id.$f_users->master_pos??'',
+                //--todo 注册成功赠送幸运值
+                'luck_score'=>env('BASE_LUCK',100)
+            ]);
+            $user_id = $user->id;
+            $asac_address = AsacNode::create([
+                'user_id' => $user_id,
+                'wallet_address' => rand_str_pay(40),
+                'private_key' => rand_str_pay(64)
+                ]);
+            //分配一个地址和密钥
 
-        $myself_invite_code = inviteCode($request->phone);
-        $user = User::create([
-            'phone' => $request->phone,
-            'invite_code' =>$myself_invite_code,
-            'password' => Hash::make($request->password),
-            'master_pos'=>$f_users->id,
-            'master_pos'=>','.$f_users->id.$f_users->master_pos??'',
-        ]);
-        //--todo 注册成功赠送幸运值
+            $token = Auth::login($user);
+            DB::commit();
+            return $this->success('注册成功',[
+                'user' => $user,
+                'access_token' =>$token
+            ]);
+        }catch (\Exception $e ){
+            DB::rollBack();
+            return $this->fail($e->getMessage());
+        }
 
-        $token = Auth::login($user);
-
-        return $this->success('注册成功',[
-            'user' => $user,
-            'access_token' =>$token
-        ]);
     }
 
 

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AsacNode extends Model
+class AsacNode extends Base
 {
     use HasFactory;
 
@@ -27,7 +27,7 @@ class AsacNode extends Model
             ->orderBy('number','desc')
             ->get()->map(function ($item,$items) use($config){
                 $item['money'] = bcmul($item['number'],$config['last_price']);
-                $temp = bcdiv($item['number'],$config['number'])*100;
+                $temp = bcdiv($item['number']*100,$config['number'],2);
                 $item['ratio'] = number_format($temp,2).'%';
                 unset($temp);
                 return $item;

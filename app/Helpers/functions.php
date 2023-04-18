@@ -77,7 +77,7 @@
 /**
  * 生成随机字符串 40 地址 64 交易hash 64 密钥
  */
-   if(function_exists("rand_str_pay")){
+   if(!function_exists("rand_str_pay")){
        function rand_str_pay($length=40) {
            $rand='';
            $randstr= 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

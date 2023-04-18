@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\NoticeController;
 use App\Http\Controllers\api\UploadController;
 use App\Http\Controllers\api\UserCompleteController;
 use App\Http\Controllers\Api\AddressController;
+use \App\Http\Controllers\Api\AsacController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -53,6 +54,15 @@ Route::controller(UserController::class)->group(function () {
         Route::post('edit_address',[AddressController::class,'update_address']);
         //设为默认地址
         Route::post('default_address',[AddressController::class,'set_def']);
+    });
+    Route::group(['prefix'=>'asac'],function (){
+       Route::post('index',[AsacController::class,'index']);
+       Route::post('login',[AsacController::class,'asac_login']);
+       Route::post('search',[AsacController::class,'search']);
+       Route::post('info',[AsacController::class,'info']);
+       Route::post('block_info',[AsacController::class,'block_info']);
+       Route::post('blocks',[AsacController::class,'blocks']);
+       Route::post('owners',[AsacController::class,'owners']);
     });
     Route::group([],function (){
         //获取新闻资讯
