@@ -10,7 +10,8 @@ use App\Http\Controllers\api\UploadController;
 use App\Http\Controllers\api\UserCompleteController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AsacController;
-use App\Http\Controllers\api\StoreController;
+use App\Http\Controllers\Api\StoreController;
+use App\Http\Controllers\api\AreaController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -36,7 +37,6 @@ Route::controller(UserController::class)->group(function () {
         Route::post('complete_self','complete_self');
         //注销账号
         Route::post('del_owner','del_self');
-
     });
     Route::middleware('auth')->group(function (){
         //上传身份证
@@ -57,6 +57,10 @@ Route::controller(UserController::class)->group(function () {
         Route::post('default_address',[AddressController::class,'set_def']);
         //申请商家
         Route::post('add_store',[StoreController::class,'add_store']);
+        //查看我的申请
+        Route::post('store_info',[StoreController::class,'get_store']);
+        //修改申请
+        Route::post('store_update',[StoreController::class,'update']);
     });
     Route::group(['prefix'=>'asac'],function (){
        Route::post('index',[AsacController::class,'index']);
@@ -78,6 +82,9 @@ Route::controller(UserController::class)->group(function () {
 
         Route::post('notices',[NoticeController::class,'getNotices']);
         Route::post('notice_info',[NoticeController::class,'getInfo']);
+
+        //获取地址
+        Route::post('areas',[AreaController::class,'get_area']);
     });
 });
 

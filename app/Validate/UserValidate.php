@@ -10,9 +10,11 @@ class UserValidate extends BaseValidate {
         'id' => 'required',
         'invite_code'=>'required|min:6',
         'code'=>'required|min:4',
-        'password' => 'required|string|min:6',
+        'password' => 'required',
         'phone' => 'required',
-        're_password' => 'required|string|min:6',
+        're_password' => 'required',
+        'sale_password' => 'required',
+        're_sale_phone' => 'required',
     ];
     //自定义验证信息
     protected $message = [
@@ -21,9 +23,9 @@ class UserValidate extends BaseValidate {
         'code.required'=>'短信验证码必须',
         'code.min'=>'短信验证码错误',
         'password.required'=>'请输入密码',
-        'password.min'=>'密码不能少于6位有效数字',
         're_password.required'=>'请输入密码',
-        're_password.min'=>'密码不能少于6位有效数字',
+        'sale_password.required'=>'请输入交易密码',
+        're_sale_phone.required'=>'请输入交易密码',
         'phone.required'=>'电话号码必须',
     ];
 

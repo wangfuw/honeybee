@@ -25,5 +25,9 @@ class Store extends Base
         'deleted_at'
     ];
 
-
+    public function get_info($data = [])
+    {
+        $id = $data['id'];
+        return self::query()->select('id','store_name','business_type','mobile','store_image','master','images','area','address','on_line','type')->where('id',$id)->first()->toArray();
+    }
 }
