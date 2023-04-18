@@ -11,7 +11,7 @@ use App\Http\Controllers\api\UserCompleteController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AsacController;
 use App\Http\Controllers\Api\StoreController;
-use App\Http\Controllers\api\AreaController;
+use App\Http\Controllers\Api\AreaController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
