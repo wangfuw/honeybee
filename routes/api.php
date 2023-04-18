@@ -9,7 +9,8 @@ use App\Http\Controllers\Api\NoticeController;
 use App\Http\Controllers\api\UploadController;
 use App\Http\Controllers\api\UserCompleteController;
 use App\Http\Controllers\Api\AddressController;
-use \App\Http\Controllers\Api\AsacController;
+use App\Http\Controllers\Api\AsacController;
+use App\Http\Controllers\api\StoreController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -27,7 +28,7 @@ Route::controller(UserController::class)->group(function () {
     Route::group(['middleware' => 'auth'], function () {
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
-        Route::get('me', 'me');
+        Route::post('me', 'me');
         Route::post('change_password', 'change');
         //设置通证密码
         Route::post('change_sale_password', 'change_sale_password');
@@ -54,6 +55,8 @@ Route::controller(UserController::class)->group(function () {
         Route::post('edit_address',[AddressController::class,'update_address']);
         //设为默认地址
         Route::post('default_address',[AddressController::class,'set_def']);
+        //申请商家
+        Route::post('add_store',[StoreController::class,'add_store']);
     });
     Route::group(['prefix'=>'asac'],function (){
        Route::post('index',[AsacController::class,'index']);
