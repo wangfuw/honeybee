@@ -16,7 +16,8 @@ class SpuValidate extends BaseValidate
         'banner_imgs' => 'required',
         'detail_imgs' => 'required',
         'special_spec' => 'required|string',
-        'skus'=>'required'
+        'skus'=>'required',
+        'saleable'=>'required|numeric|lte:1'
     ];
     //自定义验证信息
     protected $message = [
@@ -28,10 +29,11 @@ class SpuValidate extends BaseValidate
         'detail_imgs.required' => '商品详情图必传',
         'special_spec.required' => '商品规格',
         'skus.required' => '价格信息',
+        'saleable.lte' => '是否上架值错误',
     ];
 
     //自定义场景
     protected $scene = [
-        'add'=>"area,category,name,logo,banner_imgs,detail_imgs,special_spec,skus",
+        'add'=>"area,category,name,logo,banner_imgs,detail_imgs,special_spec,skus,saleable",
     ];
 }
