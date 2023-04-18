@@ -27,4 +27,10 @@ class MallSpu extends Base
         'updated_at',
         'deleted_at',
     ];
+
+    protected $casts = [
+        "banners" => "array",
+        "details" => "array",
+        "special_spec" => "array"
+    ];
 }
