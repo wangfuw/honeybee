@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Common\Rsa;
 use App\Http\Controllers\BaseController;
 use App\Models\AsacNode;
 use App\Models\User;
@@ -27,7 +28,9 @@ class UserController extends BaseController
     public function login(Request $request)
     {
         $credentials = $request->only('phone', 'password');
-        if(!$this->validate->scene('login')->check($credentials)){
+        $phone = Rsa::decodeByPrivateKey($request->phone);
+        $password = Rsa::decodeByPrivateKey($request->password);
+        if(!$this->validate->scene('login')->check(['phone'=>$phone,'password'=>$password])){
             return $this->fail($this->validate->getError());
         }
         $token = Auth::attempt($credentials);
@@ -49,18 +52,19 @@ class UserController extends BaseController
         if(!$this->validate->scene('register')->check($request->toArray())){
             return $this->fail($this->validate->getError());
         }
-        if(check_phone($request->phone) == false){
+        $phone = Rsa::decodeByPrivateKey($request->phone);
+        if(check_phone($phone) == false){
             return $this->fail('请正确输入手机号');
         }
         $f_users = User::query()->where('invite_code',$request->invite_code)->first();
         if(!$f_users){
             return $this->fail('邀请码不存在,请确认邀请码');
         }
-        if(User::query()->where('phone',$request->phone)->exists()){
+        if(User::query()->where('phone',$phone)->exists()){
             return $this->fail('改电话号码已被注册');
         }
 
-        if($request->password != $request->re_password)
+        if(Rsa::decodeByPrivateKey($request->password) != Rsa::decodeByPrivateKey($request->re_password))
         {
             return $this->fail('两次密码不一致');
         }
@@ -69,11 +73,11 @@ class UserController extends BaseController
         //--todo 短信验证
         try{
             DB::beginTransaction();
-            $myself_invite_code = inviteCode($request->phone);
+            $myself_invite_code = inviteCode($phone);
             $user = User::create([
-                'phone' => $request->phone,
+                'phone' => $phone,
                 'invite_code' =>$myself_invite_code,
-                'password' => Hash::make($request->password),
+                'password' => Hash::make(Rsa::decodeByPrivateKey($request->password)),
                 'master_pos'=>$f_users->id,
                 'master_pos'=>','.$f_users->id.$f_users->master_pos??'',
                 //--todo 注册成功赠送幸运值
@@ -134,19 +138,20 @@ class UserController extends BaseController
         if(!$this->validate->scene('change')->check($request->toArray())){
             return $this->fail($this->validate->getError());
         }
-        if(check_phone($request->phone) == false){
+        $phone = Rsa::decodeByPrivateKey($request->phone);
+        if(check_phone($phone) == false){
             return $this->fail('请正确输入手机号');
         }
-        $users = User::query()->where('phone',$request->phone)->first();
+        $users = User::query()->where('phone',)->first();
         if(!$users->id){
             return $this->fail('该用户不存在');
         }
-        if($request->password != $request->re_password)
+        if(Rsa::decodeByPrivateKey($request->password) != Rsa::decodeByPrivateKey($request->re_password))
         {
             return $this->fail('两次密码不一致');
         }
         try {
-            $users->password = Hash::make($request->password);
+            $users->password = Hash::make(Rsa::decodeByPrivateKey($request->password));
             $users->save();
             return  $this->success('修改成功');
         }catch (\Exception $e){
@@ -161,20 +166,21 @@ class UserController extends BaseController
         if(!$this->validate->scene('change_sale')->check($request->toArray())){
             return $this->fail($this->validate->getError());
         }
-        if(check_phone($request->phone) == false){
+        $phone = Rsa::decodeByPrivateKey($request->phone);
+        if(check_phone($phone) == false){
             return $this->fail('请正确输入手机号');
         }
-        $users = User::query()->where('phone',$request->phone)->first();
+        $users = User::query()->where('phone',$phone)->first();
         if(!$users->id){
             return $this->fail('该用户不存在');
         }
-        if($request->sale_password != $request->re_sale_password)
+        if(Rsa::decodeByPrivateKey($request->sale_password) != Rsa::decodeByPrivateKey($request->re_sale_password))
         {
             return $this->fail('两次密码不一致');
         }
         //--todo 短信验证
         try {
-            $users->sale_password = $request->sale_password;
+            $users->sale_password = Rsa::decodeByPrivateKey($request->sale_password);
             $users->save();
             return  $this->success('修改成功');
         }catch (\Exception $e){
@@ -198,9 +204,10 @@ class UserController extends BaseController
         if($request->image){
             $user->image = $request->image;
         }
-        if($request->phone){
-            if(check_phone($request->phone) == true){
-                $user->phone = $request->phone;
+        $phone = Rsa::decodeByPrivateKey($request->phone);
+        if($phone){
+            if(check_phone($phone) == true){
+                $user->phone = $phone;
             }
         }
         $user->save();
@@ -215,9 +222,10 @@ class UserController extends BaseController
     public function del_self(Request $request)
     {
         $user = auth()->user();
+        $password = Rsa::decodeByPrivateKey($request->password);
         $credentials = [
             "phone"=>$user->phone,
-            "password"=>$request->password,
+            "password"=>$password,
         ];
         $token = Auth::attempt($credentials);
         if(!$token){
@@ -227,8 +235,6 @@ class UserController extends BaseController
             Auth::logout();
             return $this->fail('登出成功');
         }
-
-
     }
 
     //获取手机验证码
