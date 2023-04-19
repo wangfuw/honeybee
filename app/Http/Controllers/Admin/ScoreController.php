@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Models\Score;
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class ScoreController extends AdminBaseController
+{
+
+    public function scoreTypes()
+    {
+        $ts = [];
+        foreach (Score::F_TYPES as $k => $v) {
+            $ts[] = ["id" => $k, "name" => $v];
+        }
+        return $this->executeSuccess("请求", $ts);
+    }
+
+    public function scoreList(Request $request)
+    {
+        $size = $request->size ?? $this->size;
+        $condition = [];
+        if ($request->id) {
+            $condition[] = ["user_id", "=", $request->id];
+        }
+        if ($request->phone) {
+            $user = User::where("phone", $request->phone)->first();
+            if ($user) {
+                $condition[] = ["user_id", "=", $user->id];
+            } else {
+                $condition[] = ["score.id", "=", "-1"];
+            }
+        }
+        if ($request->flag) {
+            $condition[] = ["score.flag", "=", $request->flag];
+        }
+        if ($request->f_type) {
+            $condition[] = ["score.f_type", "in", $request->f_type];
+        }
+        if ($request->type) {
+            $condition[] = ["score.type", "=", $request->type];
+        }
+        $data = Score::join("users","users.id","=","score.user_id")
+            ->where($condition)
+            ->orderByDesc("score.id")
+            ->select("score.*","users.phone")
+            ->paginate($size);
+        return $this->executeSuccess("请求",$data);
+    }
+}
