@@ -37,15 +37,15 @@ class ScoreController extends AdminBaseController
         if ($request->flag) {
             $condition[] = ["score.flag", "=", $request->flag];
         }
-        if ($request->f_type) {
-//            $condition[] = ["score.f_type", "in", $request->f_type];
-            $f = '(';
-            foreach ($request->f_type as $k){
-                $f.=$k;
-            }
-            $f .= ')';
-            $condition[] = [DB::raw("score.f_type in $f"),'1'];
-        }
+//        if ($request->f_type) {
+////            $condition[] = ["score.f_type", "in", $request->f_type];
+//            $f = '(';
+//            foreach ($request->f_type as $k){
+//                $f.=$k;
+//            }
+//            $f .= ')';
+//            $condition[] = [DB::raw("score.f_type in $f"),'1'];
+//        }
         if ($request->type) {
             $condition[] = ["score.type", "=", $request->type];
         }
@@ -57,11 +57,14 @@ class ScoreController extends AdminBaseController
             $condition[] = ["score.created_at", "<", strtotime($end)];
         }
 
-        $data = Score::join("users","users.id","=","score.user_id")
-            ->where($condition)
-            ->orderByDesc("score.id")
-            ->select("score.*","users.phone")
+        $db = Score::join("users", "users.id", "=", "score.user_id")
+            ->where($condition);
+        if ($request->f_type) {
+            $db = $db->whereIn("score.f_type", $request->f_type);
+        }
+        $data = $db->orderByDesc("score.id")
+            ->select("score.*", "users.phone")
             ->paginate($size);
-        return $this->executeSuccess("请求",$data);
+        return $this->executeSuccess("请求", $data);
     }
 }
