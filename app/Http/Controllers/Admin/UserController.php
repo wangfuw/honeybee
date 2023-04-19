@@ -99,22 +99,26 @@ class UserController extends AdminBaseController
                 $user->ticket_num = $user->ticket_num + $num;
             }
         }
-        DB::beginTransaction();
-        try {
-            $user->save();
-            Score::create([
-                "user_id" => $user->id,
-                "flag" => $request->flag,
-                "num" => $num,
-                "type" => $request->type,
-                "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
-            ]);
-            DB::commit();
+        if ($num > 0) {
+            DB::beginTransaction();
+            try {
+                $user->save();
+                Score::create([
+                    "user_id" => $user->id,
+                    "flag" => $request->flag,
+                    "num" => $num,
+                    "type" => $request->type,
+                    "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
+                ]);
+                DB::commit();
+                return $this->executeSuccess("操作");
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                Log::error("SCORE:" . $exception->getMessage());
+                return $this->executeFail("操作");
+            }
+        } else {
             return $this->executeSuccess("操作");
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            Log::error("SCORE:" . $exception->getMessage());
-            return $this->executeFail("操作");
         }
     }
 
