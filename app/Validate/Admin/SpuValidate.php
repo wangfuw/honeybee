@@ -37,5 +37,6 @@ class SpuValidate extends BaseValidate
     protected $scene = [
         'add'=>"area,category,name,logo,banner_imgs,detail_imgs,special_spec,skus,saleable",
         'modify'=>"area,category,name,logo,banner_imgs,detail_imgs,special_spec,skus,saleable,id",
+        "sale"=>"id,salable"
     ];
 }

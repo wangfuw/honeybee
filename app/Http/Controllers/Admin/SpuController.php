@@ -117,7 +117,7 @@ class SpuController extends AdminBaseController
         $spus = MallSpu::join("users", "users.id", "=", "mall_spu.user_id")
             ->where($condition)
             ->orderByDesc("mall_spu.saleable")
-            ->select("mall_spu.*","users.phone")
+            ->select("mall_spu.*", "users.phone")
             ->paginate($size);
 
         return $this->executeSuccess("请求", $spus);
@@ -184,6 +184,29 @@ class SpuController extends AdminBaseController
             var_dump($exception);
             DB::rollBack();
             return $this->executeFail("修改");
+        }
+    }
+
+    public function editSaleable(Request $request)
+    {
+        $params = $request->only('id', 'saleable');
+
+        if (!$this->validate->scene('sale')->check($params)) {
+            return $this->fail($this->validate->getError());
+        }
+        $spu = MallSpu::find($params["id"]);
+        if (!$spu) {
+            return $this->error("ID");
+        }
+        if ($spu->user_id == 0) {
+            $this->error("ID");
+        }
+        try {
+            $spu->saleable = $params["saleable"];
+            $spu->save();
+            return $this->executeSuccess("操作");
+        } catch (\Exception $exception) {
+            return $this->fail("操作");
         }
     }
 }
