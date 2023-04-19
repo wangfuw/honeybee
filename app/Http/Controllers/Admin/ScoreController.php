@@ -42,6 +42,14 @@ class ScoreController extends AdminBaseController
         if ($request->type) {
             $condition[] = ["score.type", "=", $request->type];
         }
+
+        if ($request->filled("create_at")) {
+            $start = $request->input("create_at.0");
+            $end = $request->input("create_at.1");
+            $condition[] = ["score.created_at", ">=", strtotime($start)];
+            $condition[] = ["score.created_at", "<", strtotime($end)];
+        }
+
         $data = Score::join("users","users.id","=","score.user_id")
             ->where($condition)
             ->orderByDesc("score.id")
