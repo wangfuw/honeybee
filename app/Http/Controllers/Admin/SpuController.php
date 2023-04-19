@@ -201,6 +201,12 @@ class SpuController extends AdminBaseController
         if ($spu->user_id == 0) {
             $this->error("ID");
         }
+        if($params["saleable"] == 3){
+            if(!$request->reason){
+                $this->fail("驳回原因必传");
+            }
+            $spu->reason = $request->reason;
+        }
         try {
             $spu->saleable = $params["saleable"];
             $spu->save();
