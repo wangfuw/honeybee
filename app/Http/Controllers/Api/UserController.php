@@ -27,13 +27,13 @@ class UserController extends BaseController
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('phone', 'password');
         $phone = Rsa::decodeByPrivateKey($request->phone);
         $password = Rsa::decodeByPrivateKey($request->password);
+        $data = ['phone'=>$phone,'password'=>$password];
         if(!$this->validate->scene('login')->check(['phone'=>$phone,'password'=>$password])){
             return $this->fail($this->validate->getError());
         }
-        $token = Auth::attempt($credentials);
+        $token = Auth::attempt($data);
         if (!$token) {
             return $this->fail('登录失败');
         }
