@@ -58,4 +58,28 @@ class SpuController extends AdminBaseController
             return $this->executeFail("上传");
         }
     }
+
+    public function spuList(Request $request)
+    {
+        $condition = [];
+        $size = $request->size ?? $this->size;
+        if ($request->name) {
+            $condition[] = ["name", "like", "%$request->name%"];
+        }
+        if ($request->game_zone) {
+            $condition[] = ["game_zone", "=", $request->game_zone];
+        }
+        if ($request->score_zone) {
+            $condition[] = ["score_zone", "=", $request->score_zone];
+        }
+        if ($request->category) {
+            $condition[] = ["category_one", "=", $request->category[0]];
+            if (count($request->category) >= 2) {
+                $condition[] = ["category_two", "=", $request->category[1]];
+            }
+        }
+        $condition[] = ["user_id", '=', 0];
+        $spus = MallSpu::where($condition)->orderByDesc("id")->paginate($size);
+        return $this->executeSuccess("请求", $spus);
+    }
 }

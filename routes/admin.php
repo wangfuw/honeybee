@@ -58,6 +58,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("delCategory", [CategoryController::class, "delCategory"])->middleware(["admin.response"]);
 
             Route::post("addSpu", [SpuController::class, "addSpu"])->middleware(["admin.response"]);
+            Route::get("spuList", [SpuController::class, "spuList"]);
         });
     });
 });
