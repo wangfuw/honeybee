@@ -82,4 +82,15 @@ class SpuController extends AdminBaseController
         $spus = MallSpu::where($condition)->orderByDesc("id")->paginate($size);
         return $this->executeSuccess("请求", $spus);
     }
+
+    public function spuDetail(Request $request)
+    {
+        if (!$request->id) {
+            return $this->error("ID");
+        }
+        $spu = MallSpu::find($request->id)->toArray();
+        $skus = MallSku::where("spu_id", $request->id)->get()->toArray();
+        $spu["skus"] = $skus;
+        return$this->executeSuccess("请求", $spu);
+    }
 }

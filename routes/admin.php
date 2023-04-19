@@ -59,6 +59,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
 
             Route::post("addSpu", [SpuController::class, "addSpu"])->middleware(["admin.response"]);
             Route::get("spuList", [SpuController::class, "spuList"]);
+            Route::get("spuDetail", [SpuController::class, "spuDetail"]);
         });
     });
 });
