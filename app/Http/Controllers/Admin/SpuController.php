@@ -103,6 +103,12 @@ class SpuController extends AdminBaseController
         if ($request->saleable) {
             $condition[] = ["mall_spu.saleable", "=", $request->saleable];
         }
+        if ($request->category) {
+            $condition[] = ["category_one", "=", $request->category[0]];
+            if (count($request->category) >= 2) {
+                $condition[] = ["category_two", "=", $request->category[1]];
+            }
+        }
         $condition[] = ["mall_spu.user_id", ">=", 1];
         $condition[] = ["mall_spu.saleable", "<=", 2];
         $spus = MallSpu::join("users", "users.id", "=", "mall_spu.user_id")
