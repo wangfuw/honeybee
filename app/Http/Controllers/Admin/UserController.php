@@ -105,7 +105,7 @@ class UserController extends AdminBaseController
             Score::create([
                 "user_id" => $user->id,
                 "flag" => $request->flag,
-                "num" => $request->num,
+                "num" => $num,
                 "type" => $request->type,
                 "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
             ]);
