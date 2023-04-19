@@ -97,6 +97,9 @@ class SpuController extends AdminBaseController
                 $condition[] = ["mall_spu.user_id", "=", $user->id];
             }
         }
+        if ($request->id) {
+            $condition[] = ["mall_spu.user_id", "=", $request->id];
+        }
         if ($request->name) {
             $condition[] = ["mall_spu.name", "like", "%$request->name%"];
         }
