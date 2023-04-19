@@ -74,7 +74,7 @@ class SpuController extends AdminBaseController
         }
         if ($request->category) {
             $condition[] = ["category_one", "=", $request->category[0]];
-            if ($request->category[1]) {
+            if (count($request->category) >= 2) {
                 $condition[] = ["category_two", "=", $request->category[1]];
             }
         }
