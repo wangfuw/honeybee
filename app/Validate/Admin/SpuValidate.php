@@ -21,6 +21,7 @@ class SpuValidate extends BaseValidate
     ];
     //自定义验证信息
     protected $message = [
+        'id.required' => '商品id必传',
         'area.required' => '商品分区必选',
         'category.required' => '商品分类必选',
         'name.required' => '商品名必填',
@@ -35,5 +36,7 @@ class SpuValidate extends BaseValidate
     //自定义场景
     protected $scene = [
         'add'=>"area,category,name,logo,banner_imgs,detail_imgs,special_spec,skus,saleable",
+        'modify'=>"area,category,name,logo,banner_imgs,detail_imgs,special_spec,skus,saleable,id",
+        "sale"=>"id,salable"
     ];
 }

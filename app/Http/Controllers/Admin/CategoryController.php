@@ -27,7 +27,7 @@ class CategoryController extends AdminBaseController
         if($parent_id == null){
             $parent_id = 0;
         }
-        $cate = MallCategory::where("name", $request->name)->first();
+        $cate = MallCategory::where("name", $request->name)->where("parent_id",$parent_id)->first();
         if ($cate) {
             return $this->fail("分类已经存在了");
         }

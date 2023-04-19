@@ -60,6 +60,9 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("addSpu", [SpuController::class, "addSpu"])->middleware(["admin.response"]);
             Route::get("spuList", [SpuController::class, "spuList"]);
             Route::get("spuDetail", [SpuController::class, "spuDetail"]);
+            Route::post("editSpu", [SpuController::class, "editSpu"])->middleware(['admin.response']);
+            Route::get("shopSpuList", [SpuController::class, "shopSpuList"]);
+            Route::post("editSaleable", [SpuController::class, "editSaleable"])->middleware(['admin.response']);
         });
     });
 });
