@@ -72,4 +72,8 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function get_teams($id)
+    {
+    }
+
 }

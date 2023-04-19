@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AsacController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\AreaController;
+use App\Http\Controllers\Api\ZoneController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -38,6 +39,9 @@ Route::controller(UserController::class)->group(function () {
         Route::post('complete_self','complete_self');
         //注销账号
         Route::post('del_owner','del_self');
+        //我的团队
+        Route::post('teams','teams');
+
     });
     Route::middleware('auth')->group(function (){
         //上传身份证
@@ -72,7 +76,7 @@ Route::controller(UserController::class)->group(function () {
        Route::post('blocks',[AsacController::class,'blocks']);
        Route::post('owners',[AsacController::class,'owners']);
     });
-    Route::group([],function (){
+    Route::group(['auth'],function (){
         //获取新闻资讯
         Route::post('news',[NewsController::class,'getNews']);
         Route::post('news_info',[NewsController::class,'getInfo']);
@@ -86,6 +90,13 @@ Route::controller(UserController::class)->group(function () {
 
         //获取地址
         Route::post('areas',[AreaController::class,'get_area']);
+    });
+
+    Route::group(['middleware' => 'auth'],function (){
+        Route::post('welfare',[ZoneController::class,'welfareZone']);
+        Route::post('happiness',[ZoneController::class,'happinessZone']);
+        Route::post('consume',[ZoneController::class,'consumeZone']);
+        Route::post('preferred',[ZoneController::class,'preferredZone']);
     });
 });
 

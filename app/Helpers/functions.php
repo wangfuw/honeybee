@@ -30,9 +30,9 @@
    if(!function_exists('check_phone')){
        function check_phone($phone)
        {
-           $pattern = '/^1[3456789]{1}\d{9}$/';
-           $res = preg_match($pattern, $phone);
-           if(!$res) return false;
+           $isMob="/^1[34578]{1}\d{9}$/";
+           $isTel="/^([0-9]{3,4}-)?[0-9]{7,8}$/";
+           if(!preg_match($isMob,$phone) && !preg_match($isTel,$phone)) return false;
            return true;
        }
    }

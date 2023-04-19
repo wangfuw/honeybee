@@ -160,10 +160,12 @@ class UserController extends BaseController
             return $this->fail($this->validate->getError());
         }
         $phone = Rsa::decodeByPrivateKey($request->phone);
+
         if(check_phone($phone) == false){
             return $this->fail('请正确输入手机号');
         }
         $users = User::query()->where('phone',$phone)->first();
+
         if(!$users->id){
             return $this->fail('该用户不存在');
         }
@@ -261,5 +263,28 @@ class UserController extends BaseController
     public function getCode($phone)
     {
         return $this->success('success',['code'=>123]);
+    }
+
+    //todo 未完成
+    public function teams(Request $request)
+    {
+        if(!$this->validate->scene('team')->check($request->toArray())){
+            return $this->fail($this->validate->getError());
+        }
+        $user = auth()->user();
+        $directs = User::query()->select('id','created_at')->where('master_id',$user->id)->get()->map(function ($item,$items){
+            $item['amount'] = '123';
+        })->forPage($request->page,$request->page_size);
+        $list = collect([])->merge($directs);
+        $direct_num = $directs->count();
+        $team_num   = User::query()->where('master_pos','like','%'.','.$user->id.','.'%')->count();
+        $amount = 123124;
+        return $this->success('success',compact('direct_num','team_num','amount','list'));
+    }
+
+    public function invite()
+    {
+        //邀请好友 返回 邀请码 和 注册接口
+
     }
 }
