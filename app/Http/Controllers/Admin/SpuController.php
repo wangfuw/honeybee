@@ -55,6 +55,7 @@ class SpuController extends AdminBaseController
             return $this->executeSuccess("上传");
         } catch (\Exception $exception) {
             var_dump($exception);
+            DB::rollBack();
             return $this->executeFail("上传");
         }
     }
@@ -92,5 +93,55 @@ class SpuController extends AdminBaseController
         $skus = MallSku::where("spu_id", $request->id)->get()->toArray();
         $spu["skus"] = $skus;
         return$this->executeSuccess("请求", $spu);
+    }
+
+    public function editSpu(Request  $request){
+        $params = $request->only('id','area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable');
+
+        if (!$this->validate->scene('modify')->check($params)) {
+            return $this->fail($this->validate->getError());
+        }
+        $spu = MallSpu::find($request->id);
+        if(!$spu || $spu->user_id > 0){
+            return $this->error("ID");
+        }
+        DB::beginTransaction();
+        try {
+            MallSpu::where("id",$params["id"])->update([
+                "name" => $params["name"],
+                "category_one" => $params["category"][0],
+                "category_two" => $params["category"][1] ?? 0,
+                "sale_able" => $params["saleable"],
+                "logo" => $params["logo"],
+                "banners" => $params["banner_imgs"],
+                "details" => $params["detail_imgs"],
+                "special_spec" => $params["special_spec"],
+                "user_id" => 0,
+                "game_zone" => $params["area"][0],
+                "score_zone" => $params["area"][1] ?? 0,
+            ]);
+            foreach ($params["skus"] as $k) {
+                $sku = MallSku::where(["spu_id"=>$params["id"],"indexes"=>$k["indexes"]])->first();
+                if($sku){
+                    $sku->stock = $k["stock"];
+                    $sku->price = $k["price"];
+                    $sku->enable = $k["enable"];
+                    $sku->save();
+                }else{
+                    MallSku::create([
+                        "spu_id" => $spu->id,
+                        "stock" => $k["stock"],
+                        "price" => $k["price"],
+                        "indexes" => $k["indexes"],
+                        "enable" => $k["enable"],
+                    ]);
+                }
+            }
+            DB::commit();
+            return $this->executeSuccess("修改");
+        }catch (\Exception $exception){
+            DB::rollBack();
+            return $this->executeFail("修改");
+        }
     }
 }
