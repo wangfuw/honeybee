@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->integer('green_score')->default(0)->comment("可用绿色积分");
             $table->integer('sale_score')->default(0)->comment("消费积分");
             $table->integer('luck_score')->default(0)->comment("幸运值");
+            $table->integer('ticket_num')->default(0)->comment("消费卷");
             $table->integer('coin_num')->default(0)->comment("asac数量");
             $table->string('invite_code')->comment('邀请码');
             $table->integer('master_id')->default(0)->comment('直推人');

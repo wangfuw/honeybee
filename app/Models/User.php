@@ -21,7 +21,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
     'id','nickname','phone','is_shop','image','green_score','sale_score',
-        'luck_score','coin_num','invite_code','master_id','master_pos','password','created_at','updated_at','sale_password'
+        'luck_score','coin_num','invite_code','master_id','master_pos','password','created_at','updated_at','sale_password','ticket_num'
     ];
 
     /**
