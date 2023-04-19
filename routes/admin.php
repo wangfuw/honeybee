@@ -10,6 +10,7 @@ use  App\Http\Controllers\Admin\NewsController;
 use  App\Http\Controllers\Admin\UserController;
 use  App\Http\Controllers\Admin\CategoryController;
 use  App\Http\Controllers\Admin\SpuController;
+use  App\Http\Controllers\Admin\ScoreController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -63,6 +64,9 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("editSpu", [SpuController::class, "editSpu"])->middleware(['admin.response']);
             Route::get("shopSpuList", [SpuController::class, "shopSpuList"]);
             Route::post("editSaleable", [SpuController::class, "editSaleable"])->middleware(['admin.response']);
+
+            Route::get("scoreTypes",[ScoreController::class,"scoreTypes"]);
+            Route::get("scoreList",[ScoreController::class,"scoreList"]);
         });
     });
 });
