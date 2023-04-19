@@ -20,7 +20,7 @@ class CreateScoreTable extends Migration
             $table->decimal('num')->default(0)->comment('数量');
             $table->tinyInteger('type')->default(1)->comment('1 绿色积分 2 消费积分 3 幸运值 4 消费卷');
             $table->integer('f_type')->nullable()->comment('消费类型');
-            $table->decimal('amount',12)->comment('金额');
+            $table->decimal('amount',12)->default(0)->comment('金额');
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
             $table->integer('deleted_at')->nullable()->comment('删除时间');

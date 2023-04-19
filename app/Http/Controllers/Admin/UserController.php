@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Notice;
+use App\Models\Score;
 use App\Models\User;
 use App\Models\UserIdentity;
 use App\Validate\Admin\NoticeValidate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PHPUnit\Exception;
 
 class UserController extends AdminBaseController
@@ -51,6 +54,70 @@ class UserController extends AdminBaseController
             return $this->executeFail("操作");
         }
     }
+
+    public function editUser(Request $request)
+    {
+        if (!$request->filled("id")) {
+            return $this->error("ID");
+        }
+        if (!$request->filled("type")) {
+            return $this->error("type");
+        }
+        if (!$request->filled("flag")) {
+            return $this->error("flag");
+        }
+        if (!$request->filled("num") || $request->num <= 0) {
+            return $this->error("数量");
+        }
+        $user = User::find($request->id);
+        if (!$user) {
+            return $this->error("ID");
+        }
+        if ($request->flag == 2) {
+            if ($request->type == 1) {
+                $num = min($user->green_score, $request->num);
+                $user->green_score = $user->green_score - $num;
+            } elseif ($request->type == 2) {
+                $num = min($user->sale_score, $request->num);
+                $user->sale_score = $user->sale_score - $num;
+            } else if ($request->type == 3) {
+                $num = min($user->luck_score, $request->num);
+                $user->luck_score = $user->luck_score - $num;
+            } else {
+                $num = min($user->ticket_num, $request->num);
+                $user->ticket_num = $user->ticket_num - $num;
+            }
+        } else {
+            $num = $request->num;
+            if ($request->type == 1) {
+                $user->green_score = $user->green_score + $num;
+            } elseif ($request->type == 2) {
+                $user->sale_score = $user->sale_score + $num;
+            } else if ($request->type == 3) {
+                $user->luck_score = $user->luck_score + $num;
+            } else {
+                $user->ticket_num = $user->ticket_num + $num;
+            }
+        }
+        DB::beginTransaction();
+        try {
+            $user->save();
+            Score::create([
+                "user_id" => $user->id,
+                "flag" => $request->flag,
+                "num" => $request->num,
+                "type" => $request->type,
+                "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
+            ]);
+            DB::commit();
+            return $this->executeSuccess("操作");
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            Log::error("SCORE:" . $exception->getMessage());
+            return $this->executeFail("操作");
+        }
+    }
+
 
     public function teamTree(Request $request)
     {
@@ -135,4 +202,6 @@ class UserController extends AdminBaseController
             return $this->executeFail("操作");
         }
     }
+
+
 }
