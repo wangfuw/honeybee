@@ -52,6 +52,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("teamTree", [UserController::class, "teamTree"]);
             Route::get("userAuthList", [UserController::class, "userAuthList"]);
             Route::post("editUserAuth", [UserController::class, "editUserAuth"])->middleware(["admin.response"]);
+            Route::post("editUser", [UserController::class, "editUser"])->middleware(["admin.response"]);
 
             Route::get("categoryList", [CategoryController::class, "categoryList"]);
             Route::post("addCategory", [CategoryController::class, "addCategory"])->middleware(["admin.response"]);
