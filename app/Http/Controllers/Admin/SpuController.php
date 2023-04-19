@@ -140,6 +140,7 @@ class SpuController extends AdminBaseController
             DB::commit();
             return $this->executeSuccess("修改");
         }catch (\Exception $exception){
+            var_dump($exception);
             DB::rollBack();
             return $this->executeFail("修改");
         }
