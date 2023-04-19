@@ -34,7 +34,8 @@ class UserValidate extends BaseValidate {
         'register'=>"invite_code,password,phone,code,re_password", //短信验证码验证
         'register_no_code'=>"invite_code,password,phone", //无需短信验证码验证
         'login'   =>"phone,password",
-        'change'  =>"phone,code,password,re_password",
+        'change'  =>"old_password,password,re_password",
+        'forget'  =>"phone,code,password,re_password",
         'change_sale' => "phone,code,sale_password,re_sale_phone"
     ];
 }

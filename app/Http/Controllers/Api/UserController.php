@@ -19,7 +19,7 @@ class UserController extends BaseController
     public function __construct(UserValidate $validate)
     {
         $this->validate = $validate;
-        $this->middleware('auth:api', ['except' => ['register', 'login']]);
+        $this->middleware('auth:api', ['except' => ['register', 'login','forget_password']]);
     }
 
     /**
@@ -138,11 +138,32 @@ class UserController extends BaseController
         if(!$this->validate->scene('change')->check($request->toArray())){
             return $this->fail($this->validate->getError());
         }
+        $user_id =auth()->id();
+        if(Rsa::decodeByPrivateKey($request->password) != Rsa::decodeByPrivateKey($request->re_password))
+        {
+            return $this->fail('两次密码不一致');
+        }
+        $users = User::query()->where('id',$user_id)->first();
+        try {
+            $users->password = Hash::make(Rsa::decodeByPrivateKey($request->password));
+            $users->save();
+            return  $this->success('修改成功');
+        }catch (\Exception $e){
+            if($e->getMessage()){
+                return  $this->fail("修改失败");
+            }
+        }
+    }
+
+    public function forget_password(Request $request){
+        if(!$this->validate->scene('forget')->check($request->toArray())){
+            return $this->fail($this->validate->getError());
+        }
         $phone = Rsa::decodeByPrivateKey($request->phone);
         if(check_phone($phone) == false){
             return $this->fail('请正确输入手机号');
         }
-        $users = User::query()->where('phone',)->first();
+        $users = User::query()->where('phone',$phone)->first();
         if(!$users->id){
             return $this->fail('该用户不存在');
         }
@@ -160,7 +181,6 @@ class UserController extends BaseController
             }
         }
     }
-
     public function change_sale_password(Request $request)
     {
         if(!$this->validate->scene('change_sale')->check($request->toArray())){
