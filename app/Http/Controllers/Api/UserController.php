@@ -163,7 +163,7 @@ class UserController extends BaseController
         if(check_phone($phone) == false){
             return $this->fail('请正确输入手机号');
         }
-        $users = User::query()->where('phone',)->first();
+        $users = User::query()->where('phone',$phone)->first();
         if(!$users->id){
             return $this->fail('该用户不存在');
         }
