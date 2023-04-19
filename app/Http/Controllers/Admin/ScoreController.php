@@ -44,7 +44,7 @@ class ScoreController extends AdminBaseController
                 $f.=$k;
             }
             $f .= ')';
-            $condition[] = [DB::raw("score.f_type in $f")];
+            $condition[] = [DB::raw("score.f_type in $f"),'1'];
         }
         if ($request->type) {
             $condition[] = ["score.type", "=", $request->type];
