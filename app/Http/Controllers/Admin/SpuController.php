@@ -116,8 +116,8 @@ class SpuController extends AdminBaseController
         $condition[] = ["mall_spu.saleable", "<=", 2];
         $spus = MallSpu::join("users", "users.id", "=", "mall_spu.user_id")
             ->where($condition)
-            ->orderByDesc("saleable")
-            ->select("mall_spu.*,users.phone")
+            ->orderByDesc("mall_spu.saleable")
+            ->select("mall_spu.*","users.phone")
             ->paginate($size);
 
         return $this->executeSuccess("请求", $spus);
