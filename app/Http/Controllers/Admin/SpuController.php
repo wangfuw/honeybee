@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\MallSku;
 use App\Models\MallSpu;
+use App\Models\User;
 use App\Validate\Admin\SpuValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -84,6 +85,35 @@ class SpuController extends AdminBaseController
         return $this->executeSuccess("请求", $spus);
     }
 
+    public function shopSpuList(Request $request)
+    {
+        $condition = [];
+        $size = $request->size ?? $this->size;
+        if ($request->phone) {
+            $user = User::where("phone", $request->phone)->first();
+            if (!$user) {
+                $condition[] = ["mall_spu.id", "=", -1];
+            } else {
+                $condition[] = ["mall_spu.user_id", "=", $user->id];
+            }
+        }
+        if ($request->name) {
+            $condition[] = ["mall_spu.name", "like", "%$request->name%"];
+        }
+        if ($request->saleable) {
+            $condition[] = ["mall_spu.saleable", "=", $request->saleable];
+        }
+        $condition[] = ["mall_spu.user_id", ">=", 1];
+        $spus = MallSpu::join("users", "users.id", "=", "mall_spu.user_id")
+            ->where($condition)
+            ->orderByDesc("saleable")
+            ->select("mall_spu.*,users.phone")
+            ->paginate($size);
+
+        return $this->executeSuccess("请求", $spus);
+
+    }
+
     public function spuDetail(Request $request)
     {
         if (!$request->id) {
@@ -92,22 +122,23 @@ class SpuController extends AdminBaseController
         $spu = MallSpu::find($request->id)->toArray();
         $skus = MallSku::where("spu_id", $request->id)->get()->toArray();
         $spu["skus"] = $skus;
-        return$this->executeSuccess("请求", $spu);
+        return $this->executeSuccess("请求", $spu);
     }
 
-    public function editSpu(Request  $request){
-        $params = $request->only('id','area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable');
+    public function editSpu(Request $request)
+    {
+        $params = $request->only('id', 'area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable');
 
         if (!$this->validate->scene('modify')->check($params)) {
             return $this->fail($this->validate->getError());
         }
         $spu = MallSpu::find($request->id);
-        if(!$spu || $spu->user_id > 0){
+        if (!$spu || $spu->user_id > 0) {
             return $this->error("ID");
         }
         DB::beginTransaction();
         try {
-            MallSpu::where("id",$params["id"])->update([
+            MallSpu::where("id", $params["id"])->update([
                 "name" => $params["name"],
                 "category_one" => $params["category"][0],
                 "category_two" => $params["category"][1] ?? 0,
@@ -121,13 +152,13 @@ class SpuController extends AdminBaseController
                 "score_zone" => $params["area"][1] ?? 0,
             ]);
             foreach ($params["skus"] as $k) {
-                $sku = MallSku::where(["spu_id"=>$params["id"],"indexes"=>$k["indexes"]])->first();
-                if($sku){
+                $sku = MallSku::where(["spu_id" => $params["id"], "indexes" => $k["indexes"]])->first();
+                if ($sku) {
                     $sku->stock = $k["stock"];
                     $sku->price = $k["price"];
                     $sku->enable = $k["enable"];
                     $sku->save();
-                }else{
+                } else {
                     MallSku::create([
                         "spu_id" => $spu->id,
                         "stock" => $k["stock"],
@@ -139,7 +170,7 @@ class SpuController extends AdminBaseController
             }
             DB::commit();
             return $this->executeSuccess("修改");
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             var_dump($exception);
             DB::rollBack();
             return $this->executeFail("修改");
