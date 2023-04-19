@@ -37,15 +37,7 @@ class ScoreController extends AdminBaseController
         if ($request->flag) {
             $condition[] = ["score.flag", "=", $request->flag];
         }
-//        if ($request->f_type) {
-////            $condition[] = ["score.f_type", "in", $request->f_type];
-//            $f = '(';
-//            foreach ($request->f_type as $k){
-//                $f.=$k;
-//            }
-//            $f .= ')';
-//            $condition[] = [DB::raw("score.f_type in $f"),'1'];
-//        }
+
         if ($request->type) {
             $condition[] = ["score.type", "=", $request->type];
         }
