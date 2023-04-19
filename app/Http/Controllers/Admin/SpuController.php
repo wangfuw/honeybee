@@ -85,7 +85,7 @@ class SpuController extends AdminBaseController
 
     public function spuDetail(Request $request)
     {
-        if ($request->id) {
+        if (!$request->id) {
             return $this->error("ID");
         }
         $spu = MallSpu::find($request->id)->toArray();
