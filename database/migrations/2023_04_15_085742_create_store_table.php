@@ -32,6 +32,11 @@ class CreateStoreTable extends Migration
             $table->tinyInteger('status')->default(1)->comment('1-正常 0-异常');
             $table->tinyInteger('on_line')->default(1)->comment('1-线上 2-线下');
             $table->tinyInteger('type')->default(0)->comment('0--待审核 1-审核通过 2-审核未通过');
+            $table->string('store_url')->nullable()->comment('店铺访问链接');
+            $table->string('store_password')->nullable()->comment('商家访问密码');
+            $table->string('note')->nullable()->comment('驳回原因');
+            $table->string('payment')->nullable()->comment('线下收款账户');
+            $table->string('payment')->nullable()->comment('线下收款账户');
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
             $table->integer('deleted_at')->nullable()->comment('删除时间');
