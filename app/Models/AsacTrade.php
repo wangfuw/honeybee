@@ -12,11 +12,11 @@ class AsacTrade extends Model
     protected $table = 'asac_trade';
 
     protected $fillable = [
-        'id','from_address','to_address','num','trade_hash','is_block','created_at','updated_at'
+        'id','from_address','to_address','num','trade_hash','block_id','created_at','updated_at'
     ];
 
     protected $hidden = [
-        'updated_at','is_block'
+        'updated_at'
     ];
 
 }
