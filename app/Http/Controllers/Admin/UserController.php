@@ -160,6 +160,40 @@ class UserController extends AdminBaseController
         return $this->executeSuccess("操作");
     }
 
+    // 业绩查询
+    public function performance(Request $request)
+    {
+        $condition = [];
+        if ($request->filled("create_at")) {
+            $start = $request->input("create_at.0");
+            $end = $request->input("create_at.1");
+            $condition[] = ["created_at", ">=", strtotime($start)];
+            $condition[] = ["created_at", "<", strtotime($end)];
+        }
+        $flag = $request->input("flag", 1);
+        if ($flag == 1) {
+            $id = $request->input("id", 1);
+            $users = User::where(["master_pos", "like", "%,$id,%"])->select("id")->get()->toArray();
+            $ids = [];
+            foreach ($users as $v) {
+                array_push($ids, $v["id"]);
+            }
+        } else {
+            $code = $request->code;
+            $uis = UserIdentity::where("address_code", $code)->where("status", 1)->select("user_id")->get()->toArray();
+            $ids = [];
+            foreach ($uis as $v) {
+                array_push($ids, $v["user_id"]);
+            }
+        }
+
+        $db = Score::where($condition);
+        $green = $db->whereIn("user_id", $ids)->where("type", 1)->sum("num");
+        $sale = $db->whereIn("user_id", $ids)->where("type", 2)->sum("num");
+        $per = $green / 3 + $sale / 6;
+        return $this->executeSuccess("请求", ["contribute" => $per]);
+    }
+
 
     public function teamTree(Request $request)
     {
