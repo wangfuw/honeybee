@@ -122,6 +122,10 @@ class UserController extends AdminBaseController
         }
     }
 
+    public function areaList(){
+
+    }
+
     // 修改用户身份标识
     public function editIdentify(Request $request)
     {

@@ -18,12 +18,14 @@ class Area extends Base
     protected $hidden = [];
 
     // 模型文件
-    public function children() {
+    public function __children() {
         return $this->hasMany(get_class($this), 'pcode' ,'code');
     }
 
-    public function allChildren() {
-        return $this->children()->with( 'allChildren' );
+    public function children() {
+        return $this->__children()->with( 'children' );
     }
+
+
 }
 
