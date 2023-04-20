@@ -184,7 +184,7 @@ class UserController extends AdminBaseController
             if($area->level == 3){
                 $uis = UserIdentity::where("address_code", $code)->where("status", 1)->select("user_id")->get()->toArray();
             }else{
-                $areas = Area::where("pcode",$area->code)->get()->toArray();
+                $areas = Area::where("pcode",$area->code)->select("code")->get()->toArray();
                 $uis = UserIdentity::whereIn("address_code",$areas)->where("status",1)->select("user_id")->get()->toArray();
             }
 
