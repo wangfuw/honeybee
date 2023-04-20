@@ -25,6 +25,12 @@ class RechargeController extends AdminBaseController
                 $condition[] = ["recharge.id", "=", "-1"];
             }
         }
+        if ($request->filled("create_at")) {
+            $start = $request->input("create_at.0");
+            $end = $request->input("create_at.1");
+            $condition[] = ["score.created_at", ">=", strtotime($start)];
+            $condition[] = ["score.created_at", "<", strtotime($end)];
+        }
         $data = Recharge::join("users", "users.id", "=", "recharge.user_id")
             ->where($condition)
             ->orderByDesc("id")
@@ -46,6 +52,12 @@ class RechargeController extends AdminBaseController
             } else {
                 $condition[] = ["withdraw.id", "=", "-1"];
             }
+        }
+        if ($request->filled("create_at")) {
+            $start = $request->input("create_at.0");
+            $end = $request->input("create_at.1");
+            $condition[] = ["score.created_at", ">=", strtotime($start)];
+            $condition[] = ["score.created_at", "<", strtotime($end)];
         }
         $data = Withdraw::join("users", "users.id", "=", "withdraw.user_id")
             ->where($condition)
