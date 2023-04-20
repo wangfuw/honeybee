@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class AsacDestory extends Model
 {
+
     use HasFactory;
+    protected $table = 'asac_destroy';
+
+    protected $guarded = [];
 }
