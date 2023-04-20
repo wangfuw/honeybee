@@ -13,6 +13,7 @@ use  App\Http\Controllers\Admin\SpuController;
 use  App\Http\Controllers\Admin\ScoreController;
 use  App\Http\Controllers\Admin\RechargeController;
 use  App\Http\Controllers\Admin\BlockController;
+use  App\Http\Controllers\Admin\ConfigController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -77,11 +78,14 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("performance", [UserController::class, "performance"]);
             Route::post("editIdentity", [UserController::class, "editIdentity"])->middleware(['admin.response']);
 
-            Route::get("blockList",[BlockController::class,"blockList"]);
-            Route::get("tradeList",[BlockController::class,"tradeList"]);
-            Route::get("destroyList",[BlockController::class,"destroyList"]);
-            Route::get("asacInfo",[BlockController::class,"asacInfo"]);
-            Route::post("editAsac",[BlockController::class,"editAsac"])->middleware(['admin.response']);
+            Route::get("blockList", [BlockController::class, "blockList"]);
+            Route::get("tradeList", [BlockController::class, "tradeList"]);
+            Route::get("destroyList", [BlockController::class, "destroyList"]);
+            Route::get("asacInfo", [BlockController::class, "asacInfo"]);
+            Route::post("editAsac", [BlockController::class, "editAsac"])->middleware(['admin.response']);
+
+            Route::get("getConfig", [ConfigController::class, "getConfig"]);
+            Route::post("editConfig", [ConfigController::class, "editConfig"])->middleware(["admin.response"]);
         });
     });
 });
