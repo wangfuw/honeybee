@@ -19,7 +19,7 @@ class CreateAsacTradeTable extends Migration
             $table->string('to_address')->comment('转入地址');
             $table->decimal('num',16)->comment('流转数量');
             $table->string('trade_hash')->comment('交易hash');
-            $table->tinyInteger('is_block')->default(0)->comment('0-为记录区块 1-已记录区块');
+            $table->tinyInteger('block_id')->comment('区块id');
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
         });

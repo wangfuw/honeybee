@@ -15,7 +15,6 @@ class CreateAsacBlockTable extends Migration
     {
         Schema::create('asac_block', function (Blueprint $table) {
             $table->id();
-            $table->string('trades')->nullable()->comment('交易id 1,2');
             $table->decimal('number',16)->default(0)->comment('交易总额');
             $table->integer('trade_num')->default(0)->comment('交易笔数');
             $table->integer('created_at')->comment('创建时间');
