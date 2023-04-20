@@ -89,6 +89,7 @@ class ConfigController extends AdminBaseController
 
         $config = Config::first();
         $param = $request->all();
+        unset($param["rule_type"]);
         try{
             Config::where("id",$config->id)->update($param);
             return $this->executeSuccess("修改");
