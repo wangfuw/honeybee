@@ -138,7 +138,7 @@ class UserController extends AdminBaseController
         if (!$request->filled("identity") || !in_array($request->identity, [0, 1, 2])) {
             return $this->error("身份");
         }
-        if (!$request->filled("idenitity_status") || !in_array($request->idenitity_status, [0, 1])) {
+        if (!$request->filled("identity_status") || !in_array($request->identity_status, [0, 1])) {
             return $this->error("身份状态");
         }
         $user = User::find($request->id);
@@ -146,7 +146,7 @@ class UserController extends AdminBaseController
             return $this->error("ID");
         }
         $user->identity = $request->identity;
-        $user->idenitity_status = $request->idenitity_status;
+        $user->identity_status = $request->identity_status;
         $user->save();
         return $this->executeSuccess("操作");
     }
