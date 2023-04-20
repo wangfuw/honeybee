@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\AsacController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\ZoneController;
+use App\Http\Controllers\Api\ScoreController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,6 +29,7 @@ Route::controller(UserController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
     Route::post('forget_password', 'forget_password');
+    Route::post('invite', 'invite');
     Route::group(['middleware' => 'auth'], function () {
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
@@ -97,6 +99,11 @@ Route::controller(UserController::class)->group(function () {
         Route::post('happiness',[ZoneController::class,'happinessZone']);
         Route::post('consume',[ZoneController::class,'consumeZone']);
         Route::post('preferred',[ZoneController::class,'preferredZone']);
+        //积分
+        Route::post('green_score',[ScoreController::class,'get_green_sore']);
+        Route::post('consume_score',[ScoreController::class,'get_sale_sore']);
+        Route::post('ticket_score',[ScoreController::class,'get_ticket_sore']);
+        Route::post('lucky_score',[ScoreController::class,'get_lucky_sore']);
     });
 });
 

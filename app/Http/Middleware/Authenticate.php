@@ -35,15 +35,12 @@ class Authenticate extends Middleware
             if($e->getMessage() == 'Wrong number of segments') {
                 return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
             }
-
             if($e->getMessage() == 'Token has expired') {
                 return $this->fail('令牌已过期,请重新登录',[],'',1005);
             }
-
             if($e->getMessage() == 'Token Signature could not be verified.') {
                 return $this->fail('无法验证令牌签名,请重新登录',[],'',1005);
             }
-
             return $this->fail('token验证意外错误：' . $e->getMessage(),[],'',1005);
         }
 

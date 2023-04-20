@@ -29,9 +29,9 @@ trait ApiResponse
      * @param null $error
      * @return JsonResponse
      */
-    public function fail($msg, $data = null, $error=null): JsonResponse
+    public function fail($msg, $data = null, $error=null,$status = 0): JsonResponse
     {
-        return $this->jsonResponse(0, $msg, $data, $error);
+        return $this->jsonResponse($status, $msg, $data, $error);
     }
 
     public function error($name,$data = null,$error=null): JsonResponse
