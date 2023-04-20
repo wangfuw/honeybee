@@ -78,7 +78,7 @@ class BlockController extends AdminBaseController
             $condition[] = ["asac_destory.created_at", ">=", strtotime($start)];
             $condition[] = ["asac_destory.created_at", "<", strtotime($end)];
         }
-        $data = AsacDestory::join("users", "users.id", "=", "asac_destroy.user_id")
+        $data = AsacDestory::join("users", "users.id", "=", "asac_destory.user_id")
             ->where($condition)
             ->orderByDesc("id")
             ->select("asac_destory.*", "users.phone")
