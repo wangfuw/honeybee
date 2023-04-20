@@ -130,7 +130,7 @@ class UserController extends AdminBaseController
     }
 
     // 修改用户身份标识
-    public function editIdentify(Request $request)
+    public function editIdentity(Request $request)
     {
         if (!$request->id) {
             return $this->error("ID");
