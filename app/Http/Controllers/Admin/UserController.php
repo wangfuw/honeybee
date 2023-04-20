@@ -123,8 +123,25 @@ class UserController extends AdminBaseController
     }
 
     // 修改用户身份标识
-    public function editIdentify(Request $request){
-
+    public function editIdentify(Request $request)
+    {
+        if (!$request->id) {
+            return $this->error("ID");
+        }
+        if (!$request->filled("identity") || !in_array($request->id, [0, 1, 2])) {
+            return $this->error("身份");
+        }
+        if (!$request->filled("idenitity_status") || !in_array($request->idenitity_status, [0, 1])) {
+            return $this->error("身份状态");
+        }
+        $user = User::find($request->id);
+        if (!$user) {
+            return $this->error("ID");
+        }
+        $user->identity = $request->identity;
+        $user->idenitity_status = $request->idenitity_status;
+        $user->save();
+        return $this->executeSuccess("操作");
     }
 
 

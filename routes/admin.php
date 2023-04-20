@@ -72,6 +72,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
 
             Route::get("rechargeList",[RechargeController::class,"rechargeList"]);
             Route::get("withdrawList",[RechargeController::class,"withdrawList"]);
+            Route::post("editIdentify",[UserController::class,"editIdentify"])->middleware(['admin.response']);
         });
     });
 });
