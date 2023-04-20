@@ -62,26 +62,26 @@ class BlockController extends AdminBaseController
         $size = $request->size ?? $this->size;
         $condition = [];
         if ($request->id) {
-            $condition[] = ["asac_destroy.user_id", "=", $request->id];
+            $condition[] = ["asac_destory.user_id", "=", $request->id];
         }
         if ($request->phone) {
             $user = User::where("phone", $request->phone)->first();
             if ($user) {
                 $condition[] = ["user_id", "=", $user->id];
             } else {
-                $condition[] = ["asac_destroy.id", "=", "-1"];
+                $condition[] = ["asac_destory.id", "=", "-1"];
             }
         }
         if ($request->filled("create_at")) {
             $start = $request->input("create_at.0");
             $end = $request->input("create_at.1");
-            $condition[] = ["asac_destroy.created_at", ">=", strtotime($start)];
-            $condition[] = ["asac_destroy.created_at", "<", strtotime($end)];
+            $condition[] = ["asac_destory.created_at", ">=", strtotime($start)];
+            $condition[] = ["asac_destory.created_at", "<", strtotime($end)];
         }
         $data = AsacDestory::join("users", "users.id", "=", "asac_destroy.user_id")
             ->where($condition)
             ->orderByDesc("id")
-            ->select("asac_destroy.*", "users.phone")
+            ->select("asac_destory.*", "users.phone")
             ->paginate($size);
         return $this->executeSuccess("请求", $data);
     }
