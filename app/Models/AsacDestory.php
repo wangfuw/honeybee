@@ -9,7 +9,7 @@ class AsacDestory extends Model
 {
 
     use HasFactory;
-    protected $table = 'asac_destroy';
+    protected $table = 'asac_destory';
 
     protected $guarded = [];
 }
