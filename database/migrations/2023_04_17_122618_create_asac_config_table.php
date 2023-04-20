@@ -28,7 +28,6 @@ class CreateAsacConfigTable extends Migration
             $table->integer('owner_num')->default(0)->comment('持有人地址数');
             $table->integer('trans_num')->default(0)->comment('交易笔数');
             $table->decimal('old_price',4)->comment('上一次价格');
-            $table->float('rate')->default(0)->comment('涨低幅度');
             $table->decimal('last_price',4)->comment('现价');
             $table->string('username')->nullable()->comment('编辑账户');
             $table->string('ip')->nullable()->comment('修改ip');

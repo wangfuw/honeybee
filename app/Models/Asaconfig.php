@@ -13,7 +13,7 @@ class Asaconfig extends Base
 
     protected $fillable = [
         'id','name','contract_address','destruction_address','accuracy','number','price','flow_num',
-        'precat_num','flux','dest_num','owner_num','trans_num','old_price','rate','last_price','username',
+        'precat_num','flux','dest_num','owner_num','trans_num','old_price','last_price','username',
         'ip','created_at','updated_at'
     ];
 
