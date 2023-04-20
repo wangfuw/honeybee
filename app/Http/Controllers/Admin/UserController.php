@@ -135,6 +135,7 @@ class UserController extends AdminBaseController
         if (!$request->id) {
             return $this->error("ID");
         }
+        var_dump($request->filled("identity"));
         if (!$request->filled("identity") || !in_array($request->identity, [0, 1, 2])) {
             return $this->error("身份");
         }
