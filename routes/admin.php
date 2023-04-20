@@ -81,6 +81,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("tradeList",[BlockController::class,"tradeList"]);
             Route::get("destroyList",[BlockController::class,"destroyList"]);
             Route::get("asacInfo",[BlockController::class,"asacInfo"]);
+            Route::post("editAsac",[BlockController::class,"editAsac"])->middleware(['admin.response']);
         });
     });
 });
