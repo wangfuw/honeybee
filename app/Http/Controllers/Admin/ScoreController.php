@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Score;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ScoreController extends AdminBaseController
 {
@@ -36,9 +37,7 @@ class ScoreController extends AdminBaseController
         if ($request->flag) {
             $condition[] = ["score.flag", "=", $request->flag];
         }
-        if ($request->f_type) {
-            $condition[] = ["score.f_type", "in", $request->f_type];
-        }
+
         if ($request->type) {
             $condition[] = ["score.type", "=", $request->type];
         }
@@ -50,11 +49,14 @@ class ScoreController extends AdminBaseController
             $condition[] = ["score.created_at", "<", strtotime($end)];
         }
 
-        $data = Score::join("users","users.id","=","score.user_id")
-            ->where($condition)
-            ->orderByDesc("score.id")
-            ->select("score.*","users.phone")
+        $db = Score::join("users", "users.id", "=", "score.user_id")
+            ->where($condition);
+        if ($request->f_type) {
+            $db = $db->whereIn("score.f_type", $request->f_type);
+        }
+        $data = $db->orderByDesc("score.id")
+            ->select("score.*", "users.phone")
             ->paginate($size);
-        return $this->executeSuccess("请求",$data);
+        return $this->executeSuccess("请求", $data);
     }
 }

@@ -18,7 +18,7 @@ class CreateUserIdentityTable extends Migration
             $table->integer('user_id')->comment('用户id');
             $table->string('username')->comment('姓名');
             $table->string('id_card')->comment('身份证');
-            $table->string('address')->comment('地址');
+            $table->string('address_code')->comment('地址编码');
             $table->string('front_image')->comment('正面');
             $table->string('back_image')->comment('背面');
             $table->tinyInteger('status')->default(0)->comment('0-待审核 1-审核过 2-审核不通过');

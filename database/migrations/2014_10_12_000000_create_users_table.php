@@ -17,10 +17,17 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('nickname')->nullable()->comment('昵称');
             $table->string('phone');
-            $table->string('is_shop')->default(0)->comment('1-商家');
+            $table->tinyInteger('is_shop')->default(0)->comment('1-商家');
+            $table->tinyInteger('identity')->default(0)->comment('0：无,1:形象店，2：旗舰店');
+            $table->tinyInteger('identity_status')->default(0)->comment('0：考核中,1:考核完成');
+            $table->string('identity_area_code')->nullable()->comment('身份绑定的区域代码');
+            $table->tinyInteger('share_level')->default(0)->comment('分享奖等级：0：无,1:普通，2：中等，3：高级');
+            $table->decimal('max_luck_num')->default(0)->comment('幸运专区单次最高消费');
             $table->string('image')->nullable()->comment('头像');
             $table->integer('green_score')->default(0)->comment("可用绿色积分");
+            $table->integer('green_score_total')->default(0)->comment("累计绿色积分");
             $table->integer('sale_score')->default(0)->comment("消费积分");
+            $table->integer('sale_score_total')->default(0)->comment("累计消费积分");
             $table->integer('luck_score')->default(0)->comment("幸运值");
             $table->integer('ticket_num')->default(0)->comment("消费卷");
             $table->integer('coin_num')->default(0)->comment("asac数量");

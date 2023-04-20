@@ -18,6 +18,7 @@ class CreateAsacDestoryTable extends Migration
             $table->integer('user_id')->comment('销毁人id');
             $table->string('dest_address')->comment('销毁地址');
             $table->decimal('number',16)->default(0)->comment('销毁数量');
+            $table->decimal('green_number',16)->default(0)->comment('获得绿色积分数量');
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
         });

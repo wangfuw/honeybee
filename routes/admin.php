@@ -11,6 +11,7 @@ use  App\Http\Controllers\Admin\UserController;
 use  App\Http\Controllers\Admin\CategoryController;
 use  App\Http\Controllers\Admin\SpuController;
 use  App\Http\Controllers\Admin\ScoreController;
+use  App\Http\Controllers\Admin\RechargeController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -66,8 +67,13 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("shopSpuList", [SpuController::class, "shopSpuList"]);
             Route::post("editSaleable", [SpuController::class, "editSaleable"])->middleware(['admin.response']);
 
-            Route::get("scoreTypes",[ScoreController::class,"scoreTypes"]);
-            Route::get("scoreList",[ScoreController::class,"scoreList"]);
+            Route::get("scoreTypes", [ScoreController::class, "scoreTypes"]);
+            Route::get("scoreList", [ScoreController::class, "scoreList"]);
+
+            Route::get("rechargeList", [RechargeController::class, "rechargeList"]);
+            Route::get("withdrawList", [RechargeController::class, "withdrawList"]);
+            Route::get("areaList", [UserController::class, "areaList"]);
+            Route::post("editIdentity", [UserController::class, "editIdentity"])->middleware(['admin.response']);
         });
     });
 });

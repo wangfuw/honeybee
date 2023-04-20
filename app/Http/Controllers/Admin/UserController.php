@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Area;
 use App\Models\Notice;
 use App\Models\Score;
 use App\Models\User;
@@ -99,23 +100,55 @@ class UserController extends AdminBaseController
                 $user->ticket_num = $user->ticket_num + $num;
             }
         }
-        DB::beginTransaction();
-        try {
-            $user->save();
-            Score::create([
-                "user_id" => $user->id,
-                "flag" => $request->flag,
-                "num" => $request->num,
-                "type" => $request->type,
-                "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
-            ]);
-            DB::commit();
+        if ($num > 0) {
+            DB::beginTransaction();
+            try {
+                $user->save();
+                Score::create([
+                    "user_id" => $user->id,
+                    "flag" => $request->flag,
+                    "num" => $num,
+                    "type" => $request->type,
+                    "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
+                ]);
+                DB::commit();
+                return $this->executeSuccess("操作");
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                Log::error("SCORE:" . $exception->getMessage());
+                return $this->executeFail("操作");
+            }
+        } else {
             return $this->executeSuccess("操作");
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            Log::error("SCORE:" . $exception->getMessage());
-            return $this->executeFail("操作");
         }
+    }
+
+    public function areaList()
+    {
+        $list = Area::with('children')->first()->toArray();
+        return $this->executeSuccess("请求", $list["children"]);
+    }
+
+    // 修改用户身份标识
+    public function editIdentity(Request $request)
+    {
+        if (!$request->id) {
+            return $this->error("ID");
+        }
+        if (!$request->filled("identity") || !in_array($request->identity, [0, 1, 2])) {
+            return $this->error("身份");
+        }
+        if (!$request->filled("identity_status") || !in_array($request->identity_status, [0, 1])) {
+            return $this->error("身份状态");
+        }
+        $user = User::find($request->id);
+        if (!$user) {
+            return $this->error("ID");
+        }
+        $user->identity = $request->identity;
+        $user->identity_status = $request->identity_status;
+        $user->save();
+        return $this->executeSuccess("操作");
     }
 
 
