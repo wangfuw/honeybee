@@ -12,7 +12,7 @@ class AreaController extends BaseController
     {
         $list = unserialize(Redis::get('AREA'));
         if(empty($list)){
-            $list = Area::with('allChildren')->first()->toArray();
+            $list = Area::with('children')->first()->toArray();
             Redis::set('AREA',serialize($list));
         }
         return $this->success('请求成功',$list);
