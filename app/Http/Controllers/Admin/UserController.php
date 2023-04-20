@@ -173,7 +173,7 @@ class UserController extends AdminBaseController
         $flag = $request->input("flag", 1);
         if ($flag == 1) {
             $id = $request->input("id", 1);
-            $users = User::where(["master_pos", "like", "%,$id,%"])->select("id")->get()->toArray();
+            $users = User::where("master_pos", "like", "%,$id,%")->select("id")->get()->toArray();
             $ids = [];
             foreach ($users as $v) {
                 array_push($ids, $v["id"]);
