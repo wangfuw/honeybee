@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use function PHPUnit\Framework\isEmpty;
 
 class UserController extends BaseController
@@ -285,6 +286,10 @@ class UserController extends BaseController
     public function invite()
     {
         //邀请好友 返回 邀请码 和 注册接口
-
+        $user = auth()->user();
+//        $url =  'http//:'.H5 访问链接/#/?'.'invite_cdoe='.$user->invite_code;
+        $url = '';
+        $img =  QrCode::format('png')->size(200)->generate($url);
+        return  $data = 'data:image/png;base64,' . base64_encode($img );
     }
 }
