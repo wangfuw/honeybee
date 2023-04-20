@@ -194,9 +194,8 @@ class UserController extends AdminBaseController
             }
         }
 
-        $db = Score::where($condition);
-        $green = $db->whereIn("user_id", $ids)->where("type", 1)->sum("num");
-        $sale = $db->whereIn("user_id", $ids)->where("type", 2)->sum("num");
+        $green = Score::where($condition)->whereIn("user_id", $ids)->where("type", 1)->sum("num");
+        $sale = Score::where($condition)->whereIn("user_id", $ids)->where("type", 2)->sum("num");
         $per = $green / 3 + $sale / 6;
         return $this->executeSuccess("请求", ["contribute" => $per]);
     }
