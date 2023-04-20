@@ -37,16 +37,9 @@ class AsacController extends BaseController
         $length = strlen($request->keyword);
         if(is_numeric($request->keyword)){
             //数字查区块
-            $trades = AsacBlock::query()->where('id',$keyword)->value('trades');
-            if($trades){
-                $trades_arr = explode(',',$trades);
-                $list = AsacTrade::query()->whereIn('id',$trades_arr)->get()->toArray();
-                if(empty($list)) return $this->fail('暂无数据');
-                return $this->success('success',$list);
-            }else{
-                return $this->fail('暂无数据');
-            }
-
+            $list = AsacTrade::query()->where('id',$keyword)->get()->toArray();
+            if(empty($list)) return $this->fail('暂无数据');
+            return $this->success('success',$list);
         }
         if($length>50){
             //查hash
@@ -82,9 +75,7 @@ class AsacController extends BaseController
         $id = $request->id;
         $block = AsacBlock::query()->where('id',$id)->first();
         if(!empty($block)){
-            $trade_ids = $block->trades;
-            $trade_id_arr = explode(',',$trade_ids);
-            $trades = AsacTrade::query()->whereIn('id',$trade_id_arr)->get()->toArray();
+            $trades = AsacTrade::query()->where('id',$id)->get()->toArray();
             $data = [];
             $data['id'] = $block->id;
             $data['trade_num'] = $block->trade_num;
@@ -105,10 +96,12 @@ class AsacController extends BaseController
             ->orderBy('id','desc')->limit(4)->get()->toArray();
         $trade_total = AsacTrade::query()->count('num');
         $last_height = AsacBlock::query()->max('id');
-        $config = Asaconfig::query()->select('last_price','rate','name')->find(1);
+        $config = Asaconfig::query()->select('last_price','old_price','name')->find(1);
         $last_price = $config->last_price;
         $name = $config->name;
-        $rate = $config->rate.'%';
+        $dividend = $config->last_price - $config->old_price;
+        $divisor  = $config->old_price;
+        $rate = bcdiv($dividend*100,$divisor,2).'%';
         return $this->success('success',compact('list','trade_total',
             'last_height','name','rate','last_price'));
     }
