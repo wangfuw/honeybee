@@ -67,12 +67,13 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("shopSpuList", [SpuController::class, "shopSpuList"]);
             Route::post("editSaleable", [SpuController::class, "editSaleable"])->middleware(['admin.response']);
 
-            Route::get("scoreTypes",[ScoreController::class,"scoreTypes"]);
-            Route::get("scoreList",[ScoreController::class,"scoreList"]);
+            Route::get("scoreTypes", [ScoreController::class, "scoreTypes"]);
+            Route::get("scoreList", [ScoreController::class, "scoreList"]);
 
-            Route::get("rechargeList",[RechargeController::class,"rechargeList"]);
-            Route::get("withdrawList",[RechargeController::class,"withdrawList"]);
-            Route::post("editIdentify",[UserController::class,"editIdentify"])->middleware(['admin.response']);
+            Route::get("rechargeList", [RechargeController::class, "rechargeList"]);
+            Route::get("withdrawList", [RechargeController::class, "withdrawList"]);
+            Route::get("areaList", [UserController::class, "areaList"]);
+            Route::post("editIdentify", [UserController::class, "editIdentify"])->middleware(['admin.response']);
         });
     });
 });

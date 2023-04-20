@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Area;
 use App\Models\Notice;
 use App\Models\Score;
 use App\Models\User;
@@ -122,8 +123,10 @@ class UserController extends AdminBaseController
         }
     }
 
-    public function areaList(){
-
+    public function areaList()
+    {
+        $list = Area::with('children')->first()->toArray();
+        return $this->executeSuccess("请求", $list["children"]);
     }
 
     // 修改用户身份标识
