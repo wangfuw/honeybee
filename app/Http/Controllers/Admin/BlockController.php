@@ -93,7 +93,7 @@ class BlockController extends AdminBaseController
     }
 
     public function editAsac(Request  $request){
-        $price = $request->filled("last_price",10);
+        $price = $request->input("last_price",10);
         $config = Asaconfig::first();
         $config->last_price = $price;
         $config->save();
