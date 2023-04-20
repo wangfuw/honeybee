@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('identity')->default(0)->comment('0：无,1:形象店，2：旗舰店');
             $table->tinyInteger('identity_status')->default(0)->comment('0：考核中,1:考核完成');
             $table->string('identity_area_code')->nullable()->comment('身份绑定的区域代码');
+            $table->string('identity_area')->nullable()->comment('身份绑定的区域');
             $table->tinyInteger('share_level')->default(0)->comment('分享奖等级：0：无,1:普通，2：中等，3：高级');
             $table->decimal('max_luck_num')->default(0)->comment('幸运专区单次最高消费');
             $table->string('image')->nullable()->comment('头像');

@@ -145,6 +145,15 @@ class UserController extends AdminBaseController
         if (!$user) {
             return $this->error("ID");
         }
+        if ($request->identity_area) {
+            $user->identity_area_code = $request->identity_area[count($request->identity_area) - 1];
+            $area = '';
+            foreach ($request->identity_area as $v) {
+                $a = Area::where("code", $v)->first();
+                $area .= $a->name;
+            }
+            $user->identity_area = $area;
+        }
         $user->identity = $request->identity;
         $user->identity_status = $request->identity_status;
         $user->save();
