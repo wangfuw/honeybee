@@ -174,28 +174,19 @@ class UserController extends AdminBaseController
         if ($flag == 1) {
             $id = $request->input("id", 1);
             $users = User::where("master_pos", "like", "%,$id,%")->select("id")->get()->toArray();
-            $ids = [];
-            foreach ($users as $v) {
-                array_push($ids, $v["id"]);
-            }
         } else {
             $code = $request->area[count($request->area)-1];
             $area = Area::where("code",$code)->first();
             if($area->level == 3){
-                $uis = UserIdentity::where("address_code", $code)->where("status", 1)->select("user_id")->get()->toArray();
+                $users = UserIdentity::where("address_code", $code)->where("status", 1)->select("user_id")->get()->toArray();
             }else{
                 $areas = Area::where("pcode",$area->code)->select("code")->get()->toArray();
-                $uis = UserIdentity::whereIn("address_code",$areas)->where("status",1)->select("user_id")->get()->toArray();
-            }
-
-            $ids = [];
-            foreach ($uis as $v) {
-                array_push($ids, $v["user_id"]);
+                $users = UserIdentity::whereIn("address_code",$areas)->where("status",1)->select("user_id")->get()->toArray();
             }
         }
 
-        $green = Score::where($condition)->whereIn("user_id", $ids)->where("type", 1)->sum("num");
-        $sale = Score::where($condition)->whereIn("user_id", $ids)->where("type", 2)->sum("num");
+        $green = Score::where($condition)->whereIn("user_id", $users)->where("type", 1)->sum("num");
+        $sale = Score::where($condition)->whereIn("user_id", $users)->where("type", 2)->sum("num");
         $per = $green / 3 + $sale / 6;
         return $this->executeSuccess("请求", ["contribute" => $per]);
     }
