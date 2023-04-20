@@ -91,4 +91,12 @@ class BlockController extends AdminBaseController
         $data = Asaconfig::first();
         return $this->executeSuccess("请求", $data);
     }
+
+    public function editAsac(Request  $request){
+        $price = $request->filled("last_price",10);
+        $config = Asaconfig::first();
+        $config->last_price = $price;
+        $config->save();
+        return $this->executeSuccess("修改");
+    }
 }
