@@ -12,7 +12,7 @@ class AsacBlock extends Base
     protected $table = 'asac_block';
 
     protected $fillable = [
-       'id','trades','number','trade_num','created_at','updated_at','is_block'
+       'id','number','trade_num','created_at','updated_at','is_block'
     ];
 
     protected $hidden = [
