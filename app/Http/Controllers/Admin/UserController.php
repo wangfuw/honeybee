@@ -179,8 +179,15 @@ class UserController extends AdminBaseController
                 array_push($ids, $v["id"]);
             }
         } else {
-            $code = $request->code;
-            $uis = UserIdentity::where("address_code", $code)->where("status", 1)->select("user_id")->get()->toArray();
+            $code = $request->area[count($request->area)-1];
+            $area = Area::where("code",$code)->first();
+            if($area->level == 3){
+                $uis = UserIdentity::where("address_code", $code)->where("status", 1)->select("user_id")->get()->toArray();
+            }else{
+                $areas = Area::where("pcode",$area->code)->get()->toArray();
+                $uis = UserIdentity::whereIn("address_code",$areas)->where("status",1)->select("user_id")->get()->toArray();
+            }
+
             $ids = [];
             foreach ($uis as $v) {
                 array_push($ids, $v["user_id"]);
