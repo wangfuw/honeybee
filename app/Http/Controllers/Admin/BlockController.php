@@ -44,6 +44,9 @@ class BlockController extends AdminBaseController
         if ($request->filled("to_address")) {
             $condition[] = ["to_address", "=", $request->to_address];
         }
+        if($request->filled("trade_hash")){
+            $condition[] = ["trade_hash","=",$request->trade_hash];
+        }
         if ($request->filled("create_at")) {
             $start = $request->input("create_at.0");
             $end = $request->input("create_at.1");
