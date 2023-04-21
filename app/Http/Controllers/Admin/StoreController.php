@@ -29,7 +29,7 @@ class StoreController extends AdminBaseController
         $data = Store::join("users", "users.id", "=", "store.user_id")
             ->where($condition)
             ->orderBy("store.type")
-            ->select("store.*","users.phone")
+            ->select("store.*", "users.phone")
             ->paginate($size);
         return $this->executeSuccess("请求", $data);
     }
@@ -40,7 +40,7 @@ class StoreController extends AdminBaseController
             return $this->error("ID");
         }
         $store = Store::find($request->id);
-        if ($request->status) {
+        if ($request->filled('status')) {
             $store->status = $request->status;
             $store->save();
             return $this->executeSuccess("操作");
@@ -48,11 +48,16 @@ class StoreController extends AdminBaseController
         if ($request->type) {
             $store->type = $request->type;
             if ($request->type == 1) {
+                $user = User::find($store->user_id);
                 DB::beginTransaction();
                 try {
                     $store->save();
                     User::where("id", $store->user_id)->update(["is_shop" => 1]);
                     DB::commit();
+                    // 发送短信提醒，店铺通过，附带登录链接
+                    $url = config("app.merchant");
+                    $content = "【商城】您的开店申请已通过，请前往 $url 管理您的店铺，登录的账号为您的手机号，密码与APP端的密码一致";
+                    send_sms($user->phone, $content);
                     return $this->executeSuccess("操作");
                 } catch (\Exception $exception) {
                     DB::rollBack();

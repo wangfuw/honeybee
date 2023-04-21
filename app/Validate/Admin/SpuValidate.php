@@ -17,7 +17,8 @@ class SpuValidate extends BaseValidate
         'detail_imgs' => 'required',
         'special_spec' => 'required',
         'skus'=>'required',
-        'saleable'=>'required|numeric|lte:1'
+        'saleable'=>'required|numeric|lte:1',
+        'fee'=>'required'
     ];
     //自定义验证信息
     protected $message = [
@@ -35,8 +36,8 @@ class SpuValidate extends BaseValidate
 
     //自定义场景
     protected $scene = [
-        'add'=>"area,category,name,logo,banner_imgs,detail_imgs,special_spec,skus,saleable",
-        'modify'=>"area,category,name,logo,banner_imgs,detail_imgs,special_spec,skus,saleable,id",
+        'add'=>"area,category,name,logo,banner_imgs,detail_imgs,special_spec,skus,saleable,fee",
+        'modify'=>"area,category,name,logo,banner_imgs,detail_imgs,special_spec,skus,saleable,id,fee",
         "sale"=>"id,salable"
     ];
 }

@@ -185,8 +185,8 @@ class UserController extends AdminBaseController
             }
         }
 
-        $green = Score::where($condition)->whereIn("user_id", $users)->where("type", 1)->sum("num");
-        $sale = Score::where($condition)->whereIn("user_id", $users)->where("type", 2)->sum("num");
+        $green = Score::where($condition)->whereIn("user_id", $users)->where("type", 1)->where("f_type",Score::TRADE_HAVE)->sum("num");
+        $sale = Score::where($condition)->whereIn("user_id", $users)->where("type", 2)->where("f_type",Score::TRADE_HAVE)->sum("num");
         $per = $green / 3 + $sale / 6;
         return $this->executeSuccess("请求", ["contribute" => $per]);
     }

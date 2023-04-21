@@ -22,10 +22,13 @@ class SpuController extends AdminBaseController
 
     public function addSpu(Request $request)
     {
-        $params = $request->only('area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable');
+        $params = $request->only('area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable','fee');
 
         if (!$this->validate->scene('add')->check($params)) {
             return $this->fail($this->validate->getError());
+        }
+        if($params["fee"] < 0){
+            return  $this->fail("运费不能为负数");
         }
 
         DB::beginTransaction();
@@ -42,6 +45,7 @@ class SpuController extends AdminBaseController
                 "user_id" => 0,
                 "game_zone" => $params["area"][0],
                 "score_zone" => $params["area"][1] ?? 0,
+                'fee'=>$params['fee']
             ]);
             foreach ($params["skus"] as $k) {
                 MallSku::create([
@@ -137,7 +141,7 @@ class SpuController extends AdminBaseController
 
     public function editSpu(Request $request)
     {
-        $params = $request->only('id', 'area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable');
+        $params = $request->only('id', 'area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable','fee');
 
         if (!$this->validate->scene('modify')->check($params)) {
             return $this->fail($this->validate->getError());
@@ -145,6 +149,9 @@ class SpuController extends AdminBaseController
         $spu = MallSpu::find($request->id);
         if (!$spu || $spu->user_id > 0) {
             return $this->error("ID");
+        }
+        if($params["fee"] < 0){
+            return  $this->fail("运费不能为负数");
         }
         DB::beginTransaction();
         try {
@@ -160,6 +167,7 @@ class SpuController extends AdminBaseController
                 "user_id" => 0,
                 "game_zone" => $params["area"][0],
                 "score_zone" => $params["area"][1] ?? 0,
+                'fee'=>$params['fee']
             ]);
             foreach ($params["skus"] as $k) {
                 $sku = MallSku::where(["spu_id" => $params["id"], "indexes" => $k["indexes"]])->first();
