@@ -17,6 +17,7 @@ class CreateBaseOrderTable extends Migration
             $table->id();
             $table->integer('user_id')->comment('用户id');
             $table->json('products')->comment('商品信息');
+            $table->string('order_no')->comment('订单号');
             $table->decimal('money',16,2)->default(0)->comment('订单价格');
             $table->tinyInteger('type')->comment('订单状态1-待支付 2-已支付');
             $table->integer('created_at')->comment('插入时间');
