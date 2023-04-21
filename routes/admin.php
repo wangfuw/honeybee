@@ -27,6 +27,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
 
         Route::middleware(['admin.auth'])->group(function () {
             Route::get("registerLine",[HomeController::class,"registerLine"]);
+            Route::get("dealLine",[HomeController::class,"dealLine"]);
 
             Route::get("admins", [AdminController::class, "admins"]);
             Route::get("groups", [AdminController::class, "groups"]);
