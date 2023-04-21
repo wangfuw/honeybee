@@ -87,6 +87,9 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
 
             Route::get("getConfig", [ConfigController::class, "getConfig"]);
             Route::post("editConfig", [ConfigController::class, "editConfig"])->middleware(["admin.response"]);
+
+            Route::get("storeList",[StoreController::class,"storeList"]);
+            Route::post("editStore",[StoreController::class,"editStore"])->middleware(["admin.response"]);
         });
     });
 });
