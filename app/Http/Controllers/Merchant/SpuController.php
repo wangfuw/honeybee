@@ -136,7 +136,7 @@ class SpuController extends MerchantBaseController
                 "name" => $params["name"],
                 "category_one" => $params["category"][0],
                 "category_two" => $params["category"][1] ?? 0,
-                "saleable" => 2,
+                "saleable" => 4,
                 "logo" => $params["logo"],
                 "banners" => $params["banner_imgs"],
                 "details" => $params["detail_imgs"],
