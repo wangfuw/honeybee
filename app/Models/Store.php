@@ -30,4 +30,16 @@ class Store extends Base
         $id = $data['id'];
         return self::query()->select('id','store_name','business_type','mobile','store_image','master','images','area','address','on_line','type')->where('id',$id)->first()->toArray();
     }
+
+    public function spu()
+    {
+        return $this->hasMany('MallSpu','store_id','id');
+    }
+
+    public function get_ss_info($store_id)
+    {
+        return $this->with(['spu'=>function($query){
+            return $query->select('');
+        }])->select('')->where('id',$store_id)->first()->toArray();
+    }
 }

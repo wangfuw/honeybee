@@ -26,6 +26,10 @@ class Area extends Base
         return $this->__children()->with( 'children' );
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(Area::class,'pcode','code');
+    }
 
 }
 

@@ -104,4 +104,33 @@ class MallSpu extends Base
             ->where('game_zone',4)->get()->forPage($page,$page_size);
         return collect([])->merge($list);
     }
+
+    public function get_search_spu($params,$asac_price)
+    {
+        $keyword = $params['keyword']??'';
+        $page = $params['page']??1;
+        $page_size = $params['page_size']??6;
+        $list = $this->with(['skp'=>function($query){
+            return $query->select('spu_id','price');
+        }])->select('id','name','score_zone','logo','user_id')
+            ->when($keyword,function ($query) use ($keyword){
+                return $query->where('name','like','%'.$keyword.'%');
+            })
+            ->where('saleable',1)
+            ->get()->forPage($page,$page_size)->map(function ($item,$items) use($asac_price){
+                $item->price = $item->skp['price'];
+                $item->asac_price = bcdiv($item->skp['price'] , $asac_price,2);
+            });
+        return collect([])->merge($list);
+    }
+
+    public function getInfo($params)
+    {
+        $id = $params["id"];
+        return  $this->with(['skp'=>function($query){
+            return $query->select('spu_id','price');
+        }])->select('id','name','score_zone','logo','user_id','details','banners')
+            ->where('id',$id)->first()->toArray();
+
+    }
 }

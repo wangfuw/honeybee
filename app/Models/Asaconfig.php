@@ -19,4 +19,9 @@ class Asaconfig extends Base
 
     protected $hidden = [];
 
+
+    public static function get_price()
+    {
+        return self::query()->value('last_price');
+    }
 }
