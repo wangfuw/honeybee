@@ -107,7 +107,7 @@ class SpuController extends MerchantBaseController
         }
         $spu = MallSpu::find($request->id)->toArray();
         $user = auth("merchant")->user();
-        if($spu->user_id != $user->id){
+        if($spu["user_id"] != $user->id){
             return $this->executeSuccess("请求",[]);
         }
         $skus = MallSku::where("spu_id", $request->id)->get()->toArray();
