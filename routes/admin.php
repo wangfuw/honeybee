@@ -26,7 +26,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
         Route::post("uploadOne", [LoginController::class, "uploadOne"]);
 
         Route::middleware(['admin.auth'])->group(function () {
-            Route::get("registerList",[HomeController::class,"registerLine"]);
+            Route::get("registerLine",[HomeController::class,"registerLine"]);
 
             Route::get("admins", [AdminController::class, "admins"]);
             Route::get("groups", [AdminController::class, "groups"]);
