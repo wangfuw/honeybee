@@ -41,4 +41,14 @@ class Order extends Base
     protected $casts = [
         'products' => 'array'
     ];
+
+    public function getUser()
+    {
+        return $this->hasOne('User','id','user_id');
+    }
+
+    public function getSku(){
+        return $this->hasOne('MallSku','id','sku_id');
+    }
+
 }
