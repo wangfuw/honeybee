@@ -29,7 +29,7 @@ class LoginController extends MerchantBaseController
         if ($user->is_shop != 1) {
             return $this->fail("您不是商家");
         }
-        $store = Store::where("user_id", $user->id)->first();
+        $store = Store::where("user_id", $user->id)->where("type",1)->first();
         if ($store->status != 1) {
             return $this->fail("您的店铺状态异常，请联系平台管理员");
         }

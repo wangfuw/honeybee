@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Models\Order;
 use App\Models\Score;
+use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -41,8 +42,8 @@ class HomeController extends MerchantBaseController
     public function storeInfo(Request $request)
     {
         $user = auth("merchant")->user();
-        $store = Score::where("user_id", $user->id)->first();
-        if (!$store || $store->status != 1 || $store->type != 1) {
+        $store = Store::where("user_id", $user->id)->where("type",1)->first();
+        if (!$store || $store->status != 1) {
             return $this->fail("您不是商家");
         }
         $data = $store->toArray();
@@ -56,8 +57,8 @@ class HomeController extends MerchantBaseController
     public function bindPay(Request $request)
     {
         $user = auth("merchant")->user();
-        $store = Score::where("user_id", $user->id)->first();
-        if (!$store || $store->status != 1 || $store->type != 1) {
+        $store = Store::where("user_id", $user->id)->where("type",1)->first();
+        if (!$store || $store->status != 1) {
             return $this->fail("您不是商家");
         }
         if ($store->on_line != 2) {
