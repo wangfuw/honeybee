@@ -12,8 +12,8 @@ class HomeController extends AdminBaseController
         $dates = [];
         $nums = [];
 
-        $first_user = User::first();
-        $start = $first_user->created_at;
+        $first_user = User::first()->toArray();
+        $start = $first_user["created_at"];
 
         var_dump($start);
 
