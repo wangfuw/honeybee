@@ -27,6 +27,9 @@ class MerchantToken
 
         try {
             $user = auth("merchant")->user();
+            if(!$user){
+                return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌失效,请重新登录');
+            }
         } catch (\Exception $e) {
             return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌失效,请重新登录');
         }
