@@ -39,8 +39,8 @@ class OrderController extends AdminBaseController
             ->where($condition)
             ->orderByDesc("orders.id")
             ->select("orders.*", "users.phone")
-            ->paginate($size);
-        foreach ($data->data as $k => &$v) {
+            ->paginate($size)->toArray();
+        foreach ($data["data"] as $k => &$v) {
             $sku = MallSku::find($v["sku_id"]);
             $spu = MallSpu::find($sku["spu_id"]);
             $v["spu"] = $spu;
