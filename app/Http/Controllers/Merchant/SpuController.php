@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\BaseController;
+use App\Models\MallCategory;
 use App\Models\MallSku;
 use App\Models\MallSpu;
 use App\Models\User;
@@ -20,6 +21,15 @@ class SpuController extends MerchantBaseController
         $this->validate = $validate;
     }
 
+
+    public function categoryList(Request $request)
+    {
+        $cate = MallCategory::where(["parent_id" => 0, "is_delete" => 0])->get()->toArray();
+        foreach ($cate as $k => &$v) {
+            $v["children"] = MallCategory::where(["parent_id" => $v["id"], "is_delete" => 0])->get()->toArray();
+        }
+        return $this->executeSuccess("请求", $cate);
+    }
 
     public function addSpu(Request $request)
     {

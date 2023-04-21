@@ -9,6 +9,7 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
     Route::middleware(['merchant.token'])->group(function () {
         Route::get("menuList", [LoginController::class, "menuList"]);
+        Route::get("categoryList", [SpuController::class, "categoryList"]);
         Route::get("spuList", [SpuController::class, "spuList"]);
         Route::get("spuDetail", [SpuController::class, "spuDetail"]);
         Route::post("editSpu", [SpuController::class, "editSpu"]);
