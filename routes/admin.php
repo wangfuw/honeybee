@@ -93,6 +93,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("editStore", [StoreController::class, "editStore"])->middleware(["admin.response"]);
 
             Route::get("orderList", [OrderController::class, "orderList"]);
+            Route::get("shopOrderList", [OrderController::class, "shopOrderList"]);
             Route::post("sendSku", [OrderController::class, "sendSku"])->middleware(['admin.response']);
         });
     });

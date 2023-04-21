@@ -74,4 +74,57 @@ class OrderController extends AdminBaseController
         $order->save();
         return $this->executeSuccess("发货");
     }
+
+    public function shopOrderList(Request $request)
+    {
+        $size = $request->size ?? $this->size;
+        $condition = [];
+        if ($request->id) {
+            $condition[] = ["user_id", "=", $request->id];
+        }
+        if ($request->phone) {
+            $user = User::where("phone", $request->phone)->first();
+            if ($user) {
+                $condition[] = ["user_id", "=", $user->id];
+            } else {
+                $condition[] = ["orders.id", "=", "-1"];
+            }
+        }
+        if ($request->store_id) {
+            $condition[] = ["store_id", "=", $request->store_id];
+        }
+        if ($request->store_phone) {
+            $user = User::where("phone", $request->store_phone)->first();
+            if ($user) {
+                $condition[] = ["store_id", "=", $user->id];
+            } else {
+                $condition[] = ["orders.id", "=", "-1"];
+            }
+        }
+        if ($request->filled("status")) {
+            $condition[] = ["orders.status", "=", $request->status];
+        }
+        if ($request->filled("express_status")) {
+            $condition[] = ["orders.express_status", "=", $request->express_status];
+        }
+        if ($request->filled("order_no")) {
+            $condition[] = ["orders.order_no", "=", $request->order_no];
+        }
+        $condition[] = ["orders.store_id", ">=", 1];
+        $data = Order::join("users", "users.id", "=", "orders.user_id")
+            ->where($condition)
+            ->orderByDesc("orders.id")
+            ->select("orders.*", "users.phone")
+            ->paginate($size)->toArray();
+        foreach ($data["data"] as $k => &$v) {
+            $sku = MallSku::find($v["sku_id"]);
+            $spu = MallSpu::find($sku["spu_id"]);
+            $u = User::find($v["store_id"]);
+            $v["spu"] = $spu;
+            $v["sku"] = $sku;
+            $v["address"]["address"] = city_name($v["address"]["area"]);
+            $v["store_phone"] = $u["phone"];
+        }
+        return $this->executeSuccess("请求", $data);
+    }
 }
