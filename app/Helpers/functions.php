@@ -130,7 +130,7 @@ if (!function_exists('city_name')) {
         $city = Area::where('code', $code)->with('parent.parent.parent')->first();
         $str = [
             //$city['parent']['parent']['parent']['name'] ?? '',
-            //$city['parent']['parent']['name'] ?? '',
+            $city['parent']['parent']['name'] ?? '',
             $city['parent']['name'] ?? '',
             $city['name'] ?? ''
         ];
