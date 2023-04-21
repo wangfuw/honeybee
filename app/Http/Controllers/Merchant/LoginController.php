@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Merchant;
 
-use App\Http\Controllers\BaseController;
 use App\Models\Store;
 use App\Validate\UserValidate;
 use Illuminate\Http\Request;
 
-class LoginController extends BaseController
+class LoginController extends MerchantBaseController
 {
     public function __construct(UserValidate $validate)
     {
@@ -78,9 +77,9 @@ class LoginController extends BaseController
         $user = auth('merchant')->user();
         $store = Store::where("user_id", $user->id)->first();
         if($store->on_line == 1){
-            return $this->success("请求成功",$menus);
+            return $this->executeSuccess("请求",$menus);
         }else{
-            return $this->success("请求成功",array_splice($menus,0,1));
+            return $this->executeSuccess("请求",array_splice($menus,0,1));
         }
     }
 }
