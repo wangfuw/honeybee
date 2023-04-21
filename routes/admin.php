@@ -15,6 +15,7 @@ use  App\Http\Controllers\Admin\RechargeController;
 use  App\Http\Controllers\Admin\BlockController;
 use  App\Http\Controllers\Admin\ConfigController;
 use  App\Http\Controllers\Admin\StoreController;
+use  App\Http\Controllers\Admin\OrderController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -88,8 +89,10 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("getConfig", [ConfigController::class, "getConfig"]);
             Route::post("editConfig", [ConfigController::class, "editConfig"])->middleware(["admin.response"]);
 
-            Route::get("storeList",[StoreController::class,"storeList"]);
-            Route::post("editStore",[StoreController::class,"editStore"])->middleware(["admin.response"]);
+            Route::get("storeList", [StoreController::class, "storeList"]);
+            Route::post("editStore", [StoreController::class, "editStore"])->middleware(["admin.response"]);
+
+            Route::get("orderList", [OrderController::class, "orderList"]);
         });
     });
 });
