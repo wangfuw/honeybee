@@ -20,7 +20,6 @@ class HomeController extends AdminBaseController
         $data = User::where($condition)->groupBy('date')
             ->get([DB::raw("FROM_UNIXTIME(created_at,'%Y-%m-%d') as date"), DB::raw('COUNT(id) as num')])
             ->toArray();
-        var_dump(DB::getQueryLog());
         return $this->executeSuccess("请求", $data);
     }
 }
