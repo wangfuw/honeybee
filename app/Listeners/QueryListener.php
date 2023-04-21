@@ -43,8 +43,13 @@ class QueryListener
             }
             return $binding;
         }, $bindings);
-//        $sql = str_replace('?', '%s', $sql);
-//        $sql = sprintf($sql, ...$bindings);
+        $sql = str_replace('?', '%s', $sql);
+        try{
+            $sql = sprintf($sql, ...$bindings);
+        }catch (\Exception $exception){
+
+        }
+
         Log::info('sql_log', ['sql' => $sql, 'time' => $time . 'ms']);
     }
 
