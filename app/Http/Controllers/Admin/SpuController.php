@@ -27,6 +27,9 @@ class SpuController extends AdminBaseController
         if (!$this->validate->scene('add')->check($params)) {
             return $this->fail($this->validate->getError());
         }
+        if($params["fee"] < 0){
+            return  $this->fail("运费不能为负数");
+        }
 
         DB::beginTransaction();
         try {
@@ -146,6 +149,9 @@ class SpuController extends AdminBaseController
         $spu = MallSpu::find($request->id);
         if (!$spu || $spu->user_id > 0) {
             return $this->error("ID");
+        }
+        if($params["fee"] < 0){
+            return  $this->fail("运费不能为负数");
         }
         DB::beginTransaction();
         try {

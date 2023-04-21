@@ -53,6 +53,7 @@ class StoreController extends AdminBaseController
                     $store->save();
                     User::where("id", $store->user_id)->update(["is_shop" => 1]);
                     DB::commit();
+                    // 发送短信提醒，店铺通过，附带登录链接
                     return $this->executeSuccess("操作");
                 } catch (\Exception $exception) {
                     DB::rollBack();
