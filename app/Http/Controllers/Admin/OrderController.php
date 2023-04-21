@@ -49,4 +49,29 @@ class OrderController extends AdminBaseController
         }
         return $this->executeSuccess("请求", $data);
     }
+
+    public function sendSku(Request $request)
+    {
+        if (!$request->filled("id")) {
+            return $this->error("ID");
+        }
+        if (!$request->filled("express_no")) {
+            return $this->fail("快递单号必填");
+        }
+        if (!$request->filled("express_name")) {
+            return $this->fail("快递单号必填");
+        }
+        $order = Order::find($request->id);
+        if (!$order) {
+            return $this->error("ID");
+        }
+        if($order->status != 2){
+            return $this->fail("订单未支付");
+        }
+        $order->express_no = $request->express_no;
+        $order->express_name = $request->express_name;
+        $order->express_status = 2;
+        $order->save();
+        return $this->executeSuccess("发货");
+    }
 }
