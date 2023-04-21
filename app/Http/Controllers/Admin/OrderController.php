@@ -70,7 +70,7 @@ class OrderController extends AdminBaseController
         }
         $order->express_no = $request->express_no;
         $order->express_name = $request->express_name;
-        $order->express_status = 2;
+        $order->express_status = 1;
         $order->save();
         return $this->executeSuccess("发货");
     }
