@@ -35,51 +35,53 @@ class LoginController extends MerchantBaseController
         }
         return $this->success('登录成功', [
             'user' => $user,
+            'on_line' => $store->on_line,
             'token' => $token,
         ]);
     }
 
-    public function menuList(Request  $request){
+    public function menuList(Request $request)
+    {
         $menus = [
             [
-                "id"=>1,
-                "title"=>"首页",
-                "icon"=>"HomeFilled",
-                "path"=>"/dashboard"
+                "id" => 1,
+                "title" => "首页",
+                "icon" => "HomeFilled",
+                "path" => "/dashboard"
             ],
             [
-                "id"=>2,
-                "title"=>"店铺管理",
-                "icon"=>"Operation",
-                "path"=>"/shop",
-                "children"=>[
+                "id" => 2,
+                "title" => "店铺管理",
+                "icon" => "Operation",
+                "path" => "/shop",
+                "children" => [
                     [
-                        "id"=>3,
-                        "title"=>"商品列表",
-                        "icon"=>"Tickets",
-                        "path"=>"/spuList"
+                        "id" => 3,
+                        "title" => "商品列表",
+                        "icon" => "Tickets",
+                        "path" => "/spuList"
                     ],
                     [
-                        "id"=>4,
-                        "title"=>"商品详情",
-                        "icon"=>"Film",
-                        "path"=>"/spuDetail"
+                        "id" => 4,
+                        "title" => "商品详情",
+                        "icon" => "Film",
+                        "path" => "/spuDetail"
                     ],
                     [
-                        "id"=>5,
-                        "title"=>"订单管理",
-                        "icon"=>"Burger",
-                        "path"=>"/orderList"
+                        "id" => 5,
+                        "title" => "订单管理",
+                        "icon" => "Burger",
+                        "path" => "/orderList"
                     ]
                 ],
             ],
         ];
         $user = auth('merchant')->user();
         $store = Store::where("user_id", $user->id)->first();
-        if($store->on_line == 1){
-            return $this->executeSuccess("请求",$menus);
-        }else{
-            return $this->executeSuccess("请求",array_splice($menus,0,1));
+        if ($store->on_line == 1) {
+            return $this->executeSuccess("请求", $menus);
+        } else {
+            return $this->executeSuccess("请求", array_splice($menus, 0, 1));
         }
     }
 }
