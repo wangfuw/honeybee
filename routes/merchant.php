@@ -10,6 +10,8 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
     Route::middleware(['merchant.token'])->group(function () {
         Route::get("dealLine", [HomeController::class, "dealLine"]);
+        Route::get("storeInfo", [HomeController::class, "storeInfo"]);
+        Route::post("bindPay", [HomeController::class, "bindPay"]);
         Route::get("menuList", [LoginController::class, "menuList"]);
         Route::get("categoryList", [SpuController::class, "categoryList"]);
         Route::get("spuList", [SpuController::class, "spuList"]);
