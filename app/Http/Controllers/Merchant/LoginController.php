@@ -78,9 +78,9 @@ class LoginController extends BaseController
         $user = auth('merchant')->user();
         $store = Store::where("user_id", $user->id)->first();
         if($store->on_line == 1){
-            return $menus;
+            return $this->success("请求成功",$menus);
         }else{
-            return array_splice($menus,0,1);
+            return $this->success("请求成功",array_splice($menus,0,1));
         }
     }
 }
