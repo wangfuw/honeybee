@@ -40,7 +40,7 @@ class StoreController extends AdminBaseController
             return $this->error("ID");
         }
         $store = Store::find($request->id);
-        if ($request->status) {
+        if ($request->filled('status')) {
             $store->status = $request->status;
             $store->save();
             return $this->executeSuccess("操作");
