@@ -44,7 +44,7 @@ class QueryListener
             return $binding;
         }, $bindings);
         $sql = str_replace('?', '%s', $sql);
-        $sql = sprintf($sql, ...$bindings);
+        $sql = vsprintf($sql, ...$bindings);
         Log::info('sql_log', ['sql' => $sql, 'time' => $time . 'ms']);
     }
 
