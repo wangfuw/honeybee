@@ -33,13 +33,14 @@ class Order extends Base
     $table->integer('deleted_at')->nullable()->comment('删除时间');
      */
     protected $fillable = [
-        'id','base_id','order_no','user_id','type','created_at','updated_at'
+        'id','base_id','order_no','user_id','type','created_at','updated_at','address'
     ];
 
     protected $hidden = ['deleted_at'];
 
     protected $casts = [
-        'products' => 'array'
+        'products' => 'array',
+        'address'=>'array'
     ];
 
     public function getUser()
