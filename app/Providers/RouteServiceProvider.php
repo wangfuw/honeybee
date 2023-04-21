@@ -50,6 +50,10 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('hack')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/admin.php'));
+
+            Route::middleware('merchant')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/merchant.php'));
         });
     }
 
