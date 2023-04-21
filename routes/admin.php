@@ -14,6 +14,7 @@ use  App\Http\Controllers\Admin\ScoreController;
 use  App\Http\Controllers\Admin\RechargeController;
 use  App\Http\Controllers\Admin\BlockController;
 use  App\Http\Controllers\Admin\ConfigController;
+use  App\Http\Controllers\Admin\StoreController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
