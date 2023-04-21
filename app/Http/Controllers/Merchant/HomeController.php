@@ -74,7 +74,7 @@ class HomeController extends MerchantBaseController
             if (!regex($request->zfb_payment, "payAccount")) {
                 return $this->fail("账户格式错误");
             }
-            $store->wx_payment = $request->zfb_payment;
+            $store->zfb_payment = $request->zfb_payment;
         }
         $store->save();
         return $this->executeSuccess("操作");
