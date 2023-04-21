@@ -45,6 +45,7 @@ class OrderController extends AdminBaseController
             $spu = MallSpu::find($sku["spu_id"]);
             $v["spu"] = $spu;
             $v["sku"] = $sku;
+
         }
         return $this->executeSuccess("请求", $data);
     }
