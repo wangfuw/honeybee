@@ -16,6 +16,7 @@ use  App\Http\Controllers\Admin\BlockController;
 use  App\Http\Controllers\Admin\ConfigController;
 use  App\Http\Controllers\Admin\StoreController;
 use  App\Http\Controllers\Admin\OrderController;
+use  App\Http\Controllers\Admin\HomeController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -25,6 +26,8 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
         Route::post("uploadOne", [LoginController::class, "uploadOne"]);
 
         Route::middleware(['admin.auth'])->group(function () {
+            Route::get("registerList",[HomeController::class,"registerLine"]);
+
             Route::get("admins", [AdminController::class, "admins"]);
             Route::get("groups", [AdminController::class, "groups"]);
             Route::get("actionLog", [AdminController::class, "actionLog"]);
