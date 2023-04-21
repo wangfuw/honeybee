@@ -37,11 +37,10 @@ class LoginController extends BaseController
         return $this->success('登录成功', [
             'user' => $user,
             'token' => $token,
-            "menu"=> $this->menuList($store->on_line)
         ]);
     }
 
-    private function menuList($type){
+    public function menuList(Request  $request){
         $menus = [
             [
                 "id"=>1,
@@ -76,7 +75,9 @@ class LoginController extends BaseController
                 ],
             ],
         ];
-        if($type == 1){
+        $user = auth('merchant')->user();
+        $store = Store::where("user_id", $user->id)->first();
+        if($store->on_line == 1){
             return $menus;
         }else{
             return array_splice($menus,0,1);
