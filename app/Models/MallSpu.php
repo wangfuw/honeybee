@@ -39,7 +39,7 @@ class MallSpu extends Base
     //查询关联一条数据
     public function skp()
     {
-        return $this->hasOne('MallSku','spu_id','id');
+        return $this->hasOne(MallSku::class,'spu_id','id');
     }
 
     public function get_welfare($data = []){
@@ -113,7 +113,7 @@ class MallSpu extends Base
         $page = $params['page'] ?? 1;
         $page_size = $params['page_size'] ?? 6;
         $category_id = $params['category_id']??0;
-        $store_id    = $params['store_id'];
+        $store_id    = $params['store_id']??'';
         if($keyword){
             add_keyword($keyword,$user_id);
         }
@@ -128,8 +128,12 @@ class MallSpu extends Base
             })->when($store_id,function ($query) use($store_id){
                 return $query->where('user_id',$store_id);
             })->where('saleable', 1)
-            ->get()->forPage($page, $page_size);
-        return collect([])->merge($list);
+            ->get()->map(function ($item,$items){
+                $item->price = $item->skp->price;
+                unset($item->skp);
+                return $item;
+            })->forPage($page, $page_size);
+        return collect([])->merge($list)->toArray();
     }
 
     //商品详情
@@ -138,13 +142,13 @@ class MallSpu extends Base
         $id = $params["id"];
         return  $this->with(['skp'=>function($query){
             return $query->select('spu_id','price','stock','indexes');
-        }])->select('id','name','score_zone','logo','user_id','details','banners','special_spec')
+        }])->select('id','name','score_zone','logo','user_id as store_id','details','banners','special_spec','fee')
             ->where('id',$id)->first()->toArray();
     }
 
     public function get_category($store_id)
     {
-        $cates = self::query()->where('user_id',$store_id)->pluck('category');
+        $cates = self::query()->where('user_id',$store_id)->pluck('category_one');
         if(empty($cates)) return [];
         $cates = array_unique($cates->toArray());
         $cate_names = MallCategory::get_first();

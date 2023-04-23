@@ -50,7 +50,6 @@ class SpuController extends BaseController
     public function get_spu_first(Request $request)
     {
         $info = $this->model->getInfo($request->toArray());
-//        dd($info);
         if(empty($info)) return $this->fail('数据错误');
         //获取用户默认地址
         $info['store_info'] = [];
