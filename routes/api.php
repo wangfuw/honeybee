@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\ZoneController;
 use App\Http\Controllers\Api\ScoreController;
+use App\Http\Controllers\Api\SpuController;
+use App\Http\Controllers\Api\ShopController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -104,6 +106,21 @@ Route::controller(UserController::class)->group(function () {
         Route::post('consume_score',[ScoreController::class,'get_sale_sore']);
         Route::post('ticket_score',[ScoreController::class,'get_ticket_sore']);
         Route::post('lucky_score',[ScoreController::class,'get_lucky_sore']);
+        //商品
+        //搜索商品页面
+        Route::post('search',[SpuController::class,'search']);
+        //搜索关键词
+        Route::post('get_search_keys',[SpuController::class,'get_search_keys']);
+        //商品详情
+        Route::post('spu_info',[SpuController::class,'get_spu_first']);
+
+        //店铺详情
+        Route::post('get_store_info',[StoreController::class,'store']);
+
+        //购物车
+        Route::post('add_cart',[ShopController::class,'add_shop_car']);
+        Route::post('carts',[ShopController::class,'show_shop_car']);
+        Route::post('del_carts',[ShopController::class,'del_from_car']);
     });
 });
 

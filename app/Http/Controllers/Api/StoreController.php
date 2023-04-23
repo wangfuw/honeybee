@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\Area;
 use App\Models\Store;
+use App\Services\StoreService;
 use App\Validate\StoreValidate;
 use Illuminate\Http\Request;
 
@@ -19,9 +20,11 @@ class StoreController extends BaseController
 
     protected $validate;
 
-    public function __construct(Store $model, StoreValidate $validate){
+    protected $service;
+    public function __construct(Store $model, StoreValidate $validate,StoreService $service){
         $this->model = $model;
         $this->validate = $validate;
+        $this->service = $service;
     }
 
     public function add_store(Request $request)
@@ -70,4 +73,17 @@ class StoreController extends BaseController
         $info->save();
         return $this->success('重新提交成功,待审核');
     }
+
+    //进店看店铺详情
+    public function store(Request $request)
+    {
+        if(!$this->validate->scene('info')->check($request->only(['id'])))
+        {
+            return $this->fail($this->validate->getError());
+        }
+        $store_info = $this->model->get_store_info($request->id);
+        return $this->success('请求成功',$store_info);
+    }
+
+
 }

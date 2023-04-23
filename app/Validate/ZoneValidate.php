@@ -22,9 +22,10 @@ class ZoneValidate extends BaseValidate {
 
     //自定义场景
     protected $scene = [
-       'welfare'=>['keyword','score_zone','page','page_size'],
-       'preferred'=>['keyword','score_zone','page','page_size'],
-       'happiness'=>['keyword','page','page_size'],
-       'consume'=>['keyword','page','page_size'],
+        'welfare'=>['keyword','score_zone','page','page_size'],
+        'preferred'=>['keyword','score_zone','page','page_size'],
+        'happiness'=>['keyword','page','page_size'],
+        'consume'=>['keyword','page','page_size'],
+        'page'=> ['page','page_size'],
     ];
 }

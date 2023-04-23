@@ -17,4 +17,10 @@ class MallCategory extends Base
         'created_at',
         'updated_at'
     ];
+
+    //获取一级
+    public static function get_first()
+    {
+        return self::query()->where('parent_id',0)->pluck('name','id')->toArray();
+    }
 }

@@ -19,4 +19,13 @@ class MallSku extends Base
         'updated_at',
         'deleted_at',
     ];
+
+    public function get_sku($data)
+    {
+        $spu_id = $data['spu_id'];
+        $indexes = $data['indexes'];
+        $list =  self::query()->select('id','price','stock')->where('spu_id',$spu_id)->where('indexes',$indexes)->first();
+        if(empty($list)) return [];
+        return $list->toArray();
+    }
 }

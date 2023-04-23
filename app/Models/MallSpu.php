@@ -3,6 +3,8 @@
 namespace App\Models;
 
 
+use Illuminate\Support\Facades\Redis;
+
 class MallSpu extends Base
 {
     protected $table = 'mall_spu';
@@ -105,32 +107,53 @@ class MallSpu extends Base
         return collect([])->merge($list);
     }
 
-    public function get_search_spu($params,$asac_price)
+    public function get_search_spu($params,$user_id)
     {
-        $keyword = $params['keyword']??'';
-        $page = $params['page']??1;
-        $page_size = $params['page_size']??6;
-        $list = $this->with(['skp'=>function($query){
-            return $query->select('spu_id','price');
-        }])->select('id','name','score_zone','logo','user_id')
-            ->when($keyword,function ($query) use ($keyword){
-                return $query->where('name','like','%'.$keyword.'%');
+        $keyword = $params['keyword'] ?? '';
+        $page = $params['page'] ?? 1;
+        $page_size = $params['page_size'] ?? 6;
+        $category_id = $params['category_id']??0;
+        $store_id    = $params['store_id'];
+        if($keyword){
+            add_keyword($keyword,$user_id);
+        }
+        $list = $this->with(['skp' => function ($query) {
+            return $query->select('spu_id', 'price');
+        }])->select('id', 'name', 'score_zone', 'logo', 'user_id as store_id')
+            ->when($keyword, function ($query) use ($keyword) {
+                return $query->where('name', 'like', '%' . $keyword . '%');
             })
-            ->where('saleable',1)
-            ->get()->forPage($page,$page_size)->map(function ($item,$items) use($asac_price){
-                $item->price = $item->skp['price'];
-                $item->asac_price = bcdiv($item->skp['price'] , $asac_price,2);
-            });
+            ->when($category_id,function ($query) use($category_id){
+                return $query->where('category_one',$category_id);
+            })->when($store_id,function ($query) use($store_id){
+                return $query->where('user_id',$store_id);
+            })->where('saleable', 1)
+            ->get()->forPage($page, $page_size);
         return collect([])->merge($list);
     }
 
+    //商品详情
     public function getInfo($params)
     {
         $id = $params["id"];
         return  $this->with(['skp'=>function($query){
-            return $query->select('spu_id','price');
-        }])->select('id','name','score_zone','logo','user_id','details','banners')
+            return $query->select('spu_id','price','stock','indexes');
+        }])->select('id','name','score_zone','logo','user_id','details','banners','special_spec')
             ->where('id',$id)->first()->toArray();
+    }
 
+    public function get_category($store_id)
+    {
+        $cates = self::query()->where('user_id',$store_id)->pluck('category');
+        if(empty($cates)) return [];
+        $cates = array_unique($cates->toArray());
+        $cate_names = MallCategory::get_first();
+        $arr = [];
+        foreach ($cates as $key=>$value){
+            $arr[$key]['category_id'] = $value;
+            $arr[$key]['category_name'] = $cate_names[$value];
+        }
+        array_unshift($arr,['category_id'=>'','category_name'=>'全部']);
+        return  $arr;
     }
 }

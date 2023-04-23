@@ -31,7 +31,7 @@ class CreateMallSpuTable extends Migration
             $table->tinyInteger('game_zone')->default(1)->comment('1-福利专区 2-优选专区 3-幸运专区 4-消费专区');
             //商品绑定倍数分区
             $table->tinyInteger('score_zone')->default(0)->comment('1-一倍积分 2-二倍积分 3-三倍积分');
-
+            $table->decimal('fee',4)->default(0)->comment("运费");
             $table->integer('created_at')->comment('创建时间');
             $table->integer('updated_at')->comment('编辑时间');
             $table->integer('deleted_at')->nullable()->comment('删除时间');
