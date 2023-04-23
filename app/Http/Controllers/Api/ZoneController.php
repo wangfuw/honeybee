@@ -24,7 +24,7 @@ class ZoneController extends BaseController
             return $this->fail($this->validate->getError());
         }
         $list = $this->model->get_welfare($request->toArray());
-        return $this->successPaginate($list);
+        return $this->success('请求成功',$list);
     }
 
     //优选
@@ -34,7 +34,7 @@ class ZoneController extends BaseController
             return $this->fail($this->validate->getError());
         }
         $list = $this->model->get_preferred($request->toArray());
-        return $this->successPaginate($list);
+        return $this->success('请求成功',$list);
     }
 
     //幸福
@@ -44,7 +44,7 @@ class ZoneController extends BaseController
             return $this->fail($this->validate->getError());
         }
         $list = $this->model->get_happiness($request->toArray());
-        return $this->successPaginate($list);
+        return $this->success('请求成功',$list);
     }
 
     //消费
@@ -54,6 +54,6 @@ class ZoneController extends BaseController
             return $this->fail($this->validate->getError());
         }
         $list = $this->model->get_consume($request->toArray());
-        return $this->successPaginate($list);
+        return $this->success('请求成功',$list);
     }
 }
