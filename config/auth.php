@@ -48,6 +48,10 @@ return [
             'driver' => 'jwt',      // 原来是 token 改成jwt
             'provider' => 'admins',
         ],
+        'merchant' =>[
+            'driver' => 'jwt',      // 原来是 token 改成jwt
+            'provider' => 'users',
+        ]
     ],
 
     /*

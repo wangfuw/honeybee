@@ -138,4 +138,39 @@ if (!function_exists('city_name')) {
     }
 }
 
+if(!function_exists("regex")){
+    function regex($value, $rule)
+    {
+        $validate = [
+            'email' => '/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/',
+            'phone' => '#^13[\d]{9}$|^14[5,7]{1}\d{8}$|^15[^4]{1}\d{8}$|^17[0,6,7,8]{1}\d{8}$|^18[\d]{9}$#',
+            'interphone' => '/^[0-9]{6,11}$/',
+            'username' => '/^[a-zA-Z][A-Za-z0-9]{5,17}$/',
+            'nickname' => '/^[\x{4e00}-\x{9fa5}A-Za-z0-9_]{1,12}$/u',  // 昵称，2-12位的汉字，字母或者数字
+            'theme' => '/^[\x{4e00}-\x{9fa5}A-Za-z0-9_ ]{2,50}$/u', // 反馈主题
+            'password' => '/^[A-Za-z0-9@#!_-~\.]{6,18}$/',  // 密码，6-18位字母或者数字
+            'double' => '/^[-\+]?\d+(\.\d+)?$/',
+            'bankcard' => '/^(\d{16,19})$/',
+            'card' => '/^[A-Za-z0-9]{4,20}$/',
+            'qqNum' => '/^[0-9]{4,15}/',
+            'qq' => '/^[1-9][0-9]{4,15}$/',
+            'passport' => '/^[a-zA-Z0-9]{6,12}$/',
+            'inviteCode' => '/^[0-9]{6,8}/',
+            'cueWords' => '/^[\x{4e00}-\x{9fa5}A-Za-z0-9_ \,\，]{1,200}$/u',
+            "trxAddress" => '/^[A-Za-z0-9]{34,34}$/',
+            "ethAddress" => '/^0x[A-Fa-f0-9]{40,40}/',
+            "num" => '/^[1-9][0-9]*$/',
+            "url" => '/^[A-Za-z0-9\.]{1,30}$/',
+            'payAccount'=>'/[a-zA-Z0-9]+/'
+        ];
+        $rule = $validate[$rule];
+        $sb = preg_match($rule, $value);
+        if ($sb === 1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+}
+
 

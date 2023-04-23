@@ -6,6 +6,7 @@ use App\Http\Middleware\AdminAuth;
 use App\Http\Middleware\AdminResponse;
 use App\Http\Middleware\AdminSign;
 use App\Http\Middleware\AdminToken;
+use App\Http\Middleware\MerchantToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -54,6 +55,12 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+
+        'merchant' => [
+            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
     ];
 
     /**
@@ -77,6 +84,7 @@ class Kernel extends HttpKernel
         'admin.token' => AdminToken::class,
         'admin.auth' => AdminAuth::class,
         'admin.response' => AdminResponse::class,
+        'merchant.token' => MerchantToken::class,
 //        'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
     ];
 }

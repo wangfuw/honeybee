@@ -16,6 +16,7 @@ use  App\Http\Controllers\Admin\BlockController;
 use  App\Http\Controllers\Admin\ConfigController;
 use  App\Http\Controllers\Admin\StoreController;
 use  App\Http\Controllers\Admin\OrderController;
+use  App\Http\Controllers\Admin\HomeController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -25,6 +26,9 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
         Route::post("uploadOne", [LoginController::class, "uploadOne"]);
 
         Route::middleware(['admin.auth'])->group(function () {
+            Route::get("registerLine",[HomeController::class,"registerLine"]);
+            Route::get("dealLine",[HomeController::class,"dealLine"]);
+
             Route::get("admins", [AdminController::class, "admins"]);
             Route::get("groups", [AdminController::class, "groups"]);
             Route::get("actionLog", [AdminController::class, "actionLog"]);
@@ -93,6 +97,8 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("editStore", [StoreController::class, "editStore"])->middleware(["admin.response"]);
 
             Route::get("orderList", [OrderController::class, "orderList"]);
+            Route::get("shopOrderList", [OrderController::class, "shopOrderList"]);
+            Route::post("sendSku", [OrderController::class, "sendSku"])->middleware(['admin.response']);
         });
     });
 });

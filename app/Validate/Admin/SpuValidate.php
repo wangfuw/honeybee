@@ -17,7 +17,7 @@ class SpuValidate extends BaseValidate
         'detail_imgs' => 'required',
         'special_spec' => 'required',
         'skus'=>'required',
-        'saleable'=>'required|numeric|lte:1',
+        'saleable'=>'required|numeric|lte:4',
         'fee'=>'required'
     ];
     //自定义验证信息
