@@ -140,10 +140,16 @@ class MallSpu extends Base
     public function getInfo($params)
     {
         $id = $params["id"];
-        return  $this->with(['skp'=>function($query){
+        $info =  $this->with(['skp'=>function($query){
             return $query->select('spu_id','price','stock','indexes');
         }])->select('id','name','score_zone','logo','user_id as store_id','details','banners','special_spec','fee')
-            ->where('id',$id)->first()->toArray();
+            ->where('id',$id)->first();
+        if(empty($info)) return [];
+        $info->price = $info->skp->price;
+        $info->stock = $info->skp->stock;
+        $info->indexes = $info->skp->indexes;
+        unset($info->skp);
+        return  $info->toArray();
     }
 
     public function get_category($store_id)

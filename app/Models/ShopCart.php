@@ -60,7 +60,7 @@ class ShopCart extends Base
             unset($item->store);
             return $item;
         })->forPage($page,$page_size);
-        return collect([])->merge($list);
+        return collect([])->merge($list)->toArray();
     }
 
 
