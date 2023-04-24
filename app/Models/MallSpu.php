@@ -118,7 +118,7 @@ class MallSpu extends Base
             add_keyword($keyword,$user_id);
         }
         $list = $this->with(['skp' => function ($query) {
-            return $query->select('spu_id', 'price');
+            return $query->select('spu_id', 'price','');
         }])->select('id', 'name', 'score_zone', 'logo', 'user_id as store_id')
             ->when($keyword, function ($query) use ($keyword) {
                 return $query->where('name', 'like', '%' . $keyword . '%');

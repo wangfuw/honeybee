@@ -15,7 +15,9 @@ use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\ZoneController;
 use App\Http\Controllers\Api\ScoreController;
 use App\Http\Controllers\Api\SpuController;
+use App\Http\Controllers\Api\SkuController;
 use App\Http\Controllers\Api\ShopController;
+use App\Http\Controllers\Api\OrderController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -95,6 +97,27 @@ Route::controller(UserController::class)->group(function () {
         //获取地址
         Route::post('areas',[AreaController::class,'get_area']);
     });
+    //order
+    Route::group(['middleware' => 'auth'],function (){
+        //新增订单
+        Route::post('add_order',[OrderController::class,'create_order']);
+        //撤单
+        Route::post('del_order',[OrderController::class,'del_order']);
+        //支付
+        Route::post('pay_order',[OrderController::class,'pay_order']);
+        //签收
+        Route::post('sign_order',[OrderController::class,'sign_order']);
+        //订单列
+        Route::post('order_list',[OrderController::class,'order_list']);
+        //订单详情
+        Route::post('order_info',[OrderController::class,'info']);
+        //申请换货
+        Route::post('apply_revoke',[OrderController::class,'apply_revoke']);
+        //换货列表
+        Route::post('revokes',[OrderController::class,'revokes']);
+        //取消换货
+        Route::post('del_revoke',[OrderController::class,'del_revoke']);
+    });
 
     Route::group(['middleware' => 'auth'],function (){
         Route::post('welfare',[ZoneController::class,'welfareZone']);
@@ -109,10 +132,17 @@ Route::controller(UserController::class)->group(function () {
         //商品
         //搜索商品页面
         Route::post('search',[SpuController::class,'search']);
+        //获取asac现价
+        Route::post('get_price',[SpuController::class,'get_last_price']);
         //搜索关键词
         Route::post('get_search_keys',[SpuController::class,'get_search_keys']);
         //商品详情
         Route::post('spu_info',[SpuController::class,'get_spu_first']);
+
+        Route::post('get_store_category',[SpuController::class,'get_store_category']);
+
+        //切换商品
+        Route::post('get_product',[SkuController::class,'get_product']);
 
         //店铺详情
         Route::post('get_store_info',[StoreController::class,'store']);

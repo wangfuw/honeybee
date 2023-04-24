@@ -24,4 +24,5 @@ class Asaconfig extends Base
     {
         return self::query()->value('last_price');
     }
+
 }

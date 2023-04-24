@@ -66,6 +66,13 @@ class Handler extends ExceptionHandler
                 'error'  => null,
             ]);
         }
+        if ($exception instanceof ApiException) {
+            return response()->json([
+                'status'  => 0,
+                'code'    => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ]);
+        }
         return parent::render($request, $exception);
     }
 }

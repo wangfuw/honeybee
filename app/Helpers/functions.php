@@ -99,14 +99,6 @@ if (!function_exists('inviteCode')) {
        }
    }
 
-   if(!function_exists('get_order_no')){
-       function get_order_no()
-       {
-           $yCode = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J');
-           return $yCode[intval(date('Y')) - 2011] . strtoupper(dechex(date('m'))) . date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%02d', rand(0, 99));
-       }
-   }
-
 
 if (!function_exists('send_sms')) {
     function send_sms($phone, $content, $om = "+86")
@@ -173,4 +165,8 @@ if(!function_exists("regex")){
     }
 }
 
-
+if(!function_exists('make_phone')){
+    function make_phone($phone){
+        return substr($phone, 0, 3).'*****'.substr($phone, 8);
+    }
+}
