@@ -46,6 +46,7 @@ class AsacController extends MerchantBaseController
         DB::beginTransaction();
         try {
             $user->save();
+            $node_pre->save();
             Score::create([
                 "user_id" => $user->id,
                 "flag" => 1,
