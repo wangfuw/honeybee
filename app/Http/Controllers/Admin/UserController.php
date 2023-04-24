@@ -84,9 +84,12 @@ class UserController extends AdminBaseController
             } else if ($request->type == 3) {
                 $num = min($user->luck_score, $request->num);
                 $user->luck_score = $user->luck_score - $num;
-            } else {
+            } else if ($request->type == 4) {
                 $num = min($user->ticket_num, $request->num);
                 $user->ticket_num = $user->ticket_num - $num;
+            } else {
+                $num = min($user->coin_num, $request->num);
+                $user->coin_num = $user->coin_num - $num;
             }
         } else {
             $num = $request->num;
@@ -96,21 +99,25 @@ class UserController extends AdminBaseController
                 $user->sale_score = $user->sale_score + $num;
             } else if ($request->type == 3) {
                 $user->luck_score = $user->luck_score + $num;
-            } else {
+            } else if ($request->type == 4) {
                 $user->ticket_num = $user->ticket_num + $num;
+            } else {
+                $user->coin_num += $num;
             }
         }
         if ($num > 0) {
             DB::beginTransaction();
             try {
                 $user->save();
-                Score::create([
-                    "user_id" => $user->id,
-                    "flag" => $request->flag,
-                    "num" => $num,
-                    "type" => $request->type,
-                    "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
-                ]);
+                if ($request->type <= 4) {
+                    Score::create([
+                        "user_id" => $user->id,
+                        "flag" => $request->flag,
+                        "num" => $num,
+                        "type" => $request->type,
+                        "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
+                    ]);
+                }
                 DB::commit();
                 return $this->executeSuccess("操作");
             } catch (\Exception $exception) {
@@ -175,18 +182,18 @@ class UserController extends AdminBaseController
             $id = $request->input("id", 1);
             $users = User::where("master_pos", "like", "%,$id,%")->select("id")->get()->toArray();
         } else {
-            $code = $request->area[count($request->area)-1];
-            $area = Area::where("code",$code)->first();
-            if($area->level == 3){
+            $code = $request->area[count($request->area) - 1];
+            $area = Area::where("code", $code)->first();
+            if ($area->level == 3) {
                 $users = UserIdentity::where("address_code", $code)->where("status", 1)->select("user_id")->get()->toArray();
-            }else{
-                $areas = Area::where("pcode",$area->code)->select("code")->get()->toArray();
-                $users = UserIdentity::whereIn("address_code",$areas)->where("status",1)->select("user_id")->get()->toArray();
+            } else {
+                $areas = Area::where("pcode", $area->code)->select("code")->get()->toArray();
+                $users = UserIdentity::whereIn("address_code", $areas)->where("status", 1)->select("user_id")->get()->toArray();
             }
         }
 
-        $green = Score::where($condition)->whereIn("user_id", $users)->where("type", 1)->where("f_type",Score::TRADE_HAVE)->sum("num");
-        $sale = Score::where($condition)->whereIn("user_id", $users)->where("type", 2)->where("f_type",Score::TRADE_HAVE)->sum("num");
+        $green = Score::where($condition)->whereIn("user_id", $users)->where("type", 1)->where("f_type", Score::TRADE_HAVE)->sum("num");
+        $sale = Score::where($condition)->whereIn("user_id", $users)->where("type", 2)->where("f_type", Score::TRADE_HAVE)->sum("num");
         $per = $green / 3 + $sale / 6;
         return $this->executeSuccess("请求", ["contribute" => $per]);
     }

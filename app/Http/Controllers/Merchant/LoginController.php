@@ -72,6 +72,18 @@ class LoginController extends MerchantBaseController
                         "title" => "订单管理",
                         "icon" => "Burger",
                         "path" => "/orderList"
+                    ],
+                    [
+                        "id" => 6,
+                        "title" => "积分和ASAC",
+                        "icon" => "Goods",
+                        "path" => "/asac"
+                    ],
+                    [
+                        "id" => 7,
+                        "title" => "燃烧记录",
+                        "icon" => "Notebook",
+                        "path" => "/burnLog"
                     ]
                 ],
             ],

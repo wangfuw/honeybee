@@ -75,4 +75,25 @@ class StoreController extends AdminBaseController
         }
         return $this->executeSuccess("操作");
     }
+
+    public function addAmount(Request $request)
+    {
+        if (!$request->id) {
+            return $this->error("ID");
+        }
+        $store = Store::find($request->id);
+        if($store->type != 1){
+            return $this->fail("商家未通过审核");
+        }
+        if ($store->on_line != 2) {
+            return $this->fail("不是线下商家");
+        }
+        $num = $request->input("num", 0);
+        if (!is_numeric($num) || $num <= 0) {
+            return $this->error("数量");
+        }
+        $store->amount += $num;
+        $store->save();
+        return $this->executeSuccess("操作");
+    }
 }
