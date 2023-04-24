@@ -58,7 +58,7 @@ class AsacController extends MerchantBaseController
                 "user_id" => $user->id,
                 "dest_address" => $node->wallet_address,
                 "number" => $num,
-                "green_num" => $num * $config->burn_give_green,
+                "green_number" => $num * $config->burn_give_green,
             ]);
             DB::commit();
             return $this->executeSuccess("燃烧");
