@@ -9,6 +9,7 @@ use App\Models\Config;
 use App\Models\Score;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AsacController extends MerchantBaseController
 {
@@ -63,6 +64,7 @@ class AsacController extends MerchantBaseController
             return $this->executeSuccess("燃烧");
         } catch (\Exception $exception) {
             DB::rollBack();
+            Log::error($exception->getMessage());
             return $this->executeFail("燃烧");
         }
     }
