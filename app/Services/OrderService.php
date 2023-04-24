@@ -498,7 +498,7 @@ class OrderService
                 'f_type'=>Score::TRADE_HAVE,
             ]);
             //签收订单
-            $info->express_status = 3;
+            $info->express_status = 2;
             $info->save();
             DB::commit();
             return true;
@@ -510,7 +510,7 @@ class OrderService
 
     public function apply_revoke($params,$user)
     {
-        $info = Order::query()->where('order_no',$params['order_no'])->where('express_status',3)->where('is_return',0)
+        $info = Order::query()->where('order_no',$params['order_no'])->where('express_status',2)->where('is_return',0)
             ->where('user_id',$user->id)->first();
         try{
             DB::beginTransaction();
