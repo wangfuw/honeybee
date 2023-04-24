@@ -5,6 +5,7 @@ use App\Http\Controllers\Merchant\LoginController;
 use App\Http\Controllers\Merchant\SpuController;
 use App\Http\Controllers\Merchant\OrderController;
 use App\Http\Controllers\Merchant\HomeController;
+use App\Http\Controllers\Merchant\AsacController;
 
 Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -21,5 +22,9 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
 
         Route::get("orderList", [OrderController::class, "orderList"]);
         Route::post("sendSku", [OrderController::class, "sendSku"]);
+
+        Route::get("info", [AsacController::class, "info"]);
+        Route::get("config", [AsacController::class, "config"]);
+        Route::post("burn", [AsacController::class, "burn"]);
     });
 });
