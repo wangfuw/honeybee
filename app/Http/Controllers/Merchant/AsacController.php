@@ -68,4 +68,12 @@ class AsacController extends MerchantBaseController
             return $this->executeFail("燃烧");
         }
     }
+
+    public function burnLog(Request $request)
+    {
+        $size = $request->size ?? $this->size;
+        $user = auth("merchant")->user();
+        $data = AsacDestory::where("user_id", $user->id)->orderByDesc("id")->paginate($size);
+        return $this->executeSuccess("request", $data);
+    }
 }

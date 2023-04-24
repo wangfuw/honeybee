@@ -26,5 +26,6 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
         Route::get("info", [AsacController::class, "info"]);
         Route::get("config", [AsacController::class, "config"]);
         Route::post("burn", [AsacController::class, "burn"]);
+        Route::get("burnLog", [AsacController::class, "burnLog"]);
     });
 });
