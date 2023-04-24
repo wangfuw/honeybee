@@ -78,6 +78,12 @@ class LoginController extends MerchantBaseController
                         "title" => "积分和ASAC",
                         "icon" => "Goods",
                         "path" => "/asac"
+                    ],
+                    [
+                        "id" => 7,
+                        "title" => "燃烧记录",
+                        "icon" => "Notebook",
+                        "path" => "/burnLog"
                     ]
                 ],
             ],
