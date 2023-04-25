@@ -64,7 +64,7 @@ class SpuController extends BaseController
         $user_id = $this->user->id;
         $address = Address::query()->where('user_id',$user_id)
             ->where('is_def',1)
-            ->select('area','address_detail','exp_person','id','exp_person','exp_phone','id')->first();
+            ->select('area','address_detail','exp_person','id','exp_person','exp_phone','id','is_def')->first();
 
         if(!empty($address)){
             $info['area'] = $address->toArray();
