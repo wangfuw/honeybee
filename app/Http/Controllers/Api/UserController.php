@@ -135,7 +135,7 @@ class UserController extends BaseController
                         $temp += 1;
                     }
                 }else{
-                    $contribute;
+                   continue;
                 }
             }
             $user->grade = grade($amount,$temp);
