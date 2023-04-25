@@ -170,3 +170,31 @@ if(!function_exists('make_phone')){
         return substr($phone, 0, 3).'*****'.substr($phone, 8);
     }
 }
+
+if(!function_exists('grade')){
+    function grade($number,$base_num = 0)
+    {
+        $grade = 0;
+        switch ($number){
+            case $number >= 150000 && $number < 1000000:
+                $grade = 1;
+                break;
+            case $number >= 1000000 && $number < 5000000:
+                $grade = 2;
+                break;
+            case $number >= 5000000 && $number < 20000000:
+                $grade = 3;
+                break;
+            case $number >= 20000000 && $number < 60000000:
+                $grade = 4;
+                break;
+            case $number >= 60000000 && $base_num >= 2:
+                $grade = 5;
+                break;
+            case $number >= 60000000 && $base_num < 2:
+                $grade = 4;
+                break;
+        }
+        return $grade;
+    }
+}
