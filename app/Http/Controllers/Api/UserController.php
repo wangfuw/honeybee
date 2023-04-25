@@ -124,7 +124,13 @@ class UserController extends BaseController
         //计算等级
 
         $user->grade = 1;
-        $user->status = UserIdentity::query()->where('user_id',$user->id)->value('status');
+        $status = UserIdentity::query()->where('user_id',$user->id)->select('status','id')->first();
+        if(empty($status)){
+            $user->status = -1;
+        }else{
+            $user->status = $status->status;
+        }
+
         return $this->success('success',['user' => $user]);
 
     }
