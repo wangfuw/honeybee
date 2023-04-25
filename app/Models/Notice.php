@@ -22,7 +22,10 @@ class Notice extends Base
         'type'
     ];
 
-
+    public function getTextAttribute($value){
+        if($value == '') return $value;
+        return  strip_tags($value);
+    }
     public function getNotices($params)
     {
         $page = $params['page']??1;
