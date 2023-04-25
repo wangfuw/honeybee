@@ -46,7 +46,7 @@ class Notice extends Base
             'text',
             'created_at',
         )->where('id',$id)->first();
-        if(isEmpty($info)) return  [];
+        if(empty($info)) return  [];
         return  $info->toArray();
     }
 }
