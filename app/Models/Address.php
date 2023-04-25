@@ -26,8 +26,10 @@ class Address extends Base
             'id','address_detail','area','is_def','exp_person','exp_phone','created_at',
         )->where('user_id',$user_id)
             ->orderBy('is_def','desc')
-            ->get()
-            ->forPage($page,$page_size);
+            ->get()->map(function ($item,$items){
+                $item->area_china = city_name($item->area);
+                return $item;
+            })->forPage($page,$page_size);
         return collect([])->merge($data);
     }
 }

@@ -44,15 +44,21 @@ class Notice extends Base
 
     public function getInfo($id = 0,$type = 0)
     {
-        $info = self::query()->select('id',
-            'title',
-            'text',
-            'created_at',
-        )->when($id,function ($query) use ($id){
-            return $query->where('id',$id);
-        })->when($id,function ($query) use ($type){
-            return $query->where('type',$type);
-        })->first();
+        if($id > 0){
+            $info = self::query()->select('id',
+                'title',
+                'text',
+                'created_at',
+            )->where('id',$id)->first();
+        }
+        if($type > 0){
+            $info = self::query()->select('id',
+                'title',
+                'text',
+                'created_at',
+            )->where('type',$type)->first();
+        }
+
         if(empty($info)) return  [];
         return  $info->toArray();
     }
