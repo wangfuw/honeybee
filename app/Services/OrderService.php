@@ -363,8 +363,9 @@ class OrderService
                     'num'          => $temp_num,
                     'trade_hash'   => rand_str_pay(64),
                 ]);
-                //用户获得绿色积分，减少余额
+                //用户获得绿色积分，减少余额,累计绿色积分
                 $user->green_score = bcadd($info->give_green_score,$user->green_score,2);
+                $user->green_score_total = bcadd($info->give_green_score,$user->green_score_total,2);
                 $user->coin_num = bcsub($user->coin_num,$info->coin_num,2);
                 $user->save();
                 break;
@@ -488,6 +489,7 @@ class OrderService
             $spuS      = MallSpu::query()->where('id',$spu_id)->select('game_zone','user_id','score_zone')->first();
             //给用户方法消费积分
             $user->sale_score = bcadd($user->sale_score,$info->give_sale_score,2);
+            $user->sale_score = bcadd($user->sale_score_total,$info->give_sale_score,2);
             $user->save();
             //积分日志
             Score::query()->create([
