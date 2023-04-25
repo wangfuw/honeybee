@@ -50,6 +50,10 @@ class News extends Base
         return collect([])->merge($data);
     }
 
+    public function getTextAttribute($value){
+        if($value == '') return $value;
+        return  strip_tags($value);
+    }
     public function getInfo($id)
     {
         $info =  self::query()->select('id',
