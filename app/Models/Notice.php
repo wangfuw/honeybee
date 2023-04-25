@@ -42,13 +42,17 @@ class Notice extends Base
         return collect([])->merge($data);
     }
 
-    public function getInfo($id)
+    public function getInfo($id = 0,$type = 0)
     {
         $info = self::query()->select('id',
             'title',
             'text',
             'created_at',
-        )->where('id',$id)->first();
+        )->when($id,function ($query) use ($id){
+            return $query->where('id',$id);
+        })->when($id,function ($query) use ($type){
+            return $query->where('type',$type);
+        })->first();
         if(empty($info)) return  [];
         return  $info->toArray();
     }

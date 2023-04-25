@@ -35,8 +35,10 @@ class NoticeController extends BaseController
     public function getInfo(Request $request)
     {
         $id = $request->id;
-        $info = $this->model->getInfo((int)$id);
+        $type = $request->type;
+        $info = $this->model->getInfo((int)$id,(int) $type);
         if(empty($info)) return $this->fail('暂无数据');
         return $this->success('success',$info);
     }
+
 }
