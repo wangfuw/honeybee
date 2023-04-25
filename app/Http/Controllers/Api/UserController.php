@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use function PHPUnit\Framework\isEmpty;
 
 class UserController extends BaseController
 {
@@ -290,7 +289,7 @@ class UserController extends BaseController
         }else{
             User::query()->where('id',$user->id)->delete();
             Auth::logout();
-            return $this->fail('登出成功');
+            return $this->success('登出成功');
         }
     }
 
