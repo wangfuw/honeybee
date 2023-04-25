@@ -40,9 +40,6 @@ class ZoneController extends BaseController
     //幸福
     public function happinessZone(Request $request)
     {
-        if(!$this->validate->scene('welfare')->check($request->toArray())){
-            return $this->fail($this->validate->getError());
-        }
         $list = $this->model->get_happiness($request->toArray());
         return $this->success('请求成功',$list);
     }
@@ -50,9 +47,6 @@ class ZoneController extends BaseController
     //消费
     public function consumeZone(Request $request)
     {
-        if(!$this->validate->scene('welfare')->check($request->toArray())){
-            return $this->fail($this->validate->getError());
-        }
         $list = $this->model->get_consume($request->toArray());
         return $this->success('请求成功',$list);
     }

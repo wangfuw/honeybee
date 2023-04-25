@@ -53,7 +53,7 @@ class MallSpu extends Base
                 return $query->where('name','like','%'.$keyword.'%');
             })
             ->where('saleable',1)->where('score_zone',$data['score_zone'])
-            ->where('game_zone',2)->get()->forPage($page,$page_size);
+            ->where('game_zone',1)->get()->forPage($page,$page_size);
         return collect([])->merge($list);
     }
 
