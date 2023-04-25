@@ -80,7 +80,7 @@ class UserController extends BaseController
                 'phone' => $phone,
                 'invite_code' =>$myself_invite_code,
                 'password' => Hash::make(Rsa::decodeByPrivateKey($request->password)),
-                'master_pos'=>$f_users->id,
+                'master_id'=>$f_users->id,
                 'master_pos'=>','.$f_users->id.$f_users->master_pos??'',
                 //--todo 注册成功赠送幸运值
                 'luck_score'=>env('BASE_LUCK',100)
