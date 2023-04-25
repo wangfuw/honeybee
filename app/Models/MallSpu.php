@@ -169,7 +169,7 @@ class MallSpu extends Base
         $id = $params["id"];
         $info =  $this->with(['skp'=>function($query){
             return $query->select('spu_id','price','stock','indexes','id');
-        }])->select('id','name','score_zone','logo','user_id as store_id','details','banners','special_spec','fee')
+        }])->select('id','name','score_zone','logo','user_id as store_id','details','banners','special_spec','fee','game_zone')
             ->where('id',$id)->first();
         if(empty($info)) return [];
         $info->price = $info->skp->price;
