@@ -64,10 +64,11 @@ class SpuController extends BaseController
         $user_id = $this->user->id;
         $address = Address::query()->where('user_id',$user_id)
             ->where('is_def',1)
-            ->select('area','address_detail')->first();
-        $info['area'] = '';
+            ->select('area','address_detail','exp_person','id','exp_person','exp_phone','id')->first();
+
         if(!empty($address)){
-            $info['area'] = city_name($address->area).$address->address_detail;
+            $info['area'] = $address->toArray();
+            $info['area']['area_china'] = city_name($address->area);
         }
         return  $this->success('请求成功',$info);
     }
