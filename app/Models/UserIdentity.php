@@ -11,7 +11,7 @@ class UserIdentity extends Base
 
     protected $table = "user_identity";
     protected $fillable = [
-        'id','user_id','username','id_card','address','front_image','back_image','status','created_at','updated_at'
+        'id','user_id','username','id_card','address_code','front_image','back_image','status','created_at','updated_at'
     ];
 
     protected $hidden = [

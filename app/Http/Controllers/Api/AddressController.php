@@ -71,7 +71,10 @@ class AddressController extends BaseController
         if(!$this->validate->scene('id')->check($data)) {
             return $this->fail($this->validate->getError());
         }
-        $info = Address::query()->where('id',$request->id)->first();
+        $info = Address::query()->where('id',$request->id)->where('user_id',auth()->id())->first();
+        if(empty($info)){
+            return $this->fail('该地址不存在');
+        }
         if($info->is_def == 1){
             return $this->fail('改地址已是默认地址');
         }
@@ -99,7 +102,10 @@ class AddressController extends BaseController
      */
     public function update_address(Request $request){
         $id  = $request->id;
-        $info = Address::query()->where('id',$id)->first();
+        $info = Address::query()->where('id',$id)->where('user_id',auth()->id())->first();
+        if(empty($info)){
+            return $this->fail('该地址不存在');
+        }
         if($request->area){
             $info->area = $request->area;
         }

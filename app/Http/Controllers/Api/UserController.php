@@ -120,6 +120,8 @@ class UserController extends BaseController
     public function me()
     {
         $user = Auth::user();
+        //计算等级
+
         $user->grade = 1;
         return $this->success('success',['user' => $user]);
 
@@ -188,7 +190,10 @@ class UserController extends BaseController
     }
     public function change_sale_password(Request $request)
     {
-        if(!$this->validate->scene('change_sale')->check($request->toArray())){
+        $data = $request->only(['phone','sale_password','re_sale_password','code']);
+       ///dd($data);
+        if(!$this->validate->scene('change_sale')->check($data)){
+
             return $this->fail($this->validate->getError());
         }
         $phone = Rsa::decodeByPrivateKey($request->phone);
@@ -275,7 +280,7 @@ class UserController extends BaseController
             return $this->fail($this->validate->getError());
         }
         $user = auth()->user();
-        $directs = User::query()->select('id','created_at')->where('master_id',$user->id)->get()->map(function ($item,$items){
+        $directs = User::query()->select('id','phone','master_pos','created_at')->where('master_id',$user->id)->get()->map(function ($item,$items){
             $item['amount'] = '123';
         })->forPage($request->page,$request->page_size);
         $list = collect([])->merge($directs);
@@ -289,8 +294,7 @@ class UserController extends BaseController
     {
         //邀请好友 返回 邀请码 和 注册接口
         $user = auth()->user();
-//        $url =  'http//:'.H5 访问链接/#/?'.'invite_cdoe='.$user->invite_code;
-        $url = '';
+        $url =  'http//:'.'www.baidu.com/#/?'.'invite_cdoe='.$user->invite_code;
         $img =  QrCode::format('png')->size(200)->generate($url);
         return  $data = 'data:image/png;base64,' . base64_encode($img );
     }

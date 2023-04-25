@@ -28,11 +28,11 @@ class UserCompleteController extends BaseController
      */
     public function identity(Request $request)
     {
-        $params = $request->only(['username','id_card','address','front_image','back_image']);
+        $params = $request->only(['username','id_card','address_code','front_image','back_image']);
         if(!$this->validate->scene('identity')->check($params)){
             return $this->fail($this->validate->getError());
         }
-        if(User::query()->where('id_card',$request->id_card)->exists()){
+        if(UserIdentity::query()->where('id_card',$request->id_card)->exists()){
             return $this->fail('该身份证已被使用');
         }
         if(checkIdentityCard($params['id_card']) == false){
