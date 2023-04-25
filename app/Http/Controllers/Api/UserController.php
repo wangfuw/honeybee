@@ -6,6 +6,7 @@ use App\Common\Rsa;
 use App\Http\Controllers\BaseController;
 use App\Models\AsacNode;
 use App\Models\User;
+use App\Models\UserIdentity;
 use App\Validate\UserValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -123,6 +124,7 @@ class UserController extends BaseController
         //计算等级
 
         $user->grade = 1;
+        $user->status = UserIdentity::query()->where('user_id',$user->id)->value('status');
         return $this->success('success',['user' => $user]);
 
     }
@@ -285,9 +287,16 @@ class UserController extends BaseController
         })->forPage($request->page,$request->page_size);
         $list = collect([])->merge($directs);
         $direct_num = $directs->count();
-        $team_num   = User::query()->where('master_pos','like','%'.','.$user->id.','.'%')->count();
+        //我的团队
+        $ids   = User::query()->where('master_pos','like','%'.','.$user->id.','.'%')->pluck('id');
+        $team_num = count($ids);
         $amount = 123124;
         return $this->success('success',compact('direct_num','team_num','amount','list'));
+    }
+
+    protected function statistics($data = [])
+    {
+
     }
 
     public function invite()
