@@ -119,6 +119,8 @@ Route::controller(UserController::class)->group(function () {
         Route::post('revokes',[OrderController::class,'revokes']);
         //取消换货
         Route::post('del_revoke',[OrderController::class,'del_revoke']);
+        //
+        Route::post('list',[\App\Http\Controllers\Api\WalletController::class,'list']);
     });
 
     Route::group(['middleware' => 'auth'],function (){
