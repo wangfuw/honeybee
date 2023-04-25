@@ -25,9 +25,11 @@ class MallSku extends Base
     }
     public function get_sku($data)
     {
+        $last_price = Asaconfig::get_price();
         $spu_id = $data['spu_id'];
         $indexes = $data['indexes'];
         $list =  self::query()->select('id','spu_id','price','stock')->where('spu_id',$spu_id)->where('indexes',$indexes)->first();
+        $list->coin_num = bcdiv($list->price,$last_price,2);
         if(empty($list)) return [];
         return $list->toArray();
     }
