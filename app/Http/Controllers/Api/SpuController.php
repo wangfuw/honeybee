@@ -6,8 +6,10 @@ use App\Http\Controllers\BaseController;
 use App\Models\Address;
 use App\Models\Asaconfig;
 use App\Models\MallSpu;
+use App\Models\Order;
 use App\Models\Store;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class SpuController extends BaseController
@@ -54,15 +56,18 @@ class SpuController extends BaseController
         //获取用户默认地址
         $info['store_info'] = [];
         if($info['store_id'] != 0){
-            $info['store_info'] = Store::query()->where('id',$info['store_id'])->select('id','store_image')->first()->toArray();
+            $info['store_info'] = Store::query()->where('user_id',$info['store_id'])->select('id','store_image','store_name')->first()->toArray();
+            $info['store_info']['number'] = MallSpu::query()->where('user_id',$info['store_id'])->count();
         }
+        $sales = Order::query()->where('spu_id',$request->id)->select(DB::raw('sum(sku_num) as sale_num'))->first();
+        $info['sale_num'] = $sales->sale_num;
         $user_id = $this->user->id;
         $address = Address::query()->where('user_id',$user_id)
             ->where('is_def',1)
             ->select('area','address_detail')->first();
         $info['area'] = '';
         if(!empty($address)){
-            $info['area'] = city_name($address->area).$address->address;
+            $info['area'] = city_name($address->area).$address->address_detail;
         }
         return  $this->success('请求成功',$info);
     }
