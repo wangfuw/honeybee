@@ -119,7 +119,9 @@ class UserController extends BaseController
      */
     public function me()
     {
-        return $this->success('success',['user' => Auth::user()]);
+        $user = Auth::user();
+        $user->grade = 1;
+        return $this->success('success',['user' => $user]);
 
     }
 
