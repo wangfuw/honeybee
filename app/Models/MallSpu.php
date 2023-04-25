@@ -168,7 +168,7 @@ class MallSpu extends Base
         $coin_price = Asaconfig::get_price();
         $id = $params["id"];
         $info =  $this->with(['skp'=>function($query){
-            return $query->select('spu_id','price','stock','indexes');
+            return $query->select('spu_id','price','stock','indexes','id');
         }])->select('id','name','score_zone','logo','user_id as store_id','details','banners','special_spec','fee')
             ->where('id',$id)->first();
         if(empty($info)) return [];
@@ -176,6 +176,8 @@ class MallSpu extends Base
         $info->coin_num = bcdiv($info->skp->price,$coin_price,2);
         $info->stock = $info->skp->stock;
         $info->indexes = $info->skp->indexes;
+        $info->sku_id = $info->skp->id;
+        $info->spu_id = $info->skp->spu_id;
         unset($info->skp);
         return  $info->toArray();
     }
