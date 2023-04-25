@@ -13,6 +13,14 @@ use Illuminate\Http\Request;
 
 class AsacController extends BaseController
 {
+
+    public function coin_info()
+    {
+        $config = Asaconfig::query()->select('last_price','old_price','name')->find(1);
+        $temp = bcsub($config['last_price'] , $config['old_price'],2);
+        $rate = bcdiv($temp*100,$config['old_price'],2).'%';
+        return $this->success('请求成功',['last_price'=>$config['last_price'],'name'=>$config['name'],'rate'=>$rate]);
+    }
     public function asac_login(Request $request)
     {
         $private_key = $request->private_key;

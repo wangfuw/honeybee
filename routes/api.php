@@ -72,6 +72,7 @@ Route::controller(UserController::class)->group(function () {
         Route::post('store_info',[StoreController::class,'get_store']);
         //修改申请
         Route::post('store_update',[StoreController::class,'update']);
+        Route::post('coin_info',[AsacController::class,'coin_info']);
     });
     //区块浏览
     Route::group(['prefix'=>'asac'],function (){
