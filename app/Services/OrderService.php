@@ -302,21 +302,6 @@ class OrderService
         $user_id   = $spuS->user_id;
         switch ($game_zone){
             case 1:
-                //绿色积分日志
-                Score::query()->create([
-                    'user_id'=>$user->id,
-                    'flag' => 1,
-                    'num' =>$info->give_green_score,
-                    'type'=>1,
-                    'f_type'=>Score::TRADE_HAVE,
-                ]);
-                Score::query()->create([
-                    'user_id'=>$user_id,
-                    'flag' => 2,
-                    'num' => $info->give_green_score,
-                    'type'=>1,
-                    'f_type'=>Score::TRADE_USED,
-                ]);
 
 
                 //币流转
@@ -336,13 +321,13 @@ class OrderService
                 switch ($score_zone){
                     case 1:
                         //商家让利
-                        $rate = Config::green_one_allowance();
+                        $rate = Config::green_one_allowance() / 100;
                         break;
                     case 2:
-                        $rate = Config::green_twice_allowance();
+                        $rate = Config::green_twice_allowance()/100;
                         break;
                     case 3:
-                        $rate = Config::green_threefold_allowance();
+                        $rate = Config::green_threefold_allowance()/100;
                         break;
                 }
                 $temp_num = bcmul($info->coin_num,$rate,2);
@@ -368,6 +353,24 @@ class OrderService
                 $user->green_score_total = bcadd($info->give_green_score,$user->green_score_total,2);
                 $user->coin_num = bcsub($user->coin_num,$info->coin_num,2);
                 $user->save();
+                //绿色积分日志
+                Score::query()->create([
+                    'user_id'=>$user->id,
+                    'flag' => 1,
+                    'num' =>$info->give_green_score,
+                    'type'=>1,
+                    'f_type'=>Score::TRADE_HAVE,
+                    'amount' => '-'.$info->coin_num
+                ]);
+                Score::query()->create([
+                    'user_id'=>$user_id,
+                    'flag' => 2,
+                    'num' => $info->give_green_score,
+                    'type'=>1,
+                    'f_type'=>Score::TRADE_USED,
+                    'amount' => '+'.$info->coin_num
+                ]);
+
                 break;
             case 2:
                 //消费积分区 -- 不会立马获得
@@ -382,13 +385,13 @@ class OrderService
                 switch ($score_zone){
                     case 1:
                         //商家让利
-                        $rate = Config::consume_one_allowance();
+                        $rate = Config::consume_one_allowance()/100;
                         break;
                     case 2:
-                        $rate = Config::consume_twice_allowance();
+                        $rate = Config::consume_twice_allowance()/100;
                         break;
                     case 3:
-                        $rate = Config::consume_threefold_allowance();
+                        $rate = Config::consume_threefold_allowance()/100;
                         break;
                 }
                 $temp_num = bcmul($info->coin_num,$rate,2);
@@ -457,6 +460,15 @@ class OrderService
                 }
                 $masters->coin_num = bcmul($info->coin_num,$rate,2);
                 $masters->save();
+                //获取幸运值日志
+                Score::query()->create([
+                    'user_id'=>$user->id,
+                    'flag' => 1,
+                    'num' =>$info->give_lucky_score,
+                    'type'=>3,
+                    'f_type'=>Score::TRADE_HAVE,
+                    'amount'=>'-'.$info->coin_num
+                ]);
                 break;
             case 4:
                 //消费卷减少
@@ -466,6 +478,7 @@ class OrderService
                     'num' =>$info->ticket_num,
                     'type'=>4,
                     'f_type'=>Score::TRADE_USED,
+                    'amount'=>0
                 ]);
                 $user->ticket_num = bcsub($user->ticket,$info->ticket_num);
                 $user->save();
@@ -498,6 +511,7 @@ class OrderService
                 'num' =>$info->give_sale_score,
                 'type'=>2,
                 'f_type'=>Score::TRADE_HAVE,
+                'amount'=>'-'.$info->coin_num
             ]);
             //签收订单
             $info->express_status = 2;

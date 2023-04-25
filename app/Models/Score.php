@@ -33,8 +33,8 @@ class Score extends Base
         self::FREE_USED => "释放消耗",
         self::BURN_HAVE => "燃烧所得",
         self::LUCKY_FREE_USED => "释放消耗幸运值",
-        self::TRADE_HAVE => "交易得到",
-        self::TRADE_USED => "交易消耗",
+        self::TRADE_HAVE => "购买得到",
+        self::TRADE_USED => "出售消耗",
     ];
 
 
@@ -55,11 +55,15 @@ class Score extends Base
                 $used_num = self::query()->where('user_id',$user_id)->where('type',self::TRADE_USED)->where('type',4)->count('num');
                 break;
         }
-        $page = $page??1;
-        $page_size = $page_size??8;
-        $list = self::query()->select('id','flag','created_at','num','f_type')->where('user_id',$user_id)
+        $page = $data['page']??1;
+        $page_size = $data['page_size']??8;
+        $types = self::F_TYPES;
+        $list = self::query()->select('id','flag','created_at','num','f_type','amount')->where('user_id',$user_id)
             ->where('type',$type)
-            ->orderBy('created_at','desc')->get()->forPage($page,$page_size);
+            ->orderBy('created_at','desc')->get()->map(function ($item,$items) use($types){
+                $item->note = $types[$item->f_type];
+                return $item;
+            })->forPage($page,$page_size);
         $data =  collect([])->merge($list);
         return compact('used_num','data');
     }
