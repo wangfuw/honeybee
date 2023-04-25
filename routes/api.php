@@ -73,6 +73,7 @@ Route::controller(UserController::class)->group(function () {
         //修改申请
         Route::post('store_update',[StoreController::class,'update']);
     });
+    //区块浏览
     Route::group(['prefix'=>'asac'],function (){
        Route::post('index',[AsacController::class,'index']);
        Route::post('login',[AsacController::class,'asac_login']);
