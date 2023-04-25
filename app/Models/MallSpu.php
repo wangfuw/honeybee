@@ -43,6 +43,7 @@ class MallSpu extends Base
     }
 
     public function get_welfare($data = []){
+        $coin_price = Asaconfig::get_price();
         $page = $data['page']??1;
         $page_size = $data['page_size']??3;
         $keyword = $data['keyword']??'';
@@ -53,11 +54,17 @@ class MallSpu extends Base
                 return $query->where('name','like','%'.$keyword.'%');
             })
             ->where('saleable',1)->where('score_zone',$data['score_zone'])
-            ->where('game_zone',1)->get()->forPage($page,$page_size);
+            ->where('game_zone',1)->get()->map(function ($item,$items) use($coin_price){
+                $item->prcie = $item->skp->price;
+                $item->coin_num = bcdiv($item->skp->price,$coin_price,2);
+                unset($item->skp);
+                return $item;
+            })->forPage($page,$page_size);
         return collect([])->merge($list);
     }
 
     public function get_preferred($data = []){
+        $coin_price = Asaconfig::get_price();
         $page = $data['page']??1;
         $page_size = $data['page_size']??3;
         $keyword = $data['keyword']??'';
@@ -71,7 +78,12 @@ class MallSpu extends Base
             ->where('saleable',1)
             ->where('score_zone',$data['score_zone'])
             ->where('game_zone',2)
-            ->get()->forPage($page,$page_size);
+            ->get()->map(function ($item,$items) use($coin_price){
+                $item->prcie = $item->skp->price;
+                $item->coin_num = bcdiv($item->skp->price,$coin_price,2);
+                unset($item->skp);
+                return $item;
+            })->forPage($page,$page_size);
         return collect([])->merge($list);
     }
 
@@ -79,6 +91,7 @@ class MallSpu extends Base
         $page = $data['page']??1;
         $page_size = $data['page_size']??3;
         $keyword = $data['keyword']??'';
+        $coin_price = Asaconfig::get_price();
         $list = $this->with(['skp'=>function($query){
             return $query->select('spu_id','price');
         }])->select('id','name','score_zone','logo','user_id')
@@ -87,11 +100,17 @@ class MallSpu extends Base
             })
             ->where('saleable',1)
             ->where('user_id',0)
-            ->where('game_zone',3)->get()->forPage($page,$page_size);
+            ->where('game_zone',3)->get()->map(function ($item,$items) use($coin_price){
+                $item->prcie = $item->skp->price;
+                $item->coin_num = bcdiv($item->skp->prcie,$coin_price,2);
+                unset($item->skp);
+                return $item;
+            })->forPage($page,$page_size);
         return collect([])->merge($list);
     }
 
     public function get_consume($data = []){
+        $coin_price = Asaconfig::get_price();
         $page = $data['page']??1;
         $page_size = $data['page_size']??3;
         $keyword = $data['keyword']??'';
@@ -103,12 +122,18 @@ class MallSpu extends Base
             })
             ->where('saleable',1)
             ->where('user_id',0)
-            ->where('game_zone',4)->get()->forPage($page,$page_size);
+            ->where('game_zone',4)->get()->map(function ($item,$items) use($coin_price){
+                $item->prcie = $item->skp->price;
+                $item->coin_num = bcdiv($item->skp->price,$coin_price,2);
+                unset($item->skp);
+                return $item;
+            })->forPage($page,$page_size);
         return collect([])->merge($list);
     }
 
     public function get_search_spu($params,$user_id)
     {
+        $coin_price = Asaconfig::get_price();
         $keyword = $params['keyword'] ?? '';
         $page = $params['page'] ?? 1;
         $page_size = $params['page_size'] ?? 6;
@@ -118,7 +143,7 @@ class MallSpu extends Base
             add_keyword($keyword,$user_id);
         }
         $list = $this->with(['skp' => function ($query) {
-            return $query->select('spu_id', 'price','');
+            return $query->select('spu_id', 'price');
         }])->select('id', 'name', 'score_zone', 'logo', 'user_id as store_id')
             ->when($keyword, function ($query) use ($keyword) {
                 return $query->where('name', 'like', '%' . $keyword . '%');
@@ -128,8 +153,9 @@ class MallSpu extends Base
             })->when($store_id,function ($query) use($store_id){
                 return $query->where('user_id',$store_id);
             })->where('saleable', 1)
-            ->get()->map(function ($item,$items){
+            ->get()->map(function ($item,$items) use($coin_price){
                 $item->price = $item->skp->price;
+                $item->coin_num = bcdiv($item->skp->price,$coin_price,2);
                 unset($item->skp);
                 return $item;
             })->forPage($page, $page_size);
@@ -139,6 +165,7 @@ class MallSpu extends Base
     //商品详情
     public function getInfo($params)
     {
+        $coin_price = Asaconfig::get_price();
         $id = $params["id"];
         $info =  $this->with(['skp'=>function($query){
             return $query->select('spu_id','price','stock','indexes');
@@ -146,6 +173,7 @@ class MallSpu extends Base
             ->where('id',$id)->first();
         if(empty($info)) return [];
         $info->price = $info->skp->price;
+        $info->coin_num = bcdiv($info->skp->price,$coin_price,2);
         $info->stock = $info->skp->stock;
         $info->indexes = $info->skp->indexes;
         unset($info->skp);
