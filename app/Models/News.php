@@ -58,7 +58,7 @@ class News extends Base
             'text',
             'created_at',
             'type')->where('id',$id)->first();
-        if(isEmpty($info)) return [];
+        if(empty($info)) return [];
         return  $info->toArray();
     }
 }
