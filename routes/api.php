@@ -83,7 +83,7 @@ Route::controller(UserController::class)->group(function () {
        Route::post('blocks',[AsacController::class,'blocks']);
        Route::post('owners',[AsacController::class,'owners']);
     });
-    Route::group(['auth'],function (){
+    Route::middleware('auth')->group(function (){
         //获取新闻资讯
         Route::post('news',[NewsController::class,'getNews']);
         Route::post('news_info',[NewsController::class,'getInfo']);
