@@ -59,6 +59,7 @@ class OrderService
                 }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
                     ->where('status',1)
                     ->where('user_id',$user->id)
+                    ->where('is_return',0)
                     ->orderBy('created_at','desc')
                     ->get();
                 if(empty($list)) return [];
@@ -73,6 +74,7 @@ class OrderService
                     ->where('status',2)
                     ->where('express_status',0)
                     ->where('user_id',$user->id)
+                    ->where('is_return',0)
                     ->orderBy('created_at','desc')
                     ->get();
                 if(empty($list)) return [];
@@ -87,6 +89,7 @@ class OrderService
                     ->where('status',2)
                     ->where('express_status',1)
                     ->where('user_id',$user->id)
+                    ->where('is_return',0)
                     ->orderBy('created_at','desc')
                     ->get();
                 if(empty($list)) return [];
@@ -98,6 +101,7 @@ class OrderService
                     return $query->select('id','logo','special_spec','name','user_id');
                 }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
                     ->where('user_id',$user->id)
+                    ->where('is_return',0)
                     ->orderBy('created_at','desc')
                     ->get();
                 if(empty($list)) return [];
@@ -586,7 +590,7 @@ class OrderService
         $list = Order::query()->with(['sku'=>function($query){
             return $query->select('id','indexes','price');
         },'spu'=>function($query){
-            return $query->select('id','logo','special_spec');
+            return $query->select('id','logo','special_spec','name','user_id');
         }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
             ->where('user_id',$user->id)
             ->where('is_return',1)
@@ -597,6 +601,19 @@ class OrderService
             $item->indexes = $item->sku->indexes;
             $item->logo = $item->spu->logo;
             $item->special_spec = $item->spu->special_spec;
+            $indexes = explode('_',$item->sku->indexes);
+            $special = array_values($item->spu->special_spec);
+            $index_special = [];
+            if($item->spu->user_id == 0){
+                $item->store_name = '自营';
+            }else{
+                $item->store_name = Store::query()->where('user_id',$item->spu->user_id)->value('store_name')??'';
+            }
+            for($i=0;$i<count($indexes);$i++){
+                array_push($index_special,$special[$i][$indexes[$i]]);
+            }
+            $item->index_special = $index_special;
+            $item->name = $item->spu->name;
             unset($item->sku,$item->spu);
             return $item;
         })->forPage($page,$page_size);
