@@ -106,7 +106,6 @@ class OrderService
             $item->one_price = $item->sku->price;
             $item->indexes = $item->sku->indexes;
             $indexes = explode('_',$item->sku->indexes);
-
             $item->logo = $item->spu->logo;
             $item->special_spec = $item->spu->special_spec;
             $special = array_values($item->spu->special_spec);
@@ -151,10 +150,12 @@ class OrderService
         $info->index_special = $index_special;
         $info->logo = $info->spu->logo;
         $info->special_spec = $info->spu->special_spec;
-        $info->area = city_name($info->address['area']);
+        $info->area_china = city_name($info->address['area']);
+        $info->area = $info->address['area'];
         $info->exp_phone = make_phone($info->address['exp_phone']);
         $info->exp_person = $info->address['exp_person'];
         $info->address_detail = $info->address['address_detail'];
+        $info->name = $info->spu->name;
         unset($info->sku,$info->spu,$info->address,$index_special);
         return $info->toArray();
     }
