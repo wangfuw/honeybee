@@ -60,7 +60,7 @@ class StoreController extends BaseController
         $info->store_name = $data['store_name'];
         $info->business_type = $data['business_type'];
         $info->mobile = $data['mobile'];
-        $info->store_image = $data['store_image'];
+        $info->store_image = $data['store_image']??'';
         $info->master = $data['master'];
         $info->images = $data['images'];
         $info->area = $data['area'];
