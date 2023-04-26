@@ -31,8 +31,8 @@ class Store extends Base
         if (!self::query()->where('user_id', $user_id)->exists()) {
             return [];
         } else {
-            $list = self::query()->select('id', 'store_name', 'business_type', 'mobile', 'store_image', 'master', 'images', 'area', 'address', 'on_line', 'type')->where('user_id', $user_id)->first();
-            $list->area_china = city_name($list->area);
+            $list = self::query()->select('id', 'store_name', 'business_type', 'mobile', 'store_image','note', 'master', 'images', 'area', 'address', 'on_line', 'type')->where('user_id', $user_id)->first();
+            $list->area_china = city_name((string)$list->area);
             $list->business = MallCategory::query()->where('id',$list->business_type)->value('name')??'';
             return $list->toArray();
         }
