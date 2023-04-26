@@ -295,7 +295,7 @@ class OrderService
         $order_no = $params['order_no'];
         try {
             DB::beginTransaction();
-            if($sale_password != $user->sale_password){
+            if($c_sale_password != $user->sale_password){
                 throw new ApiException([0,'支付密码错误']);
             }
             $info = Order::query()->where('order_no',$order_no)->where('status',1)->first();
