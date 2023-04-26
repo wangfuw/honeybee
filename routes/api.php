@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\SpuController;
 use App\Http\Controllers\Api\SkuController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\WalletController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -38,6 +39,7 @@ Route::controller(UserController::class)->group(function () {
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
         Route::post('me', 'me');
+        //修改用户密码
         Route::post('change_password', 'change');
         //设置通证密码
         Route::post('change_sale_password', 'change_sale_password');
@@ -64,6 +66,8 @@ Route::controller(UserController::class)->group(function () {
         Route::post('del_address',[AddressController::class,'del_address']);
         //编辑地址
         Route::post('edit_address',[AddressController::class,'update_address']);
+        //获取默认地址
+        Route::post('def_address',[AddressController::class,'get_def_address']);
         //设为默认地址
         Route::post('default_address',[AddressController::class,'set_def']);
         //申请商家
@@ -120,7 +124,7 @@ Route::controller(UserController::class)->group(function () {
         //取消换货
         Route::post('del_revoke',[OrderController::class,'del_revoke']);
         //
-        Route::post('list',[\App\Http\Controllers\Api\WalletController::class,'list']);
+        Route::post('list',[WalletController::class,'list']);
     });
 
     Route::group(['middleware' => 'auth'],function (){
@@ -154,7 +158,9 @@ Route::controller(UserController::class)->group(function () {
 
         //购物车
         Route::post('add_cart',[ShopController::class,'add_shop_car']);
+
         Route::post('carts',[ShopController::class,'show_shop_car']);
+
         Route::post('del_carts',[ShopController::class,'del_from_car']);
     });
 });

@@ -27,6 +27,17 @@ class AddressController extends BaseController
         $data = $this->model->getList($request,auth()->id());
         return $this->successPaginate($data);
     }
+
+    public function get_def_address(){
+        $user_id = auth()->id();
+        $info = Address::query()->where('user_id',$user_id)->where('is_def',1)->first();
+        if(!$info){
+            return $this->success('未设置默认地址',[]);
+        }
+        $info->area_china = city_name($info->area);
+        return $this->success('请求成功',$info->toArray());
+
+    }
     /**
      * 新增地址
      * @param Request $request
