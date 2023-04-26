@@ -132,18 +132,30 @@ class OrderService
         $info = Order::query()->with(['sku'=>function($query){
             return $query->select('id','indexes','price');
         },'spu'=>function($query){
-            return $query->select('id','logo','special_spec');
+            return $query->select('id','logo','special_spec','name','user_id');
         }])->select('*')->where('order_no',$order_no)
             ->first();
         $info->one_price = $info->sku->price;
         $info->indexes = $info->sku->indexes;
+        $indexes = explode('_',$info->indexes);
+        $special = array_values($info->spu->special_spec);
+        $index_special = [];
+        if($info->spu->user_id == 0){
+            $info->store_name = '自营';
+        }else{
+            $info->store_name = Store::query()->where('user_id',$info->spu->user_id)->value('store_name')??'';
+        }
+        for($i=0;$i<count($indexes);$i++){
+            array_push($index_special,$special[$i][$indexes[$i]]);
+        }
+        $info->index_special = $index_special;
         $info->logo = $info->spu->logo;
         $info->special_spec = $info->spu->special_spec;
         $info->area = city_name($info->address['area']);
         $info->exp_phone = make_phone($info->address['exp_phone']);
         $info->exp_person = $info->address['exp_person'];
         $info->address_detail = $info->address['address_detail'];
-        unset($info->sku,$info->spu,$info->address);
+        unset($info->sku,$info->spu,$info->address,$index_special);
         return $info->toArray();
     }
     //创建订单
