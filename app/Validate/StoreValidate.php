@@ -13,7 +13,7 @@ class StoreValidate extends BaseValidate
         'images' => 'array',
         'area'   => 'required|numeric',
         'address' => 'max:50',
-        'store_image' => 'required',
+        'store_image' => '',
         'on_line' => 'required|numeric',
 
     ];
@@ -34,7 +34,6 @@ class StoreValidate extends BaseValidate
         'area.required' => '请选择地区',
         'area.numeric'  => '请选择正确地区',
         'address.max'   => '详细地址过长',
-        'store_image.required'   => '请上传商店头像',
         'on_line.required'   => '选择申请店铺类型',
         'on_line.numeric'   => '请正确选择申请店铺类型',
     ];
