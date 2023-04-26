@@ -47,11 +47,8 @@ class StoreController extends BaseController
 
     public function get_store(Request $request)
     {
-       $data = $request->only(['id']);
-        if(!$this->validate->scene('info')->check($data)){
-            return $this->fail($this->validate->getError());
-        }
-        $info = $this->model->get_info($data);
+        $user_id = auth()->id();
+        $info = $this->model->get_info($user_id);
         return $this->success('请求成功',$info);
     }
 

@@ -25,13 +25,13 @@ class Store extends Base
         'deleted_at'
     ];
 
-    public function get_info($data = [])
+    public function get_info($user_id)
     {
-        $id = $data['id'];
-        if (!self::query()->where('id', $id)->exists()) {
+
+        if (!self::query()->where('user_id', $user_id)->exists()) {
             return [];
         } else {
-            return self::query()->select('id', 'store_name', 'business_type', 'mobile', 'store_image', 'master', 'images', 'area', 'address', 'on_line', 'type')->where('id', $id)->first()->toArray();
+            return self::query()->select('id', 'store_name', 'business_type', 'mobile', 'store_image', 'master', 'images', 'area', 'address', 'on_line', 'type')->where('user_id', $user_id)->first()->toArray();
         }
     }
 
