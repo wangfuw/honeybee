@@ -14,6 +14,7 @@ use App\Models\MallSpu;
 use App\Models\Order;
 use App\Models\RevokeOrder;
 use App\Models\Score;
+use App\Models\ShopCart;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -320,6 +321,7 @@ class OrderService
             $this->read_zone_log($spuS,$info,$user,$user_address);
             $info->status = 2;
             $info->save();
+            ShopCart::query()->where('spu_id',$spu_id)->where('sku_id',$info->sku_id)->delete();
             DB::commit();
             return $info;
         }catch (ApiException $e){
