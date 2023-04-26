@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\BaseController;
 use App\Models\Address;
 use App\Models\Asaconfig;
+use App\Models\MallCategory;
 use App\Models\MallSpu;
 use App\Models\Order;
 use App\Models\Store;
@@ -31,6 +32,12 @@ class SpuController extends BaseController
     {
         $last_price = Asaconfig::get_price();
         return $this->success('请求成功',compact('last_price'));
+    }
+
+    public function get_category()
+    {
+        $list = MallCategory::query()->where('parent_id',0)->select('id','name')->get()->toArray();
+        return $this->success('请求成功',$list);
     }
     //商品收索
     public function search(Request $request)

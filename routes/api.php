@@ -142,6 +142,7 @@ Route::controller(UserController::class)->group(function () {
         Route::post('get_search_keys',[SpuController::class,'get_search_keys']);
         //商品详情
         Route::post('spu_info',[SpuController::class,'get_spu_first']);
+        Route::post('category',[SpuController::class,'get_category']);
 
         Route::post('get_store_category',[SpuController::class,'get_store_category']);
 
