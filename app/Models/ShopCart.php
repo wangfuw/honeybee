@@ -40,7 +40,7 @@ class ShopCart extends Base
         },'sku'=>function($query){
             return $query->select('id','price','indexes');
         },'spu'=>function($query){
-            return $query->select('id','name','logo','game_zone','score_zone','special_spec');
+            return $query->select('id','name','logo','game_zone','score_zone','special_spec','fee');
         }])->select('id','store_id','sku_id','spu_id','number','order_money')
             ->where('user_id',$user_id)->get();
         if(empty($list)) return [];
@@ -52,6 +52,7 @@ class ShopCart extends Base
             $item->special_spec = $item->spu->special_spec;
             $item->indexex = $item->sku->indexes;
             $item->name = $item->spu->name;
+            $item->fee = $item->spu->fee;
             $item->coin_num = bcdiv($item->order_money * $item->number,$last_price,2);
             if($item->store != null){
                 $item->store_name = $item->store->name;
