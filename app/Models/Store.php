@@ -38,7 +38,12 @@ class Store extends Base
 
     public function get_store_info($store_id)
     {
-        return self::query()->select('id','store_name','store_image')->where('id',$store_id)->first()->toArray();
+        if(self::query()->select('id','store_name','store_image')->where('id',$store_id)->exists()){
+            return self::query()->select('id','store_name','store_image')->where('id',$store_id)->first()->toArray();
+        }else{
+            return  [];
+        }
+
     }
 
 
