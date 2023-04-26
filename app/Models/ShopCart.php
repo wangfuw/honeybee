@@ -50,6 +50,7 @@ class ShopCart extends Base
             $item->score_zone = $item->spu->score_zone;
             $item->special_spec = $item->spu->special_spec;
             $item->indexex = $item->sku->indexes;
+            $item->name = $item->spu->name;
             if($item->store != null){
                 $item->store_name = $item->store->name;
             }else{
