@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Common\Rsa;
 use App\Exceptions\ApiException;
 use App\Exceptions\OrderException;
 use App\Models\AsacNode;
@@ -258,10 +259,11 @@ class OrderService
 
     public function pay_order($params,$user){
         $sale_password = $params['sale_password'];
+        $c_sale_password = Rsa::decodeByPrivateKey($sale_password);
         $order_no = $params['order_no'];
         try {
             DB::beginTransaction();
-            if($sale_password != $user->sale_password){
+            if($c_sale_password != $user->sale_password){
                 throw new ApiException([0,'支付密码错误']);
             }
             $info = Order::query()->where('order_no',$order_no)->where('status',1)->first();
