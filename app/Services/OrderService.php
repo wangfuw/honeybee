@@ -94,7 +94,7 @@ class OrderService
                 $list = Order::query()->with(['sku'=>function($query){
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
-                    return $query->select('id','logo','special_spec');
+                    return $query->select('id','logo','special_spec','name');
                 }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
                     ->where('user_id',$user->id)
                     ->orderBy('created_at','desc')
@@ -106,6 +106,7 @@ class OrderService
             $item->indexes = $item->sku->indexes;
             $item->logo = $item->spu->logo;
             $item->special_spec = $item->spu->special_spec;
+            $item->name = $item->spu->name;
             unset($item->sku,$item->spu);
             return $item;
         })->forPage($page,$page_size);
@@ -263,7 +264,7 @@ class OrderService
         $order_no = $params['order_no'];
         try {
             DB::beginTransaction();
-            if($c_sale_password != $user->sale_password){
+            if($sale_password != $user->sale_password){
                 throw new ApiException([0,'支付密码错误']);
             }
             $info = Order::query()->where('order_no',$order_no)->where('status',1)->first();
