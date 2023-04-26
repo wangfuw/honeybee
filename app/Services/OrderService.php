@@ -14,6 +14,7 @@ use App\Models\MallSpu;
 use App\Models\Order;
 use App\Models\RevokeOrder;
 use App\Models\Score;
+use App\Models\Store;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
@@ -54,7 +55,7 @@ class OrderService
                 $list = Order::query()->with(['sku'=>function($query){
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
-                    return $query->select('id','logo','special_spec');
+                    return $query->select('id','logo','special_spec','name','user_id');
                 }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
                     ->where('status',1)
                     ->where('user_id',$user->id)
@@ -67,7 +68,7 @@ class OrderService
                 $list = Order::query()->with(['sku'=>function($query){
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
-                    return $query->select('id','logo','special_spec');
+                    return $query->select('id','logo','special_spec','name','user_id');
                 }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
                     ->where('status',2)
                     ->where('express_status',0)
@@ -81,7 +82,7 @@ class OrderService
                 $list = Order::query()->with(['sku'=>function($query){
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
-                    return $query->select('id','logo','special_spec');
+                    return $query->select('id','logo','special_spec','name','user_id');
                 }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
                     ->where('status',2)
                     ->where('express_status',1)
@@ -94,7 +95,7 @@ class OrderService
                 $list = Order::query()->with(['sku'=>function($query){
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
-                    return $query->select('id','logo','special_spec','name');
+                    return $query->select('id','logo','special_spec','name','user_id');
                 }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
                     ->where('user_id',$user->id)
                     ->orderBy('created_at','desc')
@@ -104,10 +105,23 @@ class OrderService
         $list = $list->map(function ($item,$items){
             $item->one_price = $item->sku->price;
             $item->indexes = $item->sku->indexes;
+            $indexes = explode('_',$item->sku->indexes);
+
             $item->logo = $item->spu->logo;
             $item->special_spec = $item->spu->special_spec;
+            $special = array_values($item->spu->special_spec);
+            $index_special = [];
+            if($item->spu->user_id == 0){
+                $item->store_name = '自营';
+            }else{
+                $item->store_name = Store::query()->where('user_id',$item->spu->user_id)->value('store_name')??'';
+            }
+            for($i=0;$i<count($indexes);$i++){
+                array_push($index_special,$special[$i][$indexes[$i]]);
+            }
+            $item->index_special = $index_special;
             $item->name = $item->spu->name;
-            unset($item->sku,$item->spu);
+            unset($item->sku,$item->spu,$index_special,$special,$indexes);
             return $item;
         })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
@@ -235,7 +249,7 @@ class OrderService
         try{
             DB::beginTransaction();
             $info = Order::query()->where('order_no',$order_no)->where('status',1)->first();
-            if(empty($info)){
+            if(!$info){
                 throw new ApiException([0,'该订单不可撤销']);
             }
             if($info->user_id != $user->id){
