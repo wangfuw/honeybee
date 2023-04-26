@@ -30,6 +30,7 @@ class ShopCart extends Base
     }
     public  function shops($params,$user_id)
     {
+        $last_price = Asaconfig::get_price();
         $page = $params['page']??1;
         $page_size = $params['page_size']??6;
         $user_id = $user_id;
@@ -43,7 +44,7 @@ class ShopCart extends Base
         }])->select('id','store_id','sku_id','spu_id','number','order_money')
             ->where('user_id',$user_id)->get();
         if(empty($list)) return [];
-        return $list->map(function ($item,$items){
+        return $list->map(function ($item,$items) use($last_price){
             $item->price = $item->sku->price;
             $item->logo  = $item->spu->logo;
             $item->game_zone = $item->spu->game_zone;
@@ -51,6 +52,7 @@ class ShopCart extends Base
             $item->special_spec = $item->spu->special_spec;
             $item->indexex = $item->sku->indexes;
             $item->name = $item->spu->name;
+            $item->coin_num = bcdiv($item->order_money * $item->number,$last_price,2);
             if($item->store != null){
                 $item->store_name = $item->store->name;
             }else{
