@@ -57,7 +57,7 @@ class ShopCart extends Base
             if($item->store != null){
                 $item->store_name = $item->store->name;
             }else{
-                $item->store_name = '自营';
+                $item->store_name = '上陶自营';
             }
             unset($item->spu);
             unset($item->sku);
