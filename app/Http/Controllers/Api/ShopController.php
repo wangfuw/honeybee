@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
+use App\Models\MallCategory;
 use App\Models\MallSku;
 use App\Models\MallSpu;
 use App\Models\ShopCart;
@@ -21,6 +22,15 @@ class ShopController extends BaseController
         $this->user = auth()->user();
         $this->model = $model;
         $this->validate = $validate;
+    }
+
+    public function categoryList(Request $request)
+    {
+        $cate = MallCategory::where(["parent_id" => 0, "is_delete" => 0])->get()->toArray();
+        foreach ($cate as $k => &$v) {
+            $v["children"] = MallCategory::where(["parent_id" => $v["id"], "is_delete" => 0])->get()->toArray();
+        }
+        return $this->success("请求", $cate);
     }
     //加入购物车
     public function add_shop_car(Request $request)

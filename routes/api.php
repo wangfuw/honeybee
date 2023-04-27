@@ -161,6 +161,8 @@ Route::controller(UserController::class)->group(function () {
 
         //购物车
         Route::post('add_cart',[ShopController::class,'add_shop_car']);
+        //分类
+        Route::post('category',[ShopController::class,'categoryList']);
 
         Route::post('carts',[ShopController::class,'show_shop_car']);
 
