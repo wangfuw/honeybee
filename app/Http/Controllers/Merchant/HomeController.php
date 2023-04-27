@@ -76,6 +76,18 @@ class HomeController extends MerchantBaseController
             }
             $store->zfb_payment = $request->zfb_payment;
         }
+        if($request->filled("longitude")){
+            if(!is_numeric($request->longitude)){
+                return $this->fail("经度格式错误");
+            }
+            $store->longitude = $request->longitude;
+        }
+        if(!$request->filled("latitude")){
+            if(!is_numeric($request->latitude)){
+                return $this->fail("纬度格式错误");
+            }
+            $store->latitude = $request->latitude;
+        }
         $store->save();
         return $this->executeSuccess("操作");
     }
