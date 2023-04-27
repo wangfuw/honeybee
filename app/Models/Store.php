@@ -65,6 +65,7 @@ class Store extends Base
             if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 5000){
                 $distance = getdistance($longitude,$latitude,$l->longitude,$l->latitude);
                 $l->distance = floor($distance*100)/100;
+                $l->area_china = city_name($l->area);
                 $l->door_phote = $l->images['door_phote'];
                 array_push($new,$l);
             }else{
