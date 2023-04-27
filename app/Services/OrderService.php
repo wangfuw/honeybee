@@ -273,12 +273,13 @@ class OrderService
             if($info->user_id != $user->id){
                 throw new ApiException([0,'该订单不是您的订单']);
             }
-            if($info->give_green_score > 0){
+            if($info->give_green_score > 0 && $info->store_id > 0){
                 //返还商家
                 $boss = User::query()->where('id',$info->store_id)->first();
                 $boss->green_score += $info->give_green_score;
                 $boss->save();
             }
+
             $info->status = 3;
             $info->save();
             $info->delete();
