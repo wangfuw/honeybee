@@ -66,6 +66,7 @@ class Store extends Base
                 $distance = getdistance($longitude,$latitude,$l->longitude,$l->latitude);
                 $l->distance = floor($distance*100)/100;
                 $l->area_china = city_name($l->area);
+                $l->business = MallCategory::query()->where('id',$l->business_type)->value('name');
                 $l->door_phote = $l->images['door_phote'];
                 array_push($new,$l);
             }else{
