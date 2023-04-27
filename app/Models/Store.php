@@ -56,9 +56,12 @@ class Store extends Base
     public function get_near_store($data){
         $page = $data['page']??1;
         $page_size = $data['page_size']??5;
+        $keyword = $data['keyword']??'';
         $longitude = $data['longitude'];
         $latitude  = $data['latitude'];
-        $list = self::query()->where('on_line',2)->get();
+        $list = self::query()->where('on_line',2)->when($keyword,function ($query) use($keyword){
+            return $query->where('name','like','%'.$keyword.'%');
+        })->get();
         if(!$list) return [];
         $new = [];
         foreach ($list as $l){
@@ -66,14 +69,14 @@ class Store extends Base
                 $distance = getdistance($longitude,$latitude,$l->longitude,$l->latitude);
                 $l->distance = floor($distance*100)/100;
                 $l->area_china = city_name($l->area);
-                $l->business = MallCategory::query()->where('id',$l->business_type)->value('name');
+                $l->business = MallCategory::query()->where('id',$l->business_type)->value('name')??'';
                 $l->door_phote = $l->images['door_phote'];
                 array_push($new,$l);
             }else{
                 continue;
             }
         }
-        return collect([])->merge($new)->toArray();
+        return collect([])->merge($new)->forPage($page,$page_size)->toArray();
     }
 
 }
