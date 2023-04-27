@@ -18,7 +18,7 @@ class Store extends Base
     protected $fillable = [
         'id','user_id','store_name','business_type','desc','mobile','images',
         'store_image','sale_volume','stock','class_num','star_level','master','on_line','type',
-        'area','address','status','created_at','updated_at'
+        'area','address','status','created_at','updated_at','longitude','latitude'
     ];
 
     protected $hidden = [
@@ -53,5 +53,25 @@ class Store extends Base
 
     }
 
+    public function get_near_store($data){
+        $page = $data['page']??1;
+        $page_size = $data['page_size']??5;
+        $longitude = $data['longitude'];
+        $latitude  = $data['latitude'];
+        $list = self::query()->where('on_line',2)->get();
+        if(!$list) return [];
+        $new = [];
+        foreach ($list as $l){
+            if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 5000){
+                $distance = getdistance($longitude,$latitude,$l->longitude,$l->latitude);
+                $l->distance = floor($distance*100)/100;
+                $l->door_phote = $l->images['door_phote'];
+                array_push($new,$l);
+            }else{
+                continue;
+            }
+        }
+        return collect([])->merge($new)->toArray();
+    }
 
 }

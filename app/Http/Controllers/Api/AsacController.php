@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Common\Rsa;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\Asac;
 use App\Models\AsacBlock;
+use App\Models\AsacDestory;
 use App\Models\AsacNode;
 use App\Models\Asaconfig;
 use App\Models\AsacTrade;
@@ -72,8 +74,9 @@ class AsacController extends BaseController
     {
         $list = Asaconfig::query()->select('name','contract_address',
         'destruction_address','accuracy','number','flux'
-        ,'dest_num','owner_num','trans_num'
-        )->find(1);
+        ,'owner_num','trans_num'
+        )->first();
+        $list->dest_num = AsacDestory::query()->sum('number');
         return $this->success('success',$list);
     }
 
@@ -100,9 +103,19 @@ class AsacController extends BaseController
      * @return void
      */
     public function index(){
-        $list = AsacBlock::query()->select('id','number','trade_num','created_at')
-            ->orderBy('id','desc')->limit(4)->get()->toArray();
-        $trade_total = AsacTrade::query()->count('num');
+        $list = AsacBlock::query()->with(['trade'=>function($query){
+            return $query->select('block_id','num');
+        }])->select('id','created_at')
+            ->orderBy('id','asc')->limit(4)->get()->map(function ($item,$items){
+               $temp = 0;
+               foreach ($item->trade as $value){
+                   $temp += $value['num'];
+               }
+               $item->trade_num = $temp;
+               unset($item->trade);
+               return $item;
+            })->toArray();
+        $trade_total = AsacTrade::query()->sum('num');
         $last_height = AsacBlock::query()->max('id');
         $config = Asaconfig::query()->select('last_price','old_price','name')->find(1);
         $last_price = $config->last_price;
@@ -119,7 +132,7 @@ class AsacController extends BaseController
     {
         $model = new AsacBlock();
         $list = $model->get_list($request);
-        return $this->successPaginate($list);
+        return $this->success('请求成功',$list);
     }
 
     /**

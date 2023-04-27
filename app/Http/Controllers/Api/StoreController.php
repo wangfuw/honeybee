@@ -82,5 +82,10 @@ class StoreController extends BaseController
         return $this->success('请求成功',$store_info);
     }
 
-
+    //附近商家
+    public function get_near_store(Request $request)
+    {
+        $near_store = $this->model->get_near_store($request->toArray());
+        return $this->success('请求成功',$near_store);
+    }
 }

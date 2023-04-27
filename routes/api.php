@@ -74,8 +74,11 @@ Route::controller(UserController::class)->group(function () {
         Route::post('add_store',[StoreController::class,'add_store']);
         //查看我的申请
         Route::post('store_info',[StoreController::class,'get_store']);
+        //附近商家
+        Route::post('get_near_store',[StoreController::class,'get_near_store']);
         //修改申请
         Route::post('store_update',[StoreController::class,'update']);
+        //
         Route::post('coin_info',[AsacController::class,'coin_info']);
     });
     //区块浏览
