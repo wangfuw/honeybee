@@ -107,8 +107,8 @@ Route::controller(UserController::class)->group(function () {
         Route::post('create',[BannerController::class,'create']);
         //获取公告
 
-        Route::post('notices',[NoticeController::class,'getNotices']);
-        Route::post('notice_info',[NoticeController::class,'getInfo']);
+        Route::post('notices',[NoticeController::class,'getNotices'])->withoutMiddleware(['auth']);
+        Route::post('notice_info',[NoticeController::class,'getInfo'])->withoutMiddleware(['auth']);
 
         //获取地址
         Route::post('areas',[AreaController::class,'get_area']);
