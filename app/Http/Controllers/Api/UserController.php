@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Common\Rsa;
 use App\Http\Controllers\BaseController;
+use App\Models\Address;
 use App\Models\AsacNode;
 use App\Models\User;
 use App\Models\UserIdentity;
@@ -141,6 +142,9 @@ class UserController extends BaseController
         }else{
             $user->grade = grade($amount);
         }
+        $wallet_address  = AsacNode::query()->where('id',$user->id)->value('wallet_address');
+        $user->wallet_address = $wallet_address;
+
 
         $status = UserIdentity::query()->where('user_id',$user->id)->select('status','id')->first();
         if(empty($status)){
@@ -356,5 +360,17 @@ class UserController extends BaseController
         $url =  'http//:'.'www.baidu.com/#/?'.'invite_cdoe='.$user->invite_code;
         $img =  QrCode::format('png')->size(200)->generate($url);
         return  $data = 'data:image/png;base64,' . base64_encode($img );
+    }
+
+    //交易密码获取通证私钥
+    public function get_private_key(Request $request){
+        $user = Auth::user();
+        $sale_password = Rsa::decodeByPrivateKey($request->sale_password);
+        $user_sale_password = User::query()->where('id',$user->id)->value('sale_password');
+        if($sale_password != $user_sale_password){
+            return $this->fail('密码错误');
+        }
+        $private_key = AsacNode::query()->where('user_id',$user->id)->value('private_key');
+        return  $this->success('请求成功',['private_key'=>$private_key]);
     }
 }
