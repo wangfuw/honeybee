@@ -42,7 +42,7 @@ class WalletController extends BaseController
 
         $list = AsacTrade::query()->where(function ($query) use($wallet_address){
             return $query->where('from_address',$wallet_address)->orWhere('to_address',$wallet_address);
-        })->select('num','from_address','to_address')
+        })->select('num','from_address','to_address','created_at')
             ->get()->map(function ($item,$items) use($wallet_address){
                 if($item->from_address == $wallet_address){
                     $item->note = '购买商品花费';
