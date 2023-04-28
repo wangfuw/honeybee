@@ -670,7 +670,7 @@ class OrderService
     public function sign_order($order_no,$user)
     {
         //已支付订单
-        $info = Order::query()->where('order_no',$order_no)->where('status',3)->where('express_status',1)->first();
+        $info = Order::query()->where('order_no',$order_no)->where('status',2)->where('express_status',1)->first();
         try{
             DB::beginTransaction();
             if(empty($info)){
@@ -681,6 +681,9 @@ class OrderService
             }
             $spu_id    = MallSku::query()->where('id',$info->sku_id)->value('spu_id');
             $spuS      = MallSpu::query()->where('id',$spu_id)->select('game_zone','user_id','score_zone')->first();
+            if($info->give_sale_score == 0){
+                return true;
+            }
             //给用户方法消费积分
             $user->sale_score = bcadd($user->sale_score,$info->give_sale_score,2);
             $user->sale_score = bcadd($user->sale_score_total,$info->give_sale_score,2);
