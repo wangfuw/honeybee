@@ -682,6 +682,8 @@ class OrderService
             $spu_id    = MallSku::query()->where('id',$info->sku_id)->value('spu_id');
             $spuS      = MallSpu::query()->where('id',$spu_id)->select('game_zone','user_id','score_zone')->first();
             if($info->give_sale_score == 0){
+                $info->express_status = 2;
+                $info->save();
                 return true;
             }
             //给用户方法消费积分
