@@ -49,7 +49,7 @@ Route::controller(UserController::class)->group(function () {
         Route::post('del_owner','del_self');
         //我的团队
         Route::post('teams','teams');
-
+        Route::post('get_private_key','get_private_key');
     });
     Route::middleware('auth')->group(function (){
         //上传身份证
