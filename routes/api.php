@@ -49,7 +49,10 @@ Route::controller(UserController::class)->group(function () {
         Route::post('del_owner','del_self');
         //我的团队
         Route::post('teams','teams');
+        //获取私钥
         Route::post('get_private_key','get_private_key');
+        //通证地址
+        Route::post('asac_url','asac_url');
     });
     Route::middleware('auth')->group(function (){
         //上传身份证

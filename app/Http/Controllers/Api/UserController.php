@@ -373,4 +373,10 @@ class UserController extends BaseController
         $private_key = AsacNode::query()->where('user_id',$user->id)->value('private_key');
         return  $this->success('请求成功',['private_key'=>$private_key]);
     }
+
+    //通知路由
+    public function asac_url()
+    {
+        return $this->success('请求成功',['url'=>env("ASACURL","https:www.baidu.com")]);
+    }
 }
