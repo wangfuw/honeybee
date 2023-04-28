@@ -87,7 +87,7 @@ class AsacController extends BaseController
         $id = $request->id;
         $block = AsacBlock::query()->where('id',$id)->first()->toArray();
         if(!empty($block)){
-            $trades = AsacTrade::query()->where('id',$id)->get()->toArray();
+            $trades = AsacTrade::query()->where('block_id',$id)->get()->toArray();
             $data = [];
             $data['id'] = $block['id'];
             $data['trade_num'] = $block['trade_num'];
