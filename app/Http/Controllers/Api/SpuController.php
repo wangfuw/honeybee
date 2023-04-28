@@ -76,6 +76,9 @@ class SpuController extends BaseController
         if(!empty($address)){
             $info['area'] = $address->toArray();
             $info['area']['area_china'] = city_name($address->area);
+        }else{
+            $info['area'] = [];
+            $info['area']['area_china'] = '';
         }
         return  $this->success('请求成功',$info);
     }
