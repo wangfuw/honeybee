@@ -142,7 +142,7 @@ class UserController extends BaseController
         }else{
             $user->grade = grade($amount);
         }
-        $wallet_address  = AsacNode::query()->where('id',$user->id)->value('wallet_address');
+        $wallet_address  = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
         $user->wallet_address = $wallet_address;
 
 
