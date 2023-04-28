@@ -11,6 +11,7 @@ use App\Models\AsacDestory;
 use App\Models\AsacNode;
 use App\Models\Asaconfig;
 use App\Models\AsacTrade;
+use App\Models\Notice;
 use Illuminate\Http\Request;
 
 class AsacController extends BaseController
@@ -143,8 +144,31 @@ class AsacController extends BaseController
     public function owners(Request $request)
     {
         $model = new AsacNode();
-        $config = Asaconfig::query()->select('number','last_price')->find(1);
-        $list = $model->get_list($request,$config);
-        return $this->successPaginate($list);
+        $list = $model->get_list($request);
+        return $this->success('请求成功',$list);
+    }
+
+    public function get_notices(Request $request)
+    {
+        $page = $request->page??1;
+        $page_size = $request->page_size??3;
+        $data = Notice::query()->where('type',5)->get();
+        if(!$data){
+            return $this->success('请求成功，暂无数据',[]);
+        }
+        $data->forPage($page,$page_size);
+        $list = collect([])->merge($data)->toArray();
+        return $this->success('请求成功',$list);
+    }
+
+    public function get_destory(Request $request)
+    {
+        $page = $request->page??1;
+        $page_size = $request->page_size??3;
+        $list = AsacDestory::query()->select('id','dest_address','number','created_at')->get()->forPage($page,$page_size);
+        $sum = AsacDestory::query()->sum('number');
+        $count = AsacDestory::query()->count();
+        $data = collect([])->merge($list)->toArray();
+        return $this->success('请求成功',compact('sum','count','data'));
     }
 }
