@@ -27,12 +27,22 @@ class AsacBlock extends Base
     {
         $page = $params['page']??1;
         $page_size = $params['page_size']??8;
-        $data = self::query()->select( 'id',
+        $data = self::query()->with(['trade'=>function($query){
+            return $query->select('block_id','num');
+        }])->select( 'id',
             'number',
             'trade_num',
             'created_at'
         ) ->orderBy('id','desc')
-            ->get()
+            ->get()->map(function ($item,$items){
+                $temp = 0;
+                foreach ($item->trade as $value){
+                    $temp += $value['num'];
+                }
+                $item->trade_num = $temp;
+                unset($item->trade);
+                return $item;
+            })
             ->forPage($page,$page_size);
         return collect([])->merge($data);
     }
