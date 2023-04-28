@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
+use App\Models\UserIdentity;
 use App\Services\OrderService;
 use App\Validate\OrderValidate;
 use Illuminate\Http\Request;
@@ -43,6 +44,10 @@ class OrderController extends BaseController
         $data = $request->only(['sku_id','number','spu_id','address']);
         if(!$this->validate->scene('add')->check($data)){
             return $this->fail($this->validate->getError());
+        }
+        //检验实名
+        if(!UserIdentity::query()->where('user_id',$this->user->id)->where('status',1)->exists()){
+            return  $this->fail('未实名认证');
         }
         $orders = $this->service->add_order($data,$this->user);
         return $this->success('下单成功',$orders);

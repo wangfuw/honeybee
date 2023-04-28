@@ -122,29 +122,27 @@ class UserController extends BaseController
     {
         $user = Auth::user();
         //计算等级
-        $ids   = User::query()->where('master_pos','like','%'.','.$user->id.','.'%')->pluck('id');
-        $amount = $this->statistics($ids);
+        $amount  = $user->contribution;
         if($amount >= 60000000){
+            $users   = User::query()->where('master_id',$user->id)->select('green_score','sale_score','contribution');
             $temp = 0;
-            $directs = User::query()->select('id','phone','master_pos','created_at')->where('master_id',$user->id)->get()->toArray();
-            foreach ($directs as $direct){
-                $ids = User::query()->where('master_pos','like','%'.','.$direct['id'].','.'%')->pluck('id');
-                if(!empty($ids)){
-                    $contribute = $this->statistics($ids);
-                    if($contribute > 5000000){
-                        $temp += 1;
-                    }
+            foreach ($users as $down){
+                $self_contribution = bcadd(bcdiv($down->green_score/3,2),bcdiv($down->sale_score,6,2));
+                $dict_contribution = bcadd($self_contribution,$down->contribution);
+                if($dict_contribution > 5000000){
+                    $temp += 1;
                 }else{
-                   continue;
+                    continue;
                 }
             }
-            $user->grade = grade($amount,$temp);
+            if($temp >= 2){
+                $user->grade = grade($amount,$temp);
+            }
         }else{
             $user->grade = grade($amount);
         }
         $wallet_address  = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
         $user->wallet_address = $wallet_address;
-
 
         $status = UserIdentity::query()->where('user_id',$user->id)->select('status','id')->first();
         if(empty($status)){
@@ -310,38 +308,43 @@ class UserController extends BaseController
             return $this->fail($this->validate->getError());
         }
         $user = auth()->user();
-        $temp = 0;
-        $directs = User::query()->select('id','phone','master_pos','created_at')
+        //直推人数
+        $directs = User::query()->select('id','phone','master_pos','created_at','contribution')
             ->where('master_id',$user->id)
-            ->get()->map(function ($item,$items) use($temp){
-            $ids = User::query()->where('master_pos','like','%'.','.$item->id.','.'%')->pluck('id');
-
-            if(!empty($ids)){
-                $item->contribute = $this->statistics($ids);
-                if($item->contribute > 5000000){
-                    $temp += 1;
+            ->get()->map(function ($item,$items){
+                $item->phone = make_phone($item->phone);
+                if($item->contribution > 60000000){
+                    $six_team_ids = User::query()->where('master_id',$item->id)->select('green_score','sale_score','contribution')->get();
+                    $temp = 0;
+                    foreach ($six_team_ids as $down){
+                        $self_contribution = bcadd(bcdiv($down->green_score/3,2),bcdiv($down->sale_score,6,2));
+                        $dict_contribution = bcadd($self_contribution,$down->contribution);
+                        if($dict_contribution > 5000000){
+                            $temp += 1;
+                        }else{
+                            continue;
+                        }
+                    }
+                    if($temp >= 2){
+                        $item->grade = grade($item->contribution,$temp);
+                    }else{
+                        $item->grade = grade($item->contribution,1);
+                    }
+                }else{
+                    $item->grade = grade($item->contribution);
                 }
-                $item->grade = grade($item->contribute);
-            }else{
-                $item->contribute = 0;
-                $item->grade = 0;
-            }
-            if($temp > 2){
-                $item->grade = grade($item->contribute,$temp);
-            }
-            $item->phone = make_phone($item->phone);
-            unset($ids);
-            return $item;
+                $item->contribute = $item->contribution;
+                return $item;
         })->forPage($request->page,$request->page_size);
         $list = collect([])->merge($directs);
         $direct_num = $directs->count();
-        //我的团队
+        //我的团队人数
         $ids   = User::query()->where('master_pos','like','%'.','.$user->id.','.'%')->pluck('id');
         $team_num = count($ids);
         if($team_num == 0){
             $amount = 0;
         }else{
-            $amount = $this->statistics($ids);
+            $amount = $user->contribution;
         }
         return $this->success('success',compact('direct_num','team_num','amount','list'));
     }
