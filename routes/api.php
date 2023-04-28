@@ -98,7 +98,7 @@ Route::controller(UserController::class)->group(function () {
        Route::post('get_notices',[AsacController::class,'get_notices']);
        Route::post('get_destory',[AsacController::class,'get_destory']);
     });
-    Route::middleware('auth')->group(function (){
+    Route::middleware([])->group(function (){
         //获取新闻资讯
         Route::post('news',[NewsController::class,'getNews']);
         Route::post('news_info',[NewsController::class,'getInfo']);
@@ -107,8 +107,8 @@ Route::controller(UserController::class)->group(function () {
         Route::post('create',[BannerController::class,'create']);
         //获取公告
 
-        Route::post('notices',[NoticeController::class,'getNotices'])->withoutMiddleware(['auth']);
-        Route::post('notice_info',[NoticeController::class,'getInfo'])->withoutMiddleware(['auth']);
+        Route::post('notices',[NoticeController::class,'getNotices']);
+        Route::post('notice_info',[NoticeController::class,'getInfo']);
 
         //获取地址
         Route::post('areas',[AreaController::class,'get_area']);
