@@ -53,6 +53,8 @@ Route::controller(UserController::class)->group(function () {
         Route::post('get_private_key','get_private_key');
         //通证地址
         Route::post('asac_url','asac_url');
+        //池子
+        Route::post('get_coin','get_bold_coin');
     });
     Route::middleware('auth')->group(function (){
         //上传身份证

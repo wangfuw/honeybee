@@ -379,4 +379,11 @@ class UserController extends BaseController
     {
         return $this->success('请求成功',['url'=>env("ASACURL","https:www.baidu.com")]);
     }
+
+    public function get_bold_coin()
+    {
+        $data = AsacNode::query()->whereIn('id',[1,2])->pluck('number');
+        $data = ['flow_address'=>$data[0],'pre_address'=>$data[1]];
+        return $this->success('请求成功',$data);
+    }
 }
