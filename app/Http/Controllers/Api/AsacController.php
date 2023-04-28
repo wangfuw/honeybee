@@ -93,6 +93,7 @@ class AsacController extends BaseController
             $data['trade_num'] = $block->trade_num;
             $data['number'] = $block->number;
             $data['list'] = $trades;
+            $data['time'] = $block->created_at;
             return $this->success('success',$data);
         }else{
             return $this->fail('暂无数据');
@@ -144,7 +145,8 @@ class AsacController extends BaseController
     public function owners(Request $request)
     {
         $model = new AsacNode();
-        $list = $model->get_list($request);
+        $config = Asaconfig::query()->select('number','last_price')->find(1);
+        $list = $model->get_list($request,$config);
         return $this->success('请求成功',$list);
     }
 
