@@ -60,7 +60,7 @@ class Store extends Base
         $longitude = $data['longitude'];
         $latitude  = $data['latitude'];
         $list = self::query()->where('on_line',2)->when($keyword,function ($query) use($keyword){
-            return $query->where('name','like','%'.$keyword.'%');
+            return $query->where('store_name','like','%'.$keyword.'%');
         })->get();
         if(!$list) return [];
         $new = [];
