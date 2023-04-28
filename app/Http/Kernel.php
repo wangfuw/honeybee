@@ -18,6 +18,7 @@ class Kernel extends HttpKernel
      *
      * @var array<int, class-string|string>
      */
+
     protected $middleware = [
         // \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\TrustProxies::class,
@@ -87,4 +88,5 @@ class Kernel extends HttpKernel
         'merchant.token' => MerchantToken::class,
 //        'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
     ];
+
 }

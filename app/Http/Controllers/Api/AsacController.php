@@ -105,7 +105,7 @@ class AsacController extends BaseController
     public function index(){
         $list = AsacBlock::query()->with(['trade'=>function($query){
             return $query->select('block_id','num');
-        }])->select('id','created_at')
+        }])->select('id','created_at','trade_num as number')
             ->orderBy('id','asc')->limit(4)->get()->map(function ($item,$items){
                $temp = 0;
                foreach ($item->trade as $value){
