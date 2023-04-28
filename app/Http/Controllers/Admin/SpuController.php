@@ -167,7 +167,7 @@ class SpuController extends AdminBaseController
                 "user_id" => 0,
                 "game_zone" => $params["area"][0],
                 "score_zone" => $params["area"][1] ?? 0,
-                'fee'=>$params['fee']
+                'fee'=>$params['fee'] ?? 0
             ]);
             foreach ($params["skus"] as $k) {
                 $sku = MallSku::where(["spu_id" => $params["id"], "indexes" => $k["indexes"]])->first();
