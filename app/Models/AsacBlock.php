@@ -19,6 +19,10 @@ class AsacBlock extends Base
         'updated_at'
     ];
 
+    public function trade()
+    {
+        return $this->hasMany(AsacTrade::class,'block_id','id');
+    }
     public function get_list($params)
     {
         $page = $params['page']??1;
