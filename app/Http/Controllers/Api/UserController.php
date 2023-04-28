@@ -219,7 +219,6 @@ class UserController extends BaseController
     public function change_sale_password(Request $request)
     {
         $data = $request->only(['phone','sale_password','re_sale_password','code']);
-       ///dd($data);
         if(!$this->validate->scene('change_sale')->check($data)){
 
             return $this->fail($this->validate->getError());
@@ -380,7 +379,7 @@ class UserController extends BaseController
     //通知路由
     public function asac_url()
     {
-        return $this->success('请求成功',['url'=>env("ASACURL","https:www.baidu.com")]);
+        return $this->success('请求成功',['url'=>env('ASACURL',"https:www.baidu.com")]);
     }
 
     public function get_bold_coin()
