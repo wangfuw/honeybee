@@ -19,19 +19,31 @@ class AsacNode extends Base
         'private_key'
     ];
 
+    public function user()
+    {
+        return $this->hasOne(User::class,'id','user_id');
+    }
+
     public function get_list($params,$config = [])
     {
         $page = $params['page']??1;
         $page_size = $params['page_size']??8;
-        $list = self::query()->select('wallet_address','number','updated_at')
-            ->orderBy('number','desc')
+        $list = self::query()->with(['user'=>function($query){
+            return $query->select('id','coin_num');
+        }])->select('user_id','wallet_address','number','updated_at')
             ->get()->map(function ($item,$items) use($config){
-                $item['money'] = bcmul($item['number'],$config['last_price']);
-                $temp = bcdiv($item['number']*100,$config['number'],2);
-                $item['ratio'] = number_format($temp,2).'%';
-                unset($temp);
+                if($item->number > 0){
+                    $item->money = bcmul($item->number,$config['last_price']);
+                    $temp = bcdiv($item->number * 100,$config['number'],2);
+                    $item['ratio'] = number_format($temp,2).'%';
+                }else{
+                    $item->money = bcmul($item->user->coin_num??0,$config['last_price'])??0;
+                    $temp = bcdiv($item->user->coin_num??0 * 100,$config['number'],2)??0;
+                    $item['ratio'] = number_format($temp,2).'%'??0;
+                }
+                unset($temp,$item->user);
                 return $item;
-            })->forPage($page,$page_size);
-        return collect([])->merge($list);
+        })->forPage($page,$page_size);
+        return collect([])->merge($list)->toArray();
     }
 }
