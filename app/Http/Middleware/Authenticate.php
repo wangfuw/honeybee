@@ -41,7 +41,7 @@ class Authenticate extends Middleware
             if($e->getMessage() == 'Token Signature could not be verified.') {
                 return $this->fail('无法验证令牌签名,请重新登录',[],'',1005);
             }
-            return $this->fail('token验证意外错误：' . $e->getMessage(),[],'',1005);
+            return $this->fail('令牌过期,请重新登录',[],'',1005);
         }
 
         $request->setUserResolver(
