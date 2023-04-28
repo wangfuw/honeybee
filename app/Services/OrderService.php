@@ -279,7 +279,6 @@ class OrderService
                 $boss->green_score += $info->give_green_score;
                 $boss->save();
             }
-
             $info->status = 3;
             $info->save();
             $info->delete();
@@ -334,13 +333,16 @@ class OrderService
     //
     public function read_zone_log($spuS,$info,$user,$from_address)
     {
+        $last_price = Asaconfig::get_price();
         $game_zone = $spuS->game_zone;
         $score_zone = $spuS->score_zone;
         $user_id   = $spuS->user_id;
+        $user_area = $user->area;
+        $up_area = get_up_area($user_area);
+        //活期地址
+        $current = AsacNode::query()->where('id',4)->first();
         switch ($game_zone){
             case 1:
-
-
                 //币流转
                 if($user_id == 0){
                     $to_address = AsacNode::query()->where('id',4)->value('wallet_address');
@@ -384,12 +386,24 @@ class OrderService
                     'to_address'   => $pre_address->wallet_address,
                     'num'          => $temp_num,
                     'trade_hash'   => rand_str_pay(64),
+                    'type'         => 0
                 ]);
                 //用户获得绿色积分，减少余额,累计绿色积分
                 $user->green_score = bcadd($info->give_green_score,$user->green_score,2);
                 $user->green_score_total = bcadd($info->give_green_score,$user->green_score_total,2);
                 $user->coin_num = bcsub($user->coin_num,$info->coin_num,2);
                 $user->save();
+                //增加团队贡献值
+                $masters = $user->master_pos;
+                if($masters){
+                    $masters =  explode(',',substr($masters,1));
+                    $temp = bcdiv($info->green_score_score,3,2);
+                    foreach ($masters as $master){
+                        $user = User::query()->where('id',$master)->select('id','contribution')->first();
+                        $user->contribution += $temp;
+                        $user->save();
+                    }
+                }
                 //绿色积分日志
                 Score::query()->create([
                     'user_id'=>$user->id,
@@ -506,6 +520,46 @@ class OrderService
                     'f_type'=>Score::TRADE_HAVE,
                     'amount'=>'-'.$info->coin_num
                 ]);
+
+                //给旗舰店/形象店发幸运值
+                $model_store = User::query()->where('identity',1)
+                    ->where('identity_status',1)
+                    ->where('identity_area_code',$user_area)->pluck('id');
+                if($model_store){
+                    $num = bcmul($info->give_lucky_score,0.15,2);
+                    foreach ($model_store as $value){
+                        $res = User::query()->where('id',$value)->select('id','lucky_score')->first();
+                        $res->lucky_score += $num;
+                        $res->save();
+                        //日志
+                        Score::query()->create([
+                            'user_id'=>$res->id,
+                            'flag' => 1,
+                            'num' =>$num,
+                            'type'=>3,
+                            'f_type'=>Score::TRADE_REWARD,
+                        ]);
+                    }
+                }
+                $up_store = User::query()->where('identity',1)
+                    ->where('identity_status',1)
+                    ->where('identity_area_code',$up_area)->pluck('id');
+                if($up_store){
+                    $num = bcmul($info->give_lucky_score,0.05,2);
+                    foreach ($up_store as $value){
+                        $res = User::query()->where('id',$value)->select('id','lucky_score')->first();
+                        $res->luck_score += $num;
+                        $res->save();
+                        //日志
+                        Score::query()->create([
+                            'user_id'=>$res->id,
+                            'flag' => 1,
+                            'num' =>$num,
+                            'type'=>3,
+                            'f_type'=>Score::TRADE_REWARD,
+                        ]);
+                    }
+                }
                 break;
             case 4:
                 //消费卷减少
@@ -517,8 +571,98 @@ class OrderService
                     'f_type'=>Score::TRADE_USED,
                     'amount'=>0
                 ]);
+                //给形象店，旗舰店发币
+                $model_store = User::query()->where('identity',1)
+                    ->where('identity_status',1)
+                    ->where('identity_area_code',$user_area)->pluck('id');
+                if($model_store){
+                    $num = bcmul($info->ticket_num,0.15,2);
+                    $coin_num = bcdiv($num,$last_price,2);
+                    foreach ($model_store as $value){
+                        $res = User::query()->where('id',$value)->select('id','coin_num')->first();
+                        $to_address = Asaconfig::query()->where('id',$value)->value('wallet_address');
+                        $res->coin_num += $coin_num;
+                        $res->save();
+                        $current->number -= $coin_num;
+                        $current->save();
+                        //写日志
+                        AsacTrade::query()->create([
+                            'from_address' => $current->wallet_address,
+                            'to_address'   => $to_address,
+                            'num'          => $coin_num,
+                            'trade_hash'   => rand_str_pay(64),
+                            'type'         => AsacTrade::REWARD,
+                        ]);
+                    }
+                }
+                $up_store = User::query()->where('identity',1)
+                    ->where('identity_status',1)
+                    ->where('identity_area_code',$up_area)->pluck('id');
+                if($up_store){
+                    $num = bcmul($info->ticket_num,0.05,2);
+                    $coin_num = bcdiv($num,$last_price,2);
+                    foreach ($up_store as $value){
+                        $res = User::query()->where('id',$value)->select('id','coin_num')->first();
+                        $to_address = Asaconfig::query()->where('id',$value)->value('wallet_address');
+                        $res->coin_num += $coin_num;
+                        $res->save();
+                        $current->number -= $coin_num;
+                        $current->save();
+                        //写日志
+                        AsacTrade::query()->create([
+                            'from_address' => $current->wallet_address,
+                            'to_address'   => $to_address,
+                            'num'          => $coin_num,
+                            'trade_hash'   => rand_str_pay(64),
+                            'type'         => AsacTrade::REWARD,
+                        ]);
+                    }
+                }
                 $user->ticket_num = bcsub($user->ticket,$info->ticket_num);
                 $user->save();
+                //给全网六级的用户发奖 2%
+                $six_team_ids = User::query()->where('contribution',60000000)->pluck('id');
+                if($six_team_ids){
+                    $six_team = [];
+                    foreach ($six_team_ids as $six_team_id){
+                        $down_user = User::query()->where('master_id',$six_team_id)->select('green_score','sale_score','contribution')->get();
+                        $temp = 0;
+                        foreach ($down_user as $down){
+                            $self_contribution = bcadd(bcdiv($down->green_score/3,2),bcdiv($down->sale_score,6,2));
+                            $dict_contribution = bcadd($self_contribution,$down->contribution);
+                            if($dict_contribution > 5000000){
+                                $temp += 1;
+                            }else{
+                                continue;
+                            }
+                        }
+                        if($temp >= 2){
+                            array_push($six_team,$six_team_id);
+                        }
+                    }
+                    if($six_team){
+                        $total = User::query()->whereIn('id',$six_team)->sum('contribution');
+                        $total_coin = bcdiv($info->ticket_num,$last_price,2);
+                        foreach ($six_team as $six){
+                            $true_six_team = User::query()->where('id',$six)->select('id','coin_num','contribution')->first();
+                            $to_address = AsacNode::query()->where('user_id',$six)->value('wallet_address');
+                            $rete = bcdiv($true_six_team,$total,2);
+                            $true_six_team->coin_num = bcdiv($total_coin * 0.02,$rete,2);
+                            $true_six_team->save();
+                            //发地址减去金额
+                            $current->number -=  $true_six_team->coin_num;
+                            $current->save();
+                            //流转日志
+                            AsacTrade::query()->create([
+                                'from_address' => $current->wallet_address,
+                                'to_address'   => $to_address,
+                                'num'          =>  $true_six_team->coin_num,
+                                'trade_hash'   => rand_str_pay(64),
+                                'type'         => AsacTrade::REWARD,
+                            ]);
+                        }
+                    }
+                }
                 break;
         }
     }
@@ -550,6 +694,17 @@ class OrderService
                 'f_type'=>Score::TRADE_HAVE,
                 'amount'=>'-'.$info->coin_num
             ]);
+            //增加团队幸运值
+            $masters = $user->master_pos;
+            if($masters){
+                $masters =  explode(',',substr($masters,1));
+                $temp = bcdiv($info->give_sale_score,6,2);
+                foreach ($masters as $master){
+                    $user = User::query()->where('id',$master)->select('id','contribution')->first();
+                    $user->contribution += $temp;
+                    $user->save();
+                }
+            }
             //签收订单
             $info->express_status = 2;
             $info->save();
