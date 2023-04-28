@@ -260,12 +260,15 @@ class UserController extends AdminBaseController
                 "users.phone",
                 "username",
                 "id_card",
-                "address",
+                "address_code",
                 "front_image",
                 "back_image",
                 "status",
                 "user_identity.created_at"
             )->paginate($size);
+        foreach ($data["data"] as $k => &$v) {
+            $v["address"] = city_name($v["address_code"]);
+        }
         return $this->executeSuccess("请求", $data);
     }
 
