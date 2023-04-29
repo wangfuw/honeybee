@@ -18,6 +18,6 @@ class DownController extends BaseController
         }else{
             $url = "";
         }
-        return $this->success("请求成功",['url'=>$url]);
+        return $this->success("请求成功",['wgt_url'=>$url]);
     }
 }
