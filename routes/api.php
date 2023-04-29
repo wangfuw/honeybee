@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\SkuController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\WalletController;
+use App\Http\Controllers\Api\DownController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -112,6 +113,8 @@ Route::controller(UserController::class)->group(function () {
 
         //获取地址
         Route::post('areas',[AreaController::class,'get_area']);
+
+        Route::get('update',[DownController::class,'update']);
     });
     //order
     Route::group(['middleware' => 'auth'],function (){

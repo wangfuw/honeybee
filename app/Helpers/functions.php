@@ -194,6 +194,8 @@ if(!function_exists('grade')){
             case $number >= 60000000 && $base_num < 2:
                 $grade = 4;
                 break;
+            default:
+                $grade = 0;
         }
         return $grade;
     }
@@ -211,5 +213,12 @@ if(!function_exists('getdistance')){
         $b=$radLng1-$radLng2;
         $s=2*asin(sqrt(pow(sin($a/2),2)+cos($radLat1)*cos($radLat2)*pow(sin($b/2),2)))*6378.137*1000;
         return $s;
+    }
+}
+
+if(!function_exists('get_up_area')){
+    function get_up_area($code)
+    {
+        return Area::query()->where('code',$code)->value('pcode');
     }
 }

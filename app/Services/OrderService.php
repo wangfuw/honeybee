@@ -19,6 +19,7 @@ use App\Models\Store;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use function PHPUnit\Framework\isEmpty;
 
 class OrderService
 {
@@ -239,6 +240,7 @@ class OrderService
                             $add_data['give_lucky_score'] = $price_total * 6;
                             break;
                    }
+                   break;
                 case 4:
                     $add_data['ticket_num'] = bcdiv($price_total,Config::ticket_ratio_rmb(),2);
                     break;
@@ -310,7 +312,7 @@ class OrderService
             if($info->coin_num > 0 && $info->coin_num > $user->coin_num){
                 throw new ApiException([0,'您的余额不足']);
             }
-            if($info->ticket_num > 0 && $info->ticket_num > $user->coin_num){
+            if($info->ticket_num > 0 && $info->ticket_num > $user->ticket_num){
                 throw new ApiException([0,'您的消费卷不足']);
             }
             //检测商品分区
@@ -349,6 +351,7 @@ class OrderService
                 }else{
                     $to_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
                 }
+//                dd($from_address);
                 //写入地址流转
                 AsacTrade::query()->create([
                     'from_address' => $from_address,
@@ -395,9 +398,10 @@ class OrderService
                 $user->save();
                 //增加团队贡献值
                 $masters = $user->master_pos;
+
                 if($masters){
-                    $masters =  explode(',',substr($masters,1));
-                    $temp = bcdiv($info->green_score_score,3,2);
+                    $masters =  explode(',',substr($masters,1,strlen($masters) - 2));
+                    $temp = bcdiv($info->give_green_score,3,2);
                     foreach ($masters as $master){
                         $user = User::query()->where('id',$master)->select('id','contribution')->first();
                         $user->contribution += $temp;
@@ -469,13 +473,13 @@ class OrderService
                 break;
             case 3:
                 //获取幸运值日志
-                Score::query()->create([
-                    'user_id'=>$user->id,
-                    'flag' => 1,
-                    'num' =>$info->give_lucky_score,
-                    'type'=>3,
-                    'f_type'=>Score::TRADE_HAVE,
-                ]);
+//                Score::query()->create([
+//                    'user_id'=>$user->id,
+//                    'flag' => 1,
+//                    'num' =>$info->give_lucky_score,
+//                    'type'=>3,
+//                    'f_type'=>Score::TRADE_HAVE,
+//                ]);
                 //幸运值专区
                 $to_address = AsacNode::query()->where('id',4)->value('wallet_address');
                 //写入地址流转
@@ -498,6 +502,8 @@ class OrderService
                 $user->save();
                 //上级发asac奖励---凭空产生
                 $masters = User::query()->where('id',$master_id)->first();
+                //上级钱包地址
+                $master_address = AsacNode::query()->where('user_id',$master_id)->value('wallet_address');
                 $max = $masters->max_luck_num;
                 switch ($max){
                     case $max > 1 && $max < 2000:
@@ -508,9 +514,23 @@ class OrderService
                         break;
                     case $max >= 10000:
                         $rate = Config::lucky_last();
+                        break;
+
                 }
-                $masters->coin_num = bcmul($info->coin_num,$rate,2);
+                $masters->coin_num += bcmul($info->coin_num,$rate,2);
                 $masters->save();
+
+                //奖励发放
+                if($master_address){
+                    AsacTrade::query()->create([
+                        'from_address' => $to_address,
+                        'to_address'   => $masters->$master_address,
+                        'num'          => $info->coin_num,
+                        'trade_hash'   => rand_str_pay(64),
+                        'type'         => AsacTrade::REWARD,
+                    ]);
+                }
+
                 //获取幸运值日志
                 Score::query()->create([
                     'user_id'=>$user->id,
@@ -525,7 +545,8 @@ class OrderService
                 $model_store = User::query()->where('identity',1)
                     ->where('identity_status',1)
                     ->where('identity_area_code',$user_area)->pluck('id');
-                if($model_store){
+
+                if(!isEmpty($model_store)){
                     $num = bcmul($info->give_lucky_score,0.15,2);
                     foreach ($model_store as $value){
                         $res = User::query()->where('id',$value)->select('id','lucky_score')->first();
@@ -544,7 +565,7 @@ class OrderService
                 $up_store = User::query()->where('identity',1)
                     ->where('identity_status',1)
                     ->where('identity_area_code',$up_area)->pluck('id');
-                if($up_store){
+                if(!isEmpty($up_store)){
                     $num = bcmul($info->give_lucky_score,0.05,2);
                     foreach ($up_store as $value){
                         $res = User::query()->where('id',$value)->select('id','lucky_score')->first();
@@ -575,7 +596,7 @@ class OrderService
                 $model_store = User::query()->where('identity',1)
                     ->where('identity_status',1)
                     ->where('identity_area_code',$user_area)->pluck('id');
-                if($model_store){
+                if(!isEmpty($model_store)){
                     $num = bcmul($info->ticket_num,0.15,2);
                     $coin_num = bcdiv($num,$last_price,2);
                     foreach ($model_store as $value){
@@ -598,7 +619,7 @@ class OrderService
                 $up_store = User::query()->where('identity',1)
                     ->where('identity_status',1)
                     ->where('identity_area_code',$up_area)->pluck('id');
-                if($up_store){
+                if(!isEmpty($up_store)){
                     $num = bcmul($info->ticket_num,0.05,2);
                     $coin_num = bcdiv($num,$last_price,2);
                     foreach ($up_store as $value){
@@ -622,7 +643,7 @@ class OrderService
                 $user->save();
                 //给全网六级的用户发奖 2%
                 $six_team_ids = User::query()->where('contribution',60000000)->pluck('id');
-                if($six_team_ids){
+                if(!isEmpty($six_team_ids)){
                     $six_team = [];
                     foreach ($six_team_ids as $six_team_id){
                         $down_user = User::query()->where('master_id',$six_team_id)->select('green_score','sale_score','contribution')->get();
@@ -686,9 +707,9 @@ class OrderService
                 $info->save();
                 return true;
             }
-            //给用户方法消费积分
+            //给用户加消费积分
             $user->sale_score = bcadd($user->sale_score,$info->give_sale_score,2);
-            $user->sale_score = bcadd($user->sale_score_total,$info->give_sale_score,2);
+            $user->sale_score_total = bcadd($user->sale_score_total,$info->give_sale_score,2);
             $user->save();
             //积分日志
             Score::query()->create([
@@ -702,7 +723,7 @@ class OrderService
             //增加团队幸运值
             $masters = $user->master_pos;
             if($masters){
-                $masters =  explode(',',substr($masters,1));
+                $masters =  explode(',',substr($masters,1,strlen($masters) - 2));
                 $temp = bcdiv($info->give_sale_score,6,2);
                 foreach ($masters as $master){
                     $user = User::query()->where('id',$master)->select('id','contribution')->first();
