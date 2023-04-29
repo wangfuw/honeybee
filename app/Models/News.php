@@ -39,21 +39,24 @@ class News extends Base
         $data = self::query()->select( 'id',
             'title',
             'face',
-            'text',
+            'text as text_line',
             'type',
             'created_at'
         )
             ->where('type',$type)
             ->orderBy('id','desc')
-            ->get()
+            ->get()->map(function ($item,$items){
+                $item->text = strip_tags($item->text_line);
+                return $item;
+            })
             ->forPage($page,$page_size);
         return collect([])->merge($data);
     }
 
-    public function getTextAttribute($value){
-        if($value == '') return $value;
-        return  strip_tags($value);
-    }
+//    public function getTextAttribute($value){
+//        if($value == '') return $value;
+//        return  strip_tags($value);
+//    }
     public function getInfo($id)
     {
         $info =  self::query()->select('id',
