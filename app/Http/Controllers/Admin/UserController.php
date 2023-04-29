@@ -266,10 +266,10 @@ class UserController extends AdminBaseController
                 "back_image",
                 "status",
                 "user_identity.created_at"
-            )->paginate($size)->map(function ($item,$items){
-                 $item->address = city_name($item->address_code);
-                 return $item;
-            });
+            )->paginate($size)->toArray();
+        foreach ($data["data"] as $k => &$v) {
+            $v["address"] = city_name($v["address_code"]);
+        }
         return $this->executeSuccess("请求", $data);
     }
 
