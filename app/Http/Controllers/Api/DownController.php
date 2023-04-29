@@ -13,7 +13,7 @@ class DownController extends BaseController
         $version_r = $request->version;
         $version = DB::table('down')->value('version');
         if($version_r != $version){
-            $url =  $_SERVER['SERVER_NAME']."storage/app/public/st".$version.".wgt";
+            $url =  "http://".$_SERVER['SERVER_NAME']."storage/app/public/st".$version.".wgt";
         }else{
             $url = "";
         }
