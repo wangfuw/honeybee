@@ -265,7 +265,7 @@ class UserController extends AdminBaseController
                 "back_image",
                 "status",
                 "user_identity.created_at"
-            )->paginate($size);
+            )->paginate($size)->toArray();
         foreach ($data["data"] as $k => &$v) {
             $v["address"] = city_name($v["address_code"]);
         }
