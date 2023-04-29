@@ -83,7 +83,9 @@ class UserController extends BaseController
                 'master_id'=>$f_users->id,
                 'master_pos'=>','.$f_users->id.$f_users->master_pos??'',
                 //--todo 注册成功赠送幸运值
-                'luck_score'=>env('BASE_LUCK',100)
+                'luck_score'=>env('BASE_LUCK',100),
+                //注册写入最大幸运值
+                'max_luck_num'=>env('BASE_LUCK',100),
             ]);
             $user_id = $user->id;
             $asac_address = AsacNode::create([
