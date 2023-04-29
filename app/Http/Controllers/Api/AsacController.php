@@ -91,7 +91,7 @@ class AsacController extends BaseController
             $data = [];
             $data['id'] = $block['id'];
             $data['trade_num'] = $block['trade_num'];
-            $data['number'] = $block['number'];
+            $data['number'] = AsacTrade::query()->where('block_id',$id)->sum('num');
             $data['list'] = $trades;
             $data['time'] = $block['created_at'];
             return $this->success('success',$data);
