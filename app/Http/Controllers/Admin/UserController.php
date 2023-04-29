@@ -252,6 +252,7 @@ class UserController extends AdminBaseController
         if ($request->filled("status")) {
             $condition["status"] = $request->status;
         }
+
         $data = UserIdentity::join('users', 'users.id', '=', 'user_identity.user_id')
             ->where($condition)
             ->orderByDesc("user_identity.id")
@@ -265,10 +266,10 @@ class UserController extends AdminBaseController
                 "back_image",
                 "status",
                 "user_identity.created_at"
-            )->paginate($size);
-        foreach ($data["data"] as $k => &$v) {
-            $v["address"] = city_name($v["address_code"]);
-        }
+            )->paginate($size)->map(function ($item,$items){
+                 $item->address = city_name($item->address_code);
+                 return $item;
+            });
         return $this->executeSuccess("请求", $data);
     }
 
