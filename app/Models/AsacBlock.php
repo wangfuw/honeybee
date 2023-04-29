@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class AsacBlock extends Base
 {
@@ -30,7 +31,6 @@ class AsacBlock extends Base
         $data = self::query()->with(['trade'=>function($query){
             return $query->select('block_id','num');
         }])->select( 'id',
-            'number',
             'trade_num',
             'created_at'
         ) ->orderBy('id','desc')
@@ -39,6 +39,7 @@ class AsacBlock extends Base
                 foreach ($item->trade as $value){
                     $temp += $value['num'];
                 }
+                $item->number = count($item->trade);
                 $item->trade_num = $temp;
                 unset($item->trade);
                 return $item;
