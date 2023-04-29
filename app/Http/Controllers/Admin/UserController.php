@@ -280,7 +280,7 @@ class UserController extends AdminBaseController
         }
         $flag = $request->input("flag", 1);
         try {
-            UserIdentity::where("id", $request->id)->update(["status" => $flag]);
+            UserIdentity::where("user_id", $request->id)->update(["status" => $flag]);
             return $this->executeSuccess("操作");
         } catch (\Exception $exception) {
             return $this->executeFail("操作");
