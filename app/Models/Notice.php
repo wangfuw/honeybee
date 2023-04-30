@@ -22,10 +22,10 @@ class Notice extends Base
         'type'
     ];
 
-    public function getTextAttribute($value){
-        if($value == '') return $value;
-        return  strip_tags($value);
-    }
+//    public function getTextAttribute($value){
+//        if($value == '') return $value;
+//        return  strip_tags($value);
+//    }
     public function getNotices($params)
     {
         $page = $params['page']??1;
@@ -33,11 +33,14 @@ class Notice extends Base
         $type = $params['type']??1;
         $data = self::query()->select( 'id',
             'title',
-            'text',
+            'text as text_line',
             'created_at'
         )->where('type',$type)
             ->orderBy('id','desc')
-        ->get()
+        ->get()->map(function ($item,$items){
+                $item->text = strip_tags($item->text_line);
+                return $item;
+            })
         ->forPage($page,$page_size);
         return collect([])->merge($data);
     }
