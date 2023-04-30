@@ -174,5 +174,37 @@ class AsacController extends BaseController
         return $this->success('请求成功',compact('sum','count','data'));
     }
 
+    //流动池 预挖池 流转记录
+    public function get_flue(Request $request)
+    {
+        $type = $request->type;
+        $f_type = $request->f_type??0; // 0 全部 1-流入 2-流出
+        if($type == 1){
+            //流动池地址
+            $address = AsacNode::query()->where('id',1)->value('wallet_address');
+        }else{
+            //於挖池地址
+            $address = AsacNode::query()->where('id',2)->value('wallet_address');
+        }
+        $page = $request->page??1;
+        $page_size = $request->page??6;
+        $handler = AsacTrade::query();
 
+        switch ($f_type){
+            case 1:
+                $handler->where('to_address',$address);
+                break;
+            case 2:
+                $handler->where('from_address',$address);
+                break;
+            default:
+                $handler->where(function ($query) use ($address){
+                    return $query->orWhere('to_address',$address)->orWhere('from_address',$address);
+                });
+        }
+        $list = $handler->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->get()->forPage($page,$page_size);
+
+        $data = collect([])->merge($list)->toArray();
+        return $this->success('请求成功',$data);
+    }
 }

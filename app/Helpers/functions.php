@@ -2,6 +2,7 @@
 
 use \Illuminate\Support\Facades\Redis;
 use App\Models\Area;
+use Illuminate\Support\Env;
 /**
  * 生成邀请码
  */
@@ -103,14 +104,33 @@ if (!function_exists('inviteCode')) {
 if (!function_exists('send_sms')) {
     function send_sms($phone, $content, $om = "+86")
     {
-        return send_sms_real();
+        return send_sms_real($phone,$content,$om);
+    }
+}
+if(!function_exists('make_code')){
+    function make_code()
+    {
+        return rand('1000','9999');
     }
 }
 
 if (!function_exists("send_sms_real")) {
-    function send_sms_real()
+    function send_sms_real($phone,$content,$om)
     {
-        return true;
+        $statusStr = array(
+            "0" => "短信发送成功",
+            "-1" => "参数不全",
+            "-2" => "服务器空间不支持,请确认支持curl或者fsocket，联系您的空间商解决或者更换空间！",
+            "30" => "密码错误",
+            "40" => "账号不存在",
+            "41" => "余额不足",
+            "42" => "帐户已过期",
+            "43" => "IP地址限制",
+            "50" => "内容含有敏感词"
+        );
+        $sendurl = env('SEND_URL',"http://api.smsbao.com/") . "sms?u=" . env("SEND_USER","wangfuw456") . "&p=" . env("SEND_PASS","36f8554c5e2729405c3cecbe0d174bc6") . "&m=" . $phone . "&c=" . urlencode($content);
+        $result = file_get_contents($sendurl);
+        return ['status' => 1, 'info' => $statusStr[$result], 'data' => ''];
     }
 }
 

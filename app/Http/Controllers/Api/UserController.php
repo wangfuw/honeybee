@@ -6,6 +6,7 @@ use App\Common\Rsa;
 use App\Http\Controllers\BaseController;
 use App\Models\Address;
 use App\Models\AsacNode;
+use App\Models\Score;
 use App\Models\User;
 use App\Models\UserIdentity;
 use App\Validate\UserValidate;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class UserController extends BaseController
@@ -21,7 +23,7 @@ class UserController extends BaseController
     public function __construct(UserValidate $validate)
     {
         $this->validate = $validate;
-        $this->middleware('auth:api', ['except' => ['register', 'login','forget_password']]);
+        $this->middleware('auth:api', ['except' => ['register', 'login','forget_password','send_message']]);
     }
 
     /**
@@ -45,34 +47,63 @@ class UserController extends BaseController
             'access_token' =>$token]);
     }
 
+    //发送登录验证码
+    public function send_message(Request $request)
+    {
+        $phone = Rsa::decodeByPrivateKey($request->phone);
+        $phone = $request->phone;
+        if(check_phone($phone) == false){
+            return $this->fail('请正确输入手机号');
+        }
+        if(User::query()->where('phone',$phone)->exists()){
+            return $this->fail('该电话号码已被注册');
+        }
+        $code = make_code();
+        //        将验证码储在缓冲，设置过期时间为六分钟
+        $content = "【上陶商城】您的验证码是".$code."。如非本人操作，请忽略本短信";
+        Redis::setex($phone,600,$code);
+        send_sms($phone,$content);
+        return $this->success('发送成功',[]);
+    }
+
+    //修改交易密码
+    public function send_sale_code(Request $request)
+    {
+        $phone = Rsa::decodeByPrivateKey($request->phone);
+        if($phone != Auth::user()->phone){
+            return $this->fail('该手机号不是您的注册手机号');
+        }
+        $code = make_code();
+        //        将验证码储在缓冲，设置过期时间为六分钟
+        $content = "【上陶商城】您的验证码是".$code."。如非本人操作，请忽略本短信";
+        Redis::setex($phone,600,$code);
+        send_sms($phone,$content);
+        return $this->success('发送成功',[]);
+    }
     /**
      * 注册
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function register(Request $request){
+
         if(!$this->validate->scene('register')->check($request->toArray())){
             return $this->fail($this->validate->getError());
         }
         $phone = Rsa::decodeByPrivateKey($request->phone);
-        if(check_phone($phone) == false){
-            return $this->fail('请正确输入手机号');
-        }
         $f_users = User::query()->where('invite_code',$request->invite_code)->first();
         if(!$f_users){
             return $this->fail('邀请码不存在,请确认邀请码');
         }
-        if(User::query()->where('phone',$phone)->exists()){
-            return $this->fail('改电话号码已被注册');
-        }
-
         if(Rsa::decodeByPrivateKey($request->password) != Rsa::decodeByPrivateKey($request->re_password))
         {
             return $this->fail('两次密码不一致');
         }
-
-
-        //--todo 短信验证
+        // 短信验证  todo 打开
+//        $code = $request->code;
+//        if($code !== Redis::get($phone)){
+//            return $this->fail('验证码错误');
+//        }
         try{
             DB::beginTransaction();
             $myself_invite_code = inviteCode($phone);
@@ -86,6 +117,14 @@ class UserController extends BaseController
                 'luck_score'=>env('BASE_LUCK',100),
                 //注册写入最大幸运值
                 'max_luck_num'=>env('BASE_LUCK',100),
+            ]);
+            //注册赠送幸运值
+            Score::query()->create([
+                "user_id"=>$user->id,
+                "flag"   => 1,
+                "num"    =>env('BASE_LUCK',100),
+                "type"=>4,
+                "f_type"=>9
             ]);
             $user_id = $user->id;
             $asac_address = AsacNode::create([
@@ -222,7 +261,6 @@ class UserController extends BaseController
     {
         $data = $request->only(['phone','sale_password','re_sale_password','code']);
         if(!$this->validate->scene('change_sale')->check($data)){
-
             return $this->fail($this->validate->getError());
         }
         $phone = Rsa::decodeByPrivateKey($request->phone);
@@ -237,7 +275,11 @@ class UserController extends BaseController
         {
             return $this->fail('两次密码不一致');
         }
-        //--todo 短信验证
+        $code = $request->code;
+        //短信验证-- todo 打开
+//        if($code != Redis::get($phone)){
+//            return $this->fail('验证码错误');
+//        }
         try {
             $users->sale_password = Rsa::decodeByPrivateKey($request->sale_password);
             $users->save();

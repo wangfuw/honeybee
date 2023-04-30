@@ -28,6 +28,7 @@ class Score extends Base
     const TRADE_USED = 7;
 
     const TRADE_REWARD = 8;
+    const REGISTER_REWARD = 9;
     const F_TYPES = [
         self::BACK_ADD => "后台增加",
         self::BACK_SUB => "后台扣除",
@@ -36,7 +37,8 @@ class Score extends Base
         self::LUCKY_FREE_USED => "释放消耗幸运值",
         self::TRADE_HAVE => "购买得到",
         self::TRADE_USED => "出售消耗",
-        self::TRADE_REWARD=>"消费发奖励"
+        self::TRADE_REWARD=>"消费发奖励",
+        self::REGISTER_REWARD=>"注册赠送幸运值"
     ];
 
 

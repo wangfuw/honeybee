@@ -36,6 +36,8 @@ Route::controller(UserController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('forget_password', 'forget_password');
     Route::post('invite', 'invite');
+    //发送登录验证码
+    Route::post('send_message','send_message');
     Route::group(['middleware' => 'auth'], function () {
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
@@ -56,6 +58,8 @@ Route::controller(UserController::class)->group(function () {
         Route::post('asac_url','asac_url');
         //池子
         Route::post('get_coin','get_bold_coin');
+        //修改交易密码验证短信
+        Route::post('send_sale_code','send_sale_code');
     });
     Route::middleware('auth')->group(function (){
         //上传身份证
@@ -86,6 +90,8 @@ Route::controller(UserController::class)->group(function () {
         Route::post('store_update',[StoreController::class,'update']);
         //
         Route::post('coin_info',[AsacController::class,'coin_info']);
+        //流动池 於挖池记录
+        Route::post('get_flue',[AsacController::class,'get_flue']);
     });
     //区块浏览
     Route::group(['prefix'=>'asac'],function (){
