@@ -37,6 +37,9 @@ class UserController extends BaseController
         if(!$this->validate->scene('login')->check(['phone'=>$phone,'password'=>$password])){
             return $this->fail($this->validate->getError());
         }
+        if(User::query()->where('phone',$phone)->value('is_ban') == 2){
+            return  $this->fail('该用户被禁用');
+        }
         $token = Auth::attempt($data);
         if (!$token) {
             return $this->fail('登录失败');
@@ -338,11 +341,6 @@ class UserController extends BaseController
         }
     }
 
-    //获取手机验证码
-    public function getCode($phone)
-    {
-        return $this->success('success',['code'=>123]);
-    }
 
     //todo 未完成
     public function teams(Request $request)
@@ -403,7 +401,7 @@ class UserController extends BaseController
     {
         //邀请好友 返回 邀请码 和 注册接口
         $user = auth()->user();
-        $url =  'http//:'.'www.baidu.com/#/?'.'invite_cdoe='.$user->invite_code;
+        $url =  'http//:'.'www.baidu.com/#/?'.'invite_code='.$user->invite_code;
         $img =  QrCode::format('png')->size(200)->generate($url);
         return  $data = 'data:image/png;base64,' . base64_encode($img );
     }
