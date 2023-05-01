@@ -96,6 +96,21 @@ class OrderService
                     ->get();
                 if(empty($list)) return [];
                 break;
+            case 4:
+                //已完成 签收的商品
+                $list = Order::query()->with(['sku'=>function($query){
+                    return $query->select('id','indexes','price');
+                },'spu'=>function($query){
+                    return $query->select('id','logo','special_spec','name','user_id');
+                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
+                    ->where('status',2)
+                    ->where('express_status',2)
+                    ->where('user_id',$user->id)
+                    ->where('is_return',0)
+                    ->orderBy('created_at','desc')
+                    ->get();
+                if(empty($list)) return [];
+                break;
             default:
                 $list = Order::query()->with(['sku'=>function($query){
                     return $query->select('id','indexes','price');
@@ -298,9 +313,9 @@ class OrderService
         $order_no = $params['order_no'];
         try {
             DB::beginTransaction();
-            if($c_sale_password != $user->sale_password){
-                throw new ApiException([0,'支付密码错误']);
-            }
+//            if($c_sale_password != $user->sale_password){
+//                throw new ApiException([0,'支付密码错误']);
+//            }
             $info = Order::query()->where('order_no',$order_no)->where('status',1)->first();
             if(empty($info)){
                 throw new ApiException([0,'该订单不可支付']);
@@ -744,7 +759,8 @@ class OrderService
 
     public function apply_revoke($params,$user)
     {
-        $info = Order::query()->where('order_no',$params['order_no'])->where('express_status',2)->where('is_return',0)
+        //支付成功,未签收可以换货
+        $info = Order::query()->where('order_no',$params['order_no'])->where('status',2)->where('express_status','<>',2)->where('is_return',0)
             ->where('user_id',$user->id)->first();
         try{
             DB::beginTransaction();

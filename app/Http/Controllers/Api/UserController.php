@@ -6,6 +6,7 @@ use App\Common\Rsa;
 use App\Http\Controllers\BaseController;
 use App\Models\Address;
 use App\Models\AsacNode;
+use App\Models\Config;
 use App\Models\Score;
 use App\Models\User;
 use App\Models\UserIdentity;
@@ -107,6 +108,8 @@ class UserController extends BaseController
 //        if($code !== Redis::get($phone)){
 //            return $this->fail('验证码错误');
 //        }
+//        获取配置注册赠送
+        $num = Config::register_give_lucky();
         try{
             DB::beginTransaction();
             $myself_invite_code = inviteCode($phone);
@@ -117,9 +120,9 @@ class UserController extends BaseController
                 'master_id'=>$f_users->id,
                 'master_pos'=>','.$f_users->id.$f_users->master_pos??'',
                 //--todo 注册成功赠送幸运值
-                'luck_score'=>env('BASE_LUCK',100),
+                'luck_score'=>$num??188,
                 //注册写入最大幸运值
-                'max_luck_num'=>env('BASE_LUCK',100),
+                'max_luck_num'=>$num??188,
             ]);
             //注册赠送幸运值
             Score::query()->create([
