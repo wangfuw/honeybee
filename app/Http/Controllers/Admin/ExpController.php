@@ -42,6 +42,7 @@ class ExpController extends AdminBaseController{
             ]);
             return $this->executeSuccess("添加");
         }catch (\Exception$exception){
+            var_dump($exception);
             return $this->executeFail("添加");
         }
     }
