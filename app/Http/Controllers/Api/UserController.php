@@ -191,11 +191,12 @@ class UserController extends BaseController
         $wallet_address  = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
         $user->wallet_address = $wallet_address;
 
-        $status = UserIdentity::query()->where('user_id',$user->id)->select('status','id')->first();
+        $status = UserIdentity::query()->where('user_id',$user->id)->select('status','id','note')->first();
         if(empty($status)){
             $user->status = -1;
         }else{
             $user->status = $status->status;
+            $user->identity_note = $status->note;
         }
 
         return $this->success('success',['user' => $user]);

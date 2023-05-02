@@ -68,6 +68,10 @@ Route::controller(UserController::class)->group(function () {
         Route::post('upload_header',[UploadController::class,'uploadHeader']);
         //提交实名认证
         Route::post('identity',[UserCompleteController::class,'identity']);
+        //我的实名认证详情
+        Route::post('identity_info',[UserCompleteController::class,'identityInfo']);
+        //重新提交实名认证
+        Route::post('identity_update',[UserCompleteController::class,'identityUpdate']);
         //地址列表
         Route::post('get_address',[AddressController::class,'get_Address']);
         //新增地址
