@@ -257,7 +257,8 @@ class UserController extends AdminBaseController
             ->where($condition)
             ->orderBy("user_identity.status")
             ->select(
-                "users.id",
+                "user_identity.id",
+                "user_identity.user_id",
                 "users.phone",
                 "username",
                 "id_card",
@@ -278,7 +279,7 @@ class UserController extends AdminBaseController
         if (!$request->filled("id")) {
             return $this->error("id");
         }
-        $ua = UserIdentity::where("user_id",$request->id)->first();
+        $ua = UserIdentity::where("id",$request->id)->first();
         if(!$ua){
             return $this->error("id");
         }

@@ -50,14 +50,13 @@ class MoneyController extends AdminBaseController
         if (!$um) {
             return $this->error("id");
         }
-        $status = $request->filled("status", 2);
+        $status = $request->status;
         if ($status == 2) {
             if (!$request->filled("note")) {
                 return $this->fail("驳回原因必填");
             }
             $um->note = $request->note;
         }
-        var_dump($status);
         $um->status = $status;
         $um->admin_id = auth("admin")->user()->id;
         DB::beginTransaction();
