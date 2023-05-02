@@ -62,4 +62,11 @@ class Config extends Base
         return self::query()->value('rank_rate');
     }
 
+    public static function money_rate(){
+        return self::query()->value('money_rate');
+    }
+    public static function freeze_free(){
+        return self::query()->value('freeze_free');
+    }
+
 }
