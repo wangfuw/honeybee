@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserIdentity;
 use App\Validate\IdentityValidate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use function PHPUnit\Framework\isEmpty;
 
 class UserCompleteController extends BaseController
