@@ -112,7 +112,7 @@ class OrderController extends AdminBaseController
         if ($request->filled("status")) {
             $condition[] = ["orders.status", "=", $request->status];
         }
-        if ($request->filled("express_status")) {
+        if ($request->express_status != null) {
             $condition[] = ["orders.express_status", "=", $request->express_status];
         }
         if ($request->filled("order_no")) {
