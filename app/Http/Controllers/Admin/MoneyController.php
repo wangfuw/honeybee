@@ -108,13 +108,7 @@ class MoneyController extends AdminBaseController
             $condition[] = ["created_at", ">=", strtotime($start)];
             $condition[] = ["created_at", "<", strtotime($end)];
         }
-        $data = MoneyTrade::with(['fromUser' => function ($query) {
-            return $query->select("phone as from_phone");
-        }, 'toUser' => function ($query) {
-            return $query->select("phone as to_phone");
-        }])->where($condition)
-            ->orderByDesc("id")
-            ->paginate($size);
+        $data = MoneyTrade::tradeList($condition,$size);
         return $this->executeSuccess("请求", $data);
     }
 }

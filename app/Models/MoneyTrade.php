@@ -20,4 +20,14 @@ class MoneyTrade extends Base
     {
         return $this->hasOne(User::class, 'id', 'from_id');
     }
+
+    public function tradeList($condition,$size){
+        return$this->with(['fromUser' => function ($query) {
+            return $query->select("phone as from_phone");
+        }, 'toUser' => function ($query) {
+            return $query->select("phone as to_phone");
+        }])->where($condition)
+            ->orderByDesc("id")
+            ->paginate($size);
+    }
 }
