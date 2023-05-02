@@ -30,6 +30,7 @@ class OrderController extends AdminBaseController
         }
         if ($request->filled("express_status")) {
             $condition[] = ["orders.express_status", "=", $request->express_status];
+            $condition[] = ["orders.status", "=", 2];
         }
         if ($request->filled("order_no")) {
             $condition[] = ["orders.order_no", "=", $request->order_no];
@@ -114,6 +115,7 @@ class OrderController extends AdminBaseController
         }
         if ($request->filled("express_status")) {
             $condition[] = ["orders.express_status", "=", $request->express_status];
+            $condition[] = ["orders.status", "=", 2];
         }
         if ($request->filled("order_no")) {
             $condition[] = ["orders.order_no", "=", $request->order_no];
