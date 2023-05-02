@@ -62,6 +62,12 @@ class LoginController extends MerchantBaseController
                         "path" => "/spuList"
                     ],
                     [
+                        "id" => 8,
+                        "title" => "上传商品",
+                        "icon" => "Setting",
+                        "path" => "/addSpu"
+                    ],
+                    [
                         "id" => 4,
                         "title" => "商品详情",
                         "icon" => "Film",
