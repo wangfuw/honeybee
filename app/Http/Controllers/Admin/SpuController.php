@@ -123,6 +123,7 @@ class SpuController extends AdminBaseController
         }
         $condition[] = ["mall_spu.user_id", ">=", 1];
         $condition[] = ["mall_spu.saleable", "<=", 2];
+        $condition[] = ["mall_spu.saleable", ">=", 1];
         $spus = MallSpu::join("users", "users.id", "=", "mall_spu.user_id")
             ->where($condition)
             ->orderByDesc("mall_spu.saleable")
