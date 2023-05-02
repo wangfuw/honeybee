@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\User;
 use App\Models\UserMoney;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MoneyController extends AdminBaseController
 {
@@ -23,8 +24,8 @@ class MoneyController extends AdminBaseController
                 $condition[] = ["user_money.id", "=", "-1"];
             }
         }
-        if($request->status){
-            $condition[] = ["status","=",$request->status];
+        if ($request->status) {
+            $condition[] = ["status", "=", $request->status];
         }
         if ($request->filled("create_at")) {
             $start = $request->input("create_at.0");
@@ -58,9 +59,19 @@ class MoneyController extends AdminBaseController
         }
         $um->status = $status;
         $um->admin_id = auth("admin")->user()->id;
-        $um->save();
-        return $this->executeSuccess("操作");
+        DB::beginTransaction();
+        try {
+            $um->save();
+            if ($status == 1) {
+                User::where("id", $um->user_id)->increment("freeze_money", $um->money);
+            }
+            DB::commit();
+            return $this->executeSuccess("操作");
+        } catch (\Exception $exception) {
+            return $this->executeFail("操作");
+        }
     }
+
 
     public function moneyTradeList(Request $request)
     {
