@@ -10,7 +10,7 @@ class AdminResponse
 {
     public function handle($request, Closure $next)
     {
-        var_dump($response);
+        $response = $next($request);
         if ($request->rule_type == 2 && $response->original["status"] == 1) {
             $uri = $request->path();
             $admin = auth("admin")->user();
