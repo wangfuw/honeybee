@@ -19,6 +19,7 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
         Route::get("spuList", [SpuController::class, "spuList"]);
         Route::get("spuDetail", [SpuController::class, "spuDetail"]);
         Route::post("editSpu", [SpuController::class, "editSpu"]);
+        Route::post("addSpu", [SpuController::class, "addSpu"]);
         Route::post("editSaleable", [SpuController::class, "editSaleable"]);
 
         Route::get("orderList", [OrderController::class, "orderList"]);
