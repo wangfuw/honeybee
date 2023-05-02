@@ -11,6 +11,7 @@ use App\Models\AsacTrade;
 use App\Models\Config;
 use App\Models\MallSku;
 use App\Models\MallSpu;
+use App\Models\MoneyTrade;
 use App\Models\Order;
 use App\Models\RevokeOrder;
 use App\Models\Score;
@@ -243,8 +244,8 @@ class OrderService
                     break;
                 case 3:
                     //幸运专区获取幸运值
-                    $add_data['coin_num'] = bcdiv($price_total,$last_price + $spu_info->fee,2);
-                   switch ($price_total){
+                    $add_data['money'] =$price_total;
+                    switch ($price_total){
                        case $price_total > 1 && $price_total<2000:
                             $add_data['give_lucky_score'] = $price_total * 4;
                             break;
@@ -254,7 +255,7 @@ class OrderService
                        case $price_total>=10000;
                             $add_data['give_lucky_score'] = $price_total * 6;
                             break;
-                   }
+                    }
                    break;
                 case 4:
                     $add_data['ticket_num'] = bcdiv($price_total,Config::ticket_ratio_rmb(),2);
@@ -487,32 +488,24 @@ class OrderService
                 $user->save();
                 break;
             case 3:
-                //获取幸运值日志
-//                Score::query()->create([
-//                    'user_id'=>$user->id,
-//                    'flag' => 1,
-//                    'num' =>$info->give_lucky_score,
-//                    'type'=>3,
-//                    'f_type'=>Score::TRADE_HAVE,
-//                ]);
                 //幸运值专区
-                $to_address = AsacNode::query()->where('id',4)->value('wallet_address');
                 //写入地址流转
-                AsacTrade::query()->create([
-                    'from_address' => $from_address,
-                    'to_address'   => $to_address,
-                    'num'          => $info->coin_num,
-                    'trade_hash'   => rand_str_pay(64),
+                $to_address = AsacNode::query()->where('id',4)->value('wallet_address');
+                MoneyTrade::query()->create([
+                    'from_id' => $user_id,
+                    'to_id'   => 1,
+                    'num'     => $info->money,
+                    'type'    => 2,
                 ]);
                 //单次消费最大额
                 $max_luck_num = $user->max_luck_num;
-                $price = $info->price;
+                $price = $info->money;
 
                 //上级user_id
                 $master_id = $user->master_id;
                 //给自己加幸运值,减余额,跟新幸运值最大消费
                 $user->luck_score = bcadd($user->luck_score,$info->give_lucky_score,2);
-                $user->coin_num = bcsub($user->coin_num,$info->coin_num,2);
+                $user->money = bcsub($user->money,$info->money,2);
                 $user->max_luck_num = max($max_luck_num,$price);
                 $user->save();
                 //上级发asac奖励---凭空产生
@@ -532,15 +525,16 @@ class OrderService
                         break;
 
                 }
-                $masters->coin_num += bcmul($info->coin_num,$rate,2);
+                //幸运值专区给商家发asac
+                $masters->coin_num += bcmul($info->money,$rate,2);
                 $masters->save();
 
                 //奖励发放
                 if($master_address){
                     AsacTrade::query()->create([
                         'from_address' => $to_address,
-                        'to_address'   => $masters->$master_address,
-                        'num'          => $info->coin_num,
+                        'to_address'   => $masters->wallet_address,
+                        'num'          =>  $masters->coin_num,
                         'trade_hash'   => rand_str_pay(64),
                         'type'         => AsacTrade::REWARD,
                     ]);
@@ -553,7 +547,6 @@ class OrderService
                     'num' =>$info->give_lucky_score,
                     'type'=>3,
                     'f_type'=>Score::TRADE_HAVE,
-                    'amount'=>'-'.$info->coin_num
                 ]);
 
                 //给旗舰店/形象店发幸运值
