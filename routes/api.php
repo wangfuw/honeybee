@@ -109,6 +109,8 @@ Route::controller(UserController::class)->group(function () {
        Route::post('owners',[AsacController::class,'owners']);
        Route::post('get_notices',[AsacController::class,'get_notices']);
        Route::post('get_destory',[AsacController::class,'get_destory']);
+       Route::post('excharge',[AsacController::class,'excharge']);
+       Route::post('withdraw',[AsacController::class,'withdraw']);
     });
     Route::middleware([])->group(function (){
         //获取新闻资讯

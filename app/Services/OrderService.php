@@ -363,7 +363,7 @@ class OrderService
             case 1:
                 //币流转
                 if($user_id == 0){
-                    $to_address = AsacNode::query()->where('id',4)->value('wallet_address');
+                    $to_address = AsacNode::query()->where('user_id',1)->value('wallet_address');
                 }else{
                     $to_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
                 }
@@ -445,7 +445,7 @@ class OrderService
                 break;
             case 2:
                 //消费积分区 -- 不会立马获得
-                $to_address = AsacNode::query()->where('id',4)->value('wallet_address');
+                $to_address = AsacNode::query()->where('user_id)',1)->value('wallet_address');
                 //写入地址流转
                 AsacTrade::query()->create([
                     'from_address' => $from_address,
@@ -490,7 +490,7 @@ class OrderService
             case 3:
                 //幸运值专区
                 //写入地址流转
-                $to_address = AsacNode::query()->where('id',4)->value('wallet_address');
+                $to_address = AsacNode::query()->where('user_id',1)->value('wallet_address');
                 MoneyTrade::query()->create([
                     'from_id' => $user_id,
                     'to_id'   => 1,

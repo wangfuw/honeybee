@@ -14,7 +14,8 @@ use App\Models\AsacTrade;
 use App\Models\Notice;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
+use GuzzleHttp;
 class AsacController extends BaseController
 {
 
@@ -102,7 +103,6 @@ class AsacController extends BaseController
         }else{
             return $this->fail('暂无数据');
         }
-
     }
 
     /**首页
@@ -219,5 +219,47 @@ class AsacController extends BaseController
             ->forPage($page,$page_size);
         $data = collect([])->merge($list)->toArray();
         return $this->success('请求成功',$data);
+    }
+
+    //充值 成功 返回交易hash
+    public function excharge(Request $request){
+        //充值地址
+        $from_address = $request->from_address;
+        //接受地址
+        $to_address = $request->to_address;
+        //数量
+        $num = $request->num;
+        $hash = rand_str_pay(64);
+        AsacTrade::query()->create([
+            'from_address'=>$from_address,
+            'to_address' => $to_address,
+            'num'        => $num,
+            'type'       => AsacTrade::RECHARGE,
+            'trade'      => $hash,
+        ]);
+        $user_id = AsacNode::query()->where('wallet_address',$to_address)->value('user_id');
+        $user = User::query()->where('id',$user_id)->first();
+        $user->coin_num += $num;
+        $user->save();
+        return $this->success('充值成功',compact('hash'));
+    }
+
+    //提现
+    public function withdraw(Request $request){
+        $user = Auth::user();
+        $wallet_address = $user->wallet_address;
+        $to_address = $request->to_address;
+        $num = $request->num;
+        //向第三方发送http post 请求
+        $http = new GuzzleHttp\Client;
+        $response = $http->post('https://www.baidu.com',[
+            'form_params'=>[
+                'from_address'=>$wallet_address,
+                'to_address'=>$to_address,
+                'num'=>$num
+            ]
+        ]);
+        $result = json_decode($response->getBody(),true);
+        dd($result);
     }
 }
