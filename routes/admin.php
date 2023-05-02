@@ -17,6 +17,7 @@ use  App\Http\Controllers\Admin\ConfigController;
 use  App\Http\Controllers\Admin\StoreController;
 use  App\Http\Controllers\Admin\OrderController;
 use  App\Http\Controllers\Admin\HomeController;
+use  App\Http\Controllers\Admin\ExpController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -100,6 +101,11 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("orderList", [OrderController::class, "orderList"]);
             Route::get("shopOrderList", [OrderController::class, "shopOrderList"]);
             Route::post("sendSku", [OrderController::class, "sendSku"])->middleware(['admin.response']);
+
+            Route::get("expList",[ExpController::class,"expList"]);
+            Route::post("editExp",[ExpController::class,"editExp"])->middleware(['admin.response']);
+            Route::post("addExp",[ExpController::class,"addExp"])->middleware(['admin.response']);
+            Route::post("delExp",[ExpController::class,"delExp"])->middleware(['admin.response']);
         });
     });
 });
