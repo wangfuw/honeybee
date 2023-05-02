@@ -26,6 +26,15 @@ class StoreController extends AdminBaseController
                 $condition[] = ["store.id", "=", "-1"];
             }
         }
+        if ($request->filled("store_name")) {
+            $condition[] = ["store.store_name", "like", "%$request->name%"];
+        }
+        if ($request->filled("mobile")) {
+            $condition[] = ["store.mobile", "=", $request->mobile];
+        }
+
+        $condition[] =["store.type", "=", 1];
+
         $data = Store::join("users", "users.id", "=", "store.user_id")
             ->where($condition)
             ->orderBy("store.type")
@@ -45,6 +54,70 @@ class StoreController extends AdminBaseController
             $store->save();
             return $this->executeSuccess("操作");
         }
+        return $this->executeSuccess("操作");
+    }
+
+    public function addAmount(Request $request)
+    {
+        if (!$request->id) {
+            return $this->error("ID");
+        }
+        $store = Store::find($request->id);
+        if ($store->type != 1) {
+            return $this->fail("商家未通过审核");
+        }
+        if ($store->on_line != 2) {
+            return $this->fail("不是线下商家");
+        }
+        $num = $request->input("num", 0);
+        if (!is_numeric($num) || $num <= 0) {
+            return $this->error("数量");
+        }
+        $store->amount += $num;
+        $store->save();
+        return $this->executeSuccess("操作");
+    }
+
+
+    public function storeReviewList(Request $request)
+    {
+        $size = $request->size ?? $this->size;
+        $condition = [];
+        if ($request->id) {
+            $condition[] = ["user_id", "=", $request->id];
+        }
+        if ($request->phone) {
+            $user = User::where("phone", $request->phone)->first();
+            if ($user) {
+                $condition[] = ["user_id", "=", $user->id];
+            } else {
+                $condition[] = ["store.id", "=", "-1"];
+            }
+        }
+        if ($request->filled("store_name")) {
+            $condition[] = ["store.store_name", "like", "%$request->name%"];
+        }
+        if ($request->filled("mobile")) {
+            $condition[] = ["store.mobile", "=", $request->mobile];
+        }
+
+        $condition[] =["store.type", "=", 0];
+
+        $data = Store::join("users", "users.id", "=", "store.user_id")
+            ->where($condition)
+            ->orderBy("store.type")
+            ->select("store.*", "users.phone")
+            ->paginate($size);
+        return $this->executeSuccess("请求", $data);
+    }
+
+    public function editReview(Request $request)
+    {
+        if (!$request->id) {
+            return $this->error("ID");
+        }
+        $store = Store::find($request->id);
+
         if ($request->type) {
             $store->type = $request->type;
             if ($request->type == 1) {
@@ -73,27 +146,6 @@ class StoreController extends AdminBaseController
                 return $this->executeSuccess("操作");
             }
         }
-        return $this->executeSuccess("操作");
-    }
-
-    public function addAmount(Request $request)
-    {
-        if (!$request->id) {
-            return $this->error("ID");
-        }
-        $store = Store::find($request->id);
-        if($store->type != 1){
-            return $this->fail("商家未通过审核");
-        }
-        if ($store->on_line != 2) {
-            return $this->fail("不是线下商家");
-        }
-        $num = $request->input("num", 0);
-        if (!is_numeric($num) || $num <= 0) {
-            return $this->error("数量");
-        }
-        $store->amount += $num;
-        $store->save();
         return $this->executeSuccess("操作");
     }
 }
