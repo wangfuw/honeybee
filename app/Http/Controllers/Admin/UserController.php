@@ -278,7 +278,7 @@ class UserController extends AdminBaseController
         if (!$request->filled("id")) {
             return $this->error("id");
         }
-        $ua = UserIdentity::where("user_id",$request->id);
+        $ua = UserIdentity::where("user_id",$request->id)->first();
         if(!$ua){
             return $this->error("id");
         }
