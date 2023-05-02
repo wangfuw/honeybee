@@ -55,7 +55,7 @@ class SpuController extends MerchantBaseController
                 "special_spec" => $params["special_spec"],
                 "user_id" => $user->id,
                 "game_zone" => 1,
-                "score_zone" => $params["area"][1] ?? 1,
+                "score_zone" => $params["score_zone"] ?? 1,
                 'fee'=>$params['fee'],
             ]);
             foreach ($params["skus"] as $k) {
@@ -143,7 +143,7 @@ class SpuController extends MerchantBaseController
                 "special_spec" => $params["special_spec"],
                 "user_id" => $user->id,
                 "game_zone" => 1,
-                "score_zone" => $params["area"][1] ?? 1,
+                "score_zone" => $params["score_zone"] ?? 1,
                 'fee'=>$params['fee'],
             ]);
             foreach ($params["skus"] as $k) {

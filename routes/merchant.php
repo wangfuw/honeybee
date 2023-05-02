@@ -9,6 +9,7 @@ use App\Http\Controllers\Merchant\AsacController;
 
 Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
+    Route::post("uploadOne", [LoginController::class, "uploadOne"]);
     Route::middleware(['merchant.token'])->group(function () {
         Route::get("dealLine", [HomeController::class, "dealLine"]);
         Route::get("storeInfo", [HomeController::class, "storeInfo"]);
