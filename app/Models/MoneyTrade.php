@@ -23,9 +23,9 @@ class MoneyTrade extends Base
 
     public function tradeList($condition,$size){
         return$this->with(['fromUser' => function ($query) {
-            return $query->select("phone as from_phone");
+            return $query->select("id","phone as from_phone");
         }, 'toUser' => function ($query) {
-            return $query->select("phone as to_phone");
+            return $query->select("id","phone as to_phone");
         }])->where($condition)
             ->orderByDesc("id")
             ->paginate($size);
