@@ -102,4 +102,11 @@ class LoginController extends MerchantBaseController
             return $this->executeSuccess("请求", array_splice($menus, 0, 1));
         }
     }
+
+    public function uploadOne(Request $request)
+    {
+        $file = $request->file('image');
+        $path = $this->uploadFile($file, "banners");
+        return $this->executeSuccess("上传", ["path" => $path]);
+    }
 }

@@ -33,14 +33,12 @@ class SpuController extends MerchantBaseController
 
     public function addSpu(Request $request)
     {
-        $params = $request->only('area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable','fee');
+        $params = $request->only('area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable', 'fee');
 
         if (!$this->validate->scene('add')->check($params)) {
             return $this->fail($this->validate->getError());
         }
-        if($params["fee"] < 0){
-            return  $this->fail("运费不能为负数");
-        }
+
         $user = auth("merchant")->user();
         DB::beginTransaction();
         try {
@@ -48,15 +46,15 @@ class SpuController extends MerchantBaseController
                 "name" => $params["name"],
                 "category_one" => $params["category"][0],
                 "category_two" => $params["category"][1] ?? 0,
-                "saleable" => $params["saleable"],
+                "saleable" => 2,
                 "logo" => $params["logo"],
                 "banners" => $params["banner_imgs"],
                 "details" => $params["detail_imgs"],
                 "special_spec" => $params["special_spec"],
                 "user_id" => $user->id,
                 "game_zone" => 1,
-                "score_zone" => $params["area"][1] ?? 1,
-                'fee'=>$params['fee'],
+                "score_zone" => $params["score_zone"] ?? 1,
+                'fee' => 0,
             ]);
             foreach ($params["skus"] as $k) {
                 MallSku::create([
@@ -107,8 +105,8 @@ class SpuController extends MerchantBaseController
         }
         $spu = MallSpu::find($request->id)->toArray();
         $user = auth("merchant")->user();
-        if($spu["user_id"] != $user->id){
-            return $this->executeSuccess("请求",[]);
+        if ($spu["user_id"] != $user->id) {
+            return $this->executeSuccess("请求", []);
         }
         $skus = MallSku::where("spu_id", $request->id)->get()->toArray();
         $spu["skus"] = $skus;
@@ -117,7 +115,7 @@ class SpuController extends MerchantBaseController
 
     public function editSpu(Request $request)
     {
-        $params = $request->only('id', 'area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable','fee');
+        $params = $request->only('id', 'area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable', 'fee');
 
         if (!$this->validate->scene('modify')->check($params)) {
             return $this->fail($this->validate->getError());
@@ -126,9 +124,6 @@ class SpuController extends MerchantBaseController
         $user = auth("merchant")->user();
         if (!$spu || $spu->user_id != $user->id) {
             return $this->error("ID");
-        }
-        if($params["fee"] < 0){
-            return  $this->fail("运费不能为负数");
         }
         DB::beginTransaction();
         try {
@@ -143,8 +138,8 @@ class SpuController extends MerchantBaseController
                 "special_spec" => $params["special_spec"],
                 "user_id" => $user->id,
                 "game_zone" => 1,
-                "score_zone" => $params["area"][1] ?? 1,
-                'fee'=>$params['fee'],
+                "score_zone" => $params["score_zone"] ?? 1,
+                'fee' => 0,
             ]);
             foreach ($params["skus"] as $k) {
                 $sku = MallSku::where(["spu_id" => $params["id"], "indexes" => $k["indexes"]])->first();
