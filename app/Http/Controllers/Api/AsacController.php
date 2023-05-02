@@ -12,6 +12,7 @@ use App\Models\AsacNode;
 use App\Models\Asaconfig;
 use App\Models\AsacTrade;
 use App\Models\Notice;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AsacController extends BaseController
@@ -30,10 +31,13 @@ class AsacController extends BaseController
         if(!AsacNode::query()->where('private_key',$request->private_key)->exists()){
             return $this->fail('不存在该用户');
         }
-        $wallet_address = AsacNode::query()->select('wallet_address','number')
+        $wallet_address = AsacNode::query()->select('wallet_address','number','user_id')
             ->where('private_key',$request->private_key)
             ->first()
             ->toArray();
+        if($wallet_address->user_id != 0){
+            $wallet_address->number = User::query()->where('id',$wallet_address->user_id)->value('coin_num')??0;
+        }
         return $this->success('登陆成功',$wallet_address);
     }
 
