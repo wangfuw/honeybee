@@ -289,6 +289,7 @@ class UserController extends AdminBaseController
             }
             $ua->note = $request->note;
         }
+        $ua->flag = $flag;
         try {
             $ua->save();
             return $this->executeSuccess("操作");
