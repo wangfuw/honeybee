@@ -57,6 +57,7 @@ class MoneyController extends AdminBaseController
             }
             $um->note = $request->note;
         }
+        var_dump($status);
         $um->status = $status;
         $um->admin_id = auth("admin")->user()->id;
         DB::beginTransaction();
