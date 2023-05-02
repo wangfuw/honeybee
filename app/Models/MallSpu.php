@@ -45,7 +45,7 @@ class MallSpu extends Base
     public function getSpecialSpecAttribute($value)
     {
         if ($value == '') return $value;
-        return json_encode($value);
+        return json_decode($value);
     }
 
     public function get_welfare($data = [])
