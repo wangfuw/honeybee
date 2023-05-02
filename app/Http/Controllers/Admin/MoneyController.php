@@ -108,7 +108,8 @@ class MoneyController extends AdminBaseController
             $condition[] = ["created_at", ">=", strtotime($start)];
             $condition[] = ["created_at", "<", strtotime($end)];
         }
-        $data = MoneyTrade::tradeList($condition,$size);
+        $model = new MoneyTrade();
+        $data = $model->tradeList($condition,$size);
         return $this->executeSuccess("请求", $data);
     }
 }
