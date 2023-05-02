@@ -33,7 +33,7 @@ class MallSpu extends Base
     protected $casts = [
         "banners" => "array",
         "details" => "array",
-        "special_spec" => "array"
+//        "special_spec" => "array"
     ];
 
     //查询关联一条数据
