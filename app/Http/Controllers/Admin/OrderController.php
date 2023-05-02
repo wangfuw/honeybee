@@ -118,6 +118,16 @@ class OrderController extends AdminBaseController
         if ($request->filled("order_no")) {
             $condition[] = ["orders.order_no", "=", $request->order_no];
         }
+
+
+        if ($request->filled("create_at")) {
+            $start = $request->input("create_at.0");
+            $end = $request->input("create_at.1");
+            $condition[] = ["orders.created_at", ">=", strtotime($start)];
+            $condition[] = ["orders.created_at", "<", strtotime($end)];
+        }
+
+
         $condition[] = ["orders.store_id", ">=", 1];
         $data = Order::join("users", "users.id", "=", "orders.user_id")
             ->where($condition)
