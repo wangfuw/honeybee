@@ -34,7 +34,7 @@ class MoneyController extends AdminBaseController
         }
         $data = UserMoney::join("users", "users.id", "=", "user_money.user_id")
             ->where($condition)
-            ->orderByDesc("id")
+            ->orderBy("user_money.status")
             ->select("user_money.*", "users.phone")
             ->paginate($size);
         return $this->executeSuccess("请求", $data);
