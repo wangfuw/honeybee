@@ -57,7 +57,7 @@ Route::controller(UserController::class)->group(function () {
         Route::post('get_private_key','get_private_key');
         //通证地址
         Route::post('asac_url','asac_url');
-        //池子
+        //池子数量
         Route::post('get_coin','get_bold_coin');
         //修改交易密码验证短信
         Route::post('send_sale_code','send_sale_code');

@@ -181,7 +181,7 @@ class AsacController extends BaseController
     //流动池 预挖池 流转记录
     public function get_flue(Request $request)
     {
-        $type = $request->type;
+        $type = $request->type; //1 流动池子 2 预挖池
         $f_type = $request->f_type??0; // 0 全部 1-流入 2-流出
         if($type == 1){
             //流动池地址
