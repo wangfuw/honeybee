@@ -73,7 +73,7 @@ class OrderController extends AdminBaseController
         if (!$order) {
             return $this->error("ID");
         }
-        if ($order->status != 2) {
+        if($order->status != 2){
             return $this->fail("订单未支付");
         }
         $order->express_no = $request->express_no;
@@ -112,9 +112,8 @@ class OrderController extends AdminBaseController
         if ($request->filled("status")) {
             $condition[] = ["orders.status", "=", $request->status];
         }
-        if ($request->express_status != null) {
+        if ($request->filled("express_status")) {
             $condition[] = ["orders.express_status", "=", $request->express_status];
-            $condition[] = ["order.status", "=", 2];
         }
         if ($request->filled("order_no")) {
             $condition[] = ["orders.order_no", "=", $request->order_no];
