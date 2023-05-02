@@ -23,4 +23,14 @@ class UserMoney extends Base
     protected $hidden = [
         'deleted_at'
     ];
+
+    public function fromUser()
+    {
+        return $this->hasOne(User::class,'id','from_id');
+    }
+
+    public function toUser()
+    {
+        return $this->hasOne(User::class,'id','from_id');
+    }
 }
