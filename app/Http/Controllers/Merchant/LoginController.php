@@ -20,7 +20,7 @@ class LoginController extends MerchantBaseController
         if (!$this->validate->scene('login')->check($credentials)) {
             return $this->fail($this->validate->getError());
         }
-        $token = auth('merchant')->setTTl(30)->attempt($credentials);
+        $token = auth('merchant')->setTTl(120)->attempt($credentials);
         if (!$token) {
             return $this->fail('登录失败，请确认账号密码是否正确');
         }

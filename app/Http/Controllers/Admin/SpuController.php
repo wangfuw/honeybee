@@ -146,7 +146,7 @@ class SpuController extends AdminBaseController
 
     public function editSpu(Request $request)
     {
-        $params = $request->only('id', 'area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable','fee');
+        $params = $request->only('id', 'area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable','fee','score_zone');
 
         if (!$this->validate->scene('modify')->check($params)) {
             return $this->fail($this->validate->getError());
