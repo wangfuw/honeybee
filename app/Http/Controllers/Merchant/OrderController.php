@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Merchant;
 
+use App\Models\Exp;
 use App\Models\MallSku;
 use App\Models\MallSpu;
 use App\Models\Order;
@@ -86,5 +87,11 @@ class OrderController extends MerchantBaseController
         $order->express_status = 1;
         $order->save();
         return $this->executeSuccess("发货");
+    }
+
+    public function expAll(Request $request)
+    {
+        $data = Exp::orderByDesc("id")->get()->all();
+        return $this->executeSuccess("请求", $data);
     }
 }
