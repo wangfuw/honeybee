@@ -22,7 +22,7 @@ class SpuController extends AdminBaseController
 
     public function addSpu(Request $request)
     {
-        $params = $request->only('area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable','fee');
+        $params = $request->only('area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable','fee','score_zone');
 
         if (!$this->validate->scene('add')->check($params)) {
             return $this->fail($this->validate->getError());
@@ -43,8 +43,8 @@ class SpuController extends AdminBaseController
                 "details" => $params["detail_imgs"],
                 "special_spec" => $params["special_spec"],
                 "user_id" => 0,
-                "game_zone" => $params["area"][0],
-                "score_zone" => $params["area"][1] ?? 0,
+                "game_zone" => $params["area"],
+                "score_zone" => $params["score_zone"] ?? 0,
                 'fee'=>$params['fee']
             ]);
             foreach ($params["skus"] as $k) {

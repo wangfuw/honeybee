@@ -18,7 +18,7 @@ class SpuValidate extends BaseValidate
         'special_spec' => 'required',
         'skus'=>'required',
         'saleable'=>'required|numeric|lte:4',
-        'fee'=>'required'
+        'fee'=>'required',
     ];
     //自定义验证信息
     protected $message = [
