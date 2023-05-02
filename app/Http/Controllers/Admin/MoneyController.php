@@ -24,7 +24,7 @@ class MoneyController extends AdminBaseController
                 $condition[] = ["user_money.id", "=", "-1"];
             }
         }
-        if ($request->status) {
+        if ($request->status != null) {
             $condition[] = ["status", "=", $request->status];
         }
         if ($request->filled("create_at")) {
