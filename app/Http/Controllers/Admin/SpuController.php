@@ -31,6 +31,11 @@ class SpuController extends AdminBaseController
             return  $this->fail("运费不能为负数");
         }
 
+        if($params["area"] > 2){
+            $score_zone = 0;
+        }else{
+            $score_zone = $params["score_zone"] ?? 1;
+        }
         DB::beginTransaction();
         try {
             $spu = MallSpu::create([
@@ -44,7 +49,7 @@ class SpuController extends AdminBaseController
                 "special_spec" => $params["special_spec"],
                 "user_id" => 0,
                 "game_zone" => $params["area"],
-                "score_zone" => $params["score_zone"] ?? 0,
+                "score_zone" => $score_zone,
                 'fee'=>$params['fee']
             ]);
             foreach ($params["skus"] as $k) {
@@ -150,8 +155,11 @@ class SpuController extends AdminBaseController
         if (!$spu || $spu->user_id > 0) {
             return $this->error("ID");
         }
-        if($params["fee"] < 0){
-            return  $this->fail("运费不能为负数");
+
+        if($params["area"] > 2){
+            $score_zone = 0;
+        }else{
+            $score_zone = $params["score_zone"] ?? 1;
         }
         DB::beginTransaction();
         try {
@@ -165,8 +173,8 @@ class SpuController extends AdminBaseController
                 "details" => $params["detail_imgs"],
                 "special_spec" => $params["special_spec"],
                 "user_id" => 0,
-                "game_zone" => $params["area"][0],
-                "score_zone" => $params["area"][1] ?? 0,
+                "game_zone" => $params["area"],
+                "score_zone" => $score_zone,
                 'fee'=>$params['fee'] ?? 0
             ]);
             foreach ($params["skus"] as $k) {
