@@ -255,7 +255,7 @@ class UserController extends AdminBaseController
 
         $data = UserIdentity::join('users', 'users.id', '=', 'user_identity.user_id')
             ->where($condition)
-            ->orderByDesc("user_identity.id")
+            ->orderBy("user_identity.status")
             ->select(
                 "users.id",
                 "users.phone",
@@ -278,11 +278,23 @@ class UserController extends AdminBaseController
         if (!$request->filled("id")) {
             return $this->error("id");
         }
+        $ua = UserIdentity::where("user_id",$request->id)->first();
+        if(!$ua){
+            return $this->error("id");
+        }
         $flag = $request->input("flag", 1);
+        if($flag == 2){
+            if(!$request->filled("note")){
+                return $this->fail("驳回原因必填");
+            }
+            $ua->note = $request->note;
+        }
+        $ua->status = $flag;
         try {
-            UserIdentity::where("user_id", $request->id)->update(["status" => $flag]);
+            $ua->save();
             return $this->executeSuccess("操作");
         } catch (\Exception $exception) {
+            var_dump($exception);
             return $this->executeFail("操作");
         }
     }
