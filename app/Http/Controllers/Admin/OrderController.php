@@ -54,7 +54,7 @@ class OrderController extends AdminBaseController
             $spu = MallSpu::find($sku["spu_id"]);
             $v["spu"] = $spu;
             $v["sku"] = $sku;
-            $v["address"]["address"] = city_name($v["address"]["area"]);
+//            $v["address"]["address"] = city_name($v["address"]["area"]);
         }
         return $this->executeSuccess("请求", $data);
     }
@@ -142,7 +142,7 @@ class OrderController extends AdminBaseController
             $u = User::find($v["store_id"]);
             $v["spu"] = $spu;
             $v["sku"] = $sku;
-            $v["address"]["address"] = city_name($v["address"]["area"]);
+//            $v["address"]["address"] = city_name($v["address"]["area"]);
             $v["store_phone"] = $u["phone"];
         }
         return $this->executeSuccess("请求", $data);
