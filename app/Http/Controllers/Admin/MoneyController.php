@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\MoneyTrade;
 use App\Models\User;
 use App\Models\UserMoney;
 use Illuminate\Http\Request;
@@ -107,7 +108,7 @@ class MoneyController extends AdminBaseController
             $condition[] = ["created_at", ">=", strtotime($start)];
             $condition[] = ["created_at", "<", strtotime($end)];
         }
-        $data = UserMoney::with(['fromUser' => function ($query) {
+        $data = MoneyTrade::with(['fromUser' => function ($query) {
             return $query->select("phone as from_phone");
         }, 'toUser' => function ($query) {
             return $query->select("phone as to_phone");

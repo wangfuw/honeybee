@@ -24,13 +24,5 @@ class UserMoney extends Base
         'deleted_at'
     ];
 
-    public function fromUser()
-    {
-        return $this->hasOne(User::class,'id','from_id');
-    }
 
-    public function toUser()
-    {
-        return $this->hasOne(User::class,'id','from_id');
-    }
 }
