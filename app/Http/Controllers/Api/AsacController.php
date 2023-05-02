@@ -202,8 +202,17 @@ class AsacController extends BaseController
                     return $query->orWhere('to_address',$address)->orWhere('from_address',$address);
                 });
         }
-        $list = $handler->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->get()->forPage($page,$page_size);
-
+        $list = $handler->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->orderBy('id','desc')->get()
+            ->map(function ($item,$items) use($address){
+                $item->type_name = AsacTrade::typeData[$item->type];
+                if($address == $item->from_address){
+                    $item->num = '-'.$item->num;
+                }else{
+                    $item->num = '+'.$item->num;
+                }
+                return $item;
+            })
+            ->forPage($page,$page_size);
         $data = collect([])->merge($list)->toArray();
         return $this->success('请求成功',$data);
     }

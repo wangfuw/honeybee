@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserIdentity;
 use App\Validate\IdentityValidate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use function PHPUnit\Framework\isEmpty;
 
 class UserCompleteController extends BaseController
@@ -48,5 +49,33 @@ class UserCompleteController extends BaseController
         }
     }
 
+    //我的实名认证详情
+    public function identityInfo()
+    {
+        $info = UserIdentity::query()->where('user_id',Auth::user()->id)->first();
+        if($info){
+            return $this->success('请求成功',$info);
+        }else{
+            return $this->success('暂无实名认证信息',[]);
+        }
+    }
+
+    //修改我的实名认证
+    public function identityUpdate(Request $request)
+    {
+        $info = UserIdentity::query()->where('user_id',Auth::user()->id)->where('status',2)->first();
+        if(!$info){
+            return $this->success('未申请实名认证');
+        }
+        $info->username = $request->username;
+        $info->id_card  = $request->id_card;
+        $info->address_code = $request->address_code;
+        $info->front_image  = $request->front_image;
+        $info->back_image   = $request->back_image;
+        $info->status       = 0;
+        $info->note         = '';
+        $info->save();
+        return $this->success('重新提交实名认证成功',[]);
+    }
 
 }
