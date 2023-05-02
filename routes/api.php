@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\WalletController;
 use App\Http\Controllers\Api\DownController;
+use App\Http\Controllers\Api\UserMoneyController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -187,6 +188,14 @@ Route::controller(UserController::class)->group(function () {
         Route::post('carts',[ShopController::class,'show_shop_car']);
 
         Route::post('del_carts',[ShopController::class,'del_from_car']);
+    });
+    Route::group(['middleware' => 'auth'],function (){
+        //充值申请
+        Route::post('apply_money',[UserMoneyController::class,'apply']);
+        //转账申请
+        Route::post('trade_money',[UserMoneyController::class,'trade']);
+        //余额交易记录
+        Route::post('money_trades',[UserMoneyController::class,'money_trades']);
     });
 });
 
