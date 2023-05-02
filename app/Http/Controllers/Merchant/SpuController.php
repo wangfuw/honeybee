@@ -33,7 +33,7 @@ class SpuController extends MerchantBaseController
 
     public function addSpu(Request $request)
     {
-        $params = $request->only('area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable', 'fee');
+        $params = $request->only('area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable', 'fee','score_zone');
 
         if (!$this->validate->scene('add')->check($params)) {
             return $this->fail($this->validate->getError());
@@ -115,7 +115,7 @@ class SpuController extends MerchantBaseController
 
     public function editSpu(Request $request)
     {
-        $params = $request->only('id', 'area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable', 'fee');
+        $params = $request->only('id', 'area', 'category', 'name', 'logo', 'banner_imgs', 'detail_imgs', 'special_spec', 'skus', 'saleable', 'fee','score_zone');
 
         if (!$this->validate->scene('modify')->check($params)) {
             return $this->fail($this->validate->getError());
