@@ -293,6 +293,7 @@ class UserController extends AdminBaseController
             $ua->save();
             return $this->executeSuccess("操作");
         } catch (\Exception $exception) {
+            var_dump($exception);
             return $this->executeFail("操作");
         }
     }
