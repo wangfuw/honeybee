@@ -27,7 +27,7 @@ class StoreController extends AdminBaseController
             }
         }
         if ($request->filled("store_name")) {
-            $condition[] = ["store.store_name", "like", "%$request->name%"];
+            $condition[] = ["store.store_name", "like", "%$request->store_name%"];
         }
         if ($request->filled("mobile")) {
             $condition[] = ["store.mobile", "=", $request->mobile];
