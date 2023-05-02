@@ -32,7 +32,7 @@ class MoneyController extends AdminBaseController
             $condition[] = ["user_money.created_at", ">=", strtotime($start)];
             $condition[] = ["user_money.created_at", "<", strtotime($end)];
         }
-        $data = UserMoney::join("users", "users.id", "=", "recharge.user_id")
+        $data = UserMoney::join("users", "users.id", "=", "user_money.user_id")
             ->where($condition)
             ->orderByDesc("id")
             ->select("user_money.*", "users.phone")
