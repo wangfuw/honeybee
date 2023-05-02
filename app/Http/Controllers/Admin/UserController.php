@@ -255,7 +255,7 @@ class UserController extends AdminBaseController
 
         $data = UserIdentity::join('users', 'users.id', '=', 'user_identity.user_id')
             ->where($condition)
-            ->orderByDesc("user_identity.id")
+            ->orderByDesc("user_identity.status")
             ->select(
                 "users.id",
                 "users.phone",
