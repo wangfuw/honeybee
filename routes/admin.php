@@ -95,7 +95,9 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("editConfig", [ConfigController::class, "editConfig"])->middleware(["admin.response"]);
 
             Route::get("storeList", [StoreController::class, "storeList"]);
+            Route::get("storeReviewList", [StoreController::class, "storeReviewList"]);
             Route::post("editStore", [StoreController::class, "editStore"])->middleware(["admin.response"]);
+            Route::post("editReview", [StoreController::class, "editReview"])->middleware(["admin.response"]);
             Route::post("addAmount", [StoreController::class, "addAmount"])->middleware(["admin.response"]);
 
             Route::get("orderList", [OrderController::class, "orderList"]);

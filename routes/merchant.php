@@ -24,6 +24,7 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
 
         Route::get("orderList", [OrderController::class, "orderList"]);
         Route::post("sendSku", [OrderController::class, "sendSku"]);
+        Route::get("expAll", [OrderController::class, "expAll"]);
 
         Route::get("info", [AsacController::class, "info"]);
         Route::get("config", [AsacController::class, "config"]);
