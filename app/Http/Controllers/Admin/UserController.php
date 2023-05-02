@@ -284,7 +284,7 @@ class UserController extends AdminBaseController
         }
         $flag = $request->input("flag", 1);
         if($flag == 2){
-            if($request->filled("note")){
+            if(!$request->filled("note")){
                 return $this->fail("驳回原因必填");
             }
             $ua->note = $request->note;
