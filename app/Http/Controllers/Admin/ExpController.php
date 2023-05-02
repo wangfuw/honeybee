@@ -17,6 +17,12 @@ class ExpController extends AdminBaseController{
         return $this->executeSuccess("请求", $data);
     }
 
+    public function expAll(Request $request)
+    {
+        $data = Exp::orderByDesc("id")->all();
+        return $this->executeSuccess("请求", $data);
+    }
+
     public function editExp(Request $request){
         $exp = Exp::find($request->id);
         if(!$exp){

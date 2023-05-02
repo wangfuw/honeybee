@@ -103,6 +103,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("sendSku", [OrderController::class, "sendSku"])->middleware(['admin.response']);
 
             Route::get("expList",[ExpController::class,"expList"]);
+            Route::get("expAll",[ExpController::class,"expAll"]);
             Route::post("editExp",[ExpController::class,"editExp"])->middleware(['admin.response']);
             Route::post("addExp",[ExpController::class,"addExp"])->middleware(['admin.response']);
             Route::post("delExp",[ExpController::class,"delExp"])->middleware(['admin.response']);
