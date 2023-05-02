@@ -22,7 +22,7 @@ class ExpController extends AdminBaseController{
         if(!$exp){
             return $this->error("ID");
         }
-        $exp2 = Exp::where($request->name)->first();
+        $exp2 = Exp::where("name",$request->name)->first();
         if($exp2->id != $exp->id){
             return $this->fail("该快递公司已添加");
         }
@@ -32,7 +32,7 @@ class ExpController extends AdminBaseController{
     }
 
     public function addExp(Request $request){
-        $exp = Exp::where($request->name)->first();
+        $exp = Exp::where("name",$request->name)->first();
         if($exp){
             return $this->fail("该快递公司已添加");
         }
