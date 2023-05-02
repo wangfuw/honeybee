@@ -68,6 +68,7 @@ class MoneyController extends AdminBaseController
             DB::commit();
             return $this->executeSuccess("操作");
         } catch (\Exception $exception) {
+            DB::rollBack();
             return $this->executeFail("操作");
         }
     }
