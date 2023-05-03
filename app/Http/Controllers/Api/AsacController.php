@@ -16,6 +16,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp;
+use Illuminate\Support\Facades\DB;
+
 class AsacController extends BaseController
 {
 
@@ -208,10 +210,12 @@ class AsacController extends BaseController
         }
         $list = $handler->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->orderBy('id','desc')->get()
             ->map(function ($item,$items) use($address){
-                $item->type_name = AsacTrade::typeData[$item->type];
+
                 if($address == $item->from_address){
+                    $item->type_name = AsacTrade::typeData[AsacTrade::BUY];
                     $item->num = '-'.$item->num;
                 }else{
+                    $item->type_name = AsacTrade::typeData[AsacTrade::SELL];
                     $item->num = '+'.$item->num;
                 }
                 return $item;
@@ -230,18 +234,27 @@ class AsacController extends BaseController
         //数量
         $num = $request->num;
         $hash = rand_str_pay(64);
-        AsacTrade::query()->create([
-            'from_address'=>$from_address,
-            'to_address' => $to_address,
-            'num'        => $num,
-            'type'       => AsacTrade::RECHARGE,
-            'trade'      => $hash,
-        ]);
-        $user_id = AsacNode::query()->where('wallet_address',$to_address)->value('user_id');
-        $user = User::query()->where('id',$user_id)->first();
-        $user->coin_num += $num;
-        $user->save();
-        return $this->success('充值成功',compact('hash'));
+        try{
+            DB::beginTransaction();
+            AsacTrade::query()->create([
+                'from_address'=>$from_address,
+                'to_address' => $to_address,
+                'num'        => $num,
+                'type'       => AsacTrade::RECHARGE,
+                'trade_hash'      => $hash,
+            ]);
+            $user_id = AsacNode::query()->where('wallet_address',$to_address)->value('user_id');
+            $user = User::query()->where('id',$user_id)->first();
+            $user->coin_num += $num;
+            $user->save();
+            DB::commit();
+            return $this->success('充值成功',compact('hash'));
+        }catch (\Exception $e){
+            DB::rollBack();
+            return $this->fail($e->getMessage());
+        }
+
+
     }
 
     //提现
@@ -260,6 +273,64 @@ class AsacController extends BaseController
             ]
         ]);
         $result = json_decode($response->getBody(),true);
-        dd($result);
+        if($result['status'] == 1){
+            $user->coin_num -= $num;
+            $user->save();
+            //写入日志
+            AsacTrade::query()->create([
+               'from_address' => $wallet_address,
+                'to_address'  => $to_address,
+                'num' => $num,
+                'type'=>AsacTrade::WITHDRAW,
+                'trade_hash'=>rand_str_pay(64)
+            ]);
+            return $this->success('提现成功',[]);
+        }else{
+            return $this->fail('提现失败');
+        }
+    }
+
+    //转账
+    public function change(Request $request)
+    {
+        $to_address = $request->to_address;
+        $num = $request->num;
+        $sale_password = $request->sale_password;
+        $user = Auth::user();
+        if($user->coin_num < $num){
+            return $this->fail('余额不足');
+        }
+        $user = User::query()->where('id',$user->id)->first();
+        if(Rsa::decodeByPrivateKey($sale_password) != $user->sale_password){
+            return $this->fail('交易密码错误');
+        }
+        $to_user_id = AsacNode::query()->where('wallet_address',$to_address)->value('user_id');
+        if(!$to_user_id){
+            return $this->fail('收款地址错误');
+        }
+        $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
+        $to_user = User::query()->where('id',$to_user_id)->where('is_ban',1)->first();
+        if(!$to_user){
+            return $this->fail('收款地址不可用');
+        }
+        try {
+            DB::beginTransaction();
+            $user->coin_num -= $num;
+            $user->save();
+            $to_user->coin_num += $num;
+            $to_user->save();
+            AsacTrade::query()->create([
+                'from_address'=> $user_address,
+                'to_address'  => $to_address,
+                'num'         => $num,
+                'trade_hash'  => rand_str_pay(64),
+                'type'        => 9
+            ]);
+            DB::commit();
+            return $this->success('转账成功');
+        }catch (\Exception $e){
+            DB::rollBack();
+            return $this->fail($e->getMessage());
+        }
     }
 }
