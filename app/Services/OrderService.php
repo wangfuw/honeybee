@@ -491,7 +491,7 @@ class OrderService
                 //写入地址流转
                 $to_address = AsacNode::query()->where('user_id',1)->value('wallet_address');
                 MoneyTrade::query()->create([
-                    'from_id' => $user_id,
+                    'from_id' => $user->id,
                     'to_id'   => 1,
                     'num'     => $info->money,
                     'type'    => 2,
