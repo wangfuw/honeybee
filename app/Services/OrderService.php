@@ -445,7 +445,7 @@ class OrderService
                 break;
             case 2:
                 //消费积分区 -- 不会立马获得
-                $to_address = AsacNode::query()->where('user_id)',1)->value('wallet_address');
+                $to_address = AsacNode::query()->where('user_id',1)->value('wallet_address');
                 //写入地址流转
                 AsacTrade::query()->create([
                     'from_address' => $from_address,
