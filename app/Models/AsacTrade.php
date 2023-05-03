@@ -22,6 +22,12 @@ class AsacTrade extends Base
     const FREE_HAVED = 6;
     //释放花费
     const FREE_USED = 7;
+
+    //转入
+    const CHANG_IN = 8;
+    //转出
+    const CHANG_OUT = 9;
+
     protected $table = 'asac_trade';
 
     const typeData = [
@@ -32,6 +38,8 @@ class AsacTrade extends Base
         self::REWARD => '奖励获得',
         self::FREE_HAVED => '释放获得',
         self::FREE_USED => '释放花费',
+        self::CHANG_IN  => '转入',
+        self::CHANG_OUT => '转出'
     ];
     protected $fillable = [
         'id','from_address','to_address','num','trade_hash','block_id','created_at','updated_at','type'
