@@ -367,7 +367,6 @@ class OrderService
                 }else{
                     $to_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
                 }
-//                dd($from_address);
                 //写入地址流转
                 AsacTrade::query()->create([
                     'from_address' => $from_address,
@@ -533,7 +532,7 @@ class OrderService
                 if($master_address){
                     AsacTrade::query()->create([
                         'from_address' => $to_address,
-                        'to_address'   => $masters->wallet_address,
+                        'to_address'   => $master_address,
                         'num'          =>  $masters->coin_num,
                         'trade_hash'   => rand_str_pay(64),
                         'type'         => AsacTrade::REWARD,

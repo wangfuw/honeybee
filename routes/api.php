@@ -97,6 +97,10 @@ Route::controller(UserController::class)->group(function () {
         Route::post('coin_info',[AsacController::class,'coin_info']);
         //流动池 於挖池记录
         Route::post('get_flue',[AsacController::class,'get_flue']);
+        //提现
+        Route::post('withdraw',[AsacController::class,'withdraw']);
+        //转账
+        Route::post('transfer',[AsacController::class,'change']);
     });
     //区块浏览
     Route::group(['prefix'=>'asac'],function (){
@@ -110,7 +114,7 @@ Route::controller(UserController::class)->group(function () {
        Route::post('get_notices',[AsacController::class,'get_notices']);
        Route::post('get_destory',[AsacController::class,'get_destory']);
        Route::post('excharge',[AsacController::class,'excharge']);
-       Route::post('withdraw',[AsacController::class,'withdraw']);
+
     });
     Route::middleware([])->group(function (){
         //获取新闻资讯
@@ -149,7 +153,7 @@ Route::controller(UserController::class)->group(function () {
         Route::post('revokes',[OrderController::class,'revokes']);
         //取消换货
         Route::post('del_revoke',[OrderController::class,'del_revoke']);
-        //
+        //钱包明细
         Route::post('list',[WalletController::class,'list']);
     });
 

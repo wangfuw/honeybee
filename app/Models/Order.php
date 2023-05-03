@@ -13,7 +13,7 @@ class Order extends Base
 
     protected $fillable = [
         'id','order_no','user_id','sku_id','sku_num','store_id','express_fee'
-        ,'give_green_score','give_sale_score','give_lucky_score','status','address','express_no','express_name','coin_num','created_at','updated_at','address','ticket_num','price','spu_id'
+        ,'give_green_score','give_sale_score','give_lucky_score','status','address','express_no','express_name','coin_num','created_at','updated_at','address','ticket_num','price','spu_id','money'
     ];
 
     protected $hidden = ['deleted_at'];

@@ -11,6 +11,9 @@ class MoneyTrade extends Base
 
     protected $table = 'money_trade';
 
+    protected $fillable = [
+        'id','from_id','to_id','num','type','created_at','updated_at'
+    ];
     public function fromUser()
     {
         return $this->hasOne(User::class, 'id', 'from_id');
