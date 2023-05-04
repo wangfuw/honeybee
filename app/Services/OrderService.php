@@ -787,7 +787,7 @@ class OrderService
         $list = Order::query()->with(['sku'=>function($query){
             return $query->select('id','indexes','price');
         },'spu'=>function($query){
-            return $query->select('id','logo','special_spec','name','user_id');
+            return $query->select('id','logo','special_spec','name','user_id','game_zone');
         }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
             ->where('user_id',$user->id)
             ->where('is_return',1)
@@ -798,6 +798,7 @@ class OrderService
             $item->indexes = $item->sku->indexes;
             $item->logo = $item->spu->logo;
             $item->special_spec = $item->spu->special_spec;
+            $item->game_zone = $item->spu->game_zone;
             $indexes = explode('_',$item->sku->indexes);
             $special = array_values($item->spu->special_spec);
             $index_special = [];
