@@ -54,14 +54,20 @@ class MallSpu extends Base
         $page = $data['page'] ?? 1;
         $page_size = $data['page_size'] ?? 3;
         $keyword = $data['keyword'] ?? '';
-        $list = $this->with(['skp' => function ($query) {
+        $handler = $this->with(['skp' => function ($query) {
             return $query->select('spu_id', 'price');
         }])->select('id', 'name', 'score_zone', 'logo', 'user_id')
             ->when($keyword, function ($query) use ($keyword) {
                 return $query->where('name', 'like', '%' . $keyword . '%');
             })
-            ->where('saleable', 1)->where('score_zone', $data['score_zone'])
-            ->where('game_zone', 1)->get()->map(function ($item, $items) use ($coin_price) {
+            ->where('saleable', 1);
+        if(in_array($data['score_zone'],[1,2])){
+            $handler->where('score_zone', $data['score_zone']);
+        }else{
+            $handler->where('score_zone','>=',$data['score_zone']);
+        }
+
+       $list = $handler->where('game_zone', 1)->get()->map(function ($item, $items) use ($coin_price) {
                 $item->prcie = $item->skp->price;
                 $item->coin_num = bcdiv($item->skp->price, $coin_price, 2);
                 unset($item->skp);
@@ -76,22 +82,26 @@ class MallSpu extends Base
         $page = $data['page'] ?? 1;
         $page_size = $data['page_size'] ?? 3;
         $keyword = $data['keyword'] ?? '';
-        $list = $this->with(['skp' => function ($query) {
+        $handler = $this->with(['skp' => function ($query) {
             return $query->select('spu_id', 'price');
         }])->select('id', 'name', 'score_zone', 'logo')
             ->when($keyword, function ($query) use ($keyword) {
                 return $query->where('name', 'like', '%' . $keyword . '%');
             })
             ->where('user_id', 0)
-            ->where('saleable', 1)
-            ->where('score_zone', $data['score_zone'])
-            ->where('game_zone', 2)
-            ->get()->map(function ($item, $items) use ($coin_price) {
-                $item->prcie = $item->skp->price;
-                $item->coin_num = bcdiv($item->skp->price, $coin_price, 2);
-                unset($item->skp);
-                return $item;
-            })->forPage($page, $page_size);
+            ->where('saleable', 1);
+        if(in_array($data['score_zone'],[1,2])){
+            $handler->where('score_zone', $data['score_zone']);
+        }else{
+            $handler->where('score_zone','>=',$data['score_zone']);
+        }
+       $list = $handler->where('game_zone', 2)
+        ->get()->map(function ($item, $items) use ($coin_price) {
+            $item->prcie = $item->skp->price;
+            $item->coin_num = bcdiv($item->skp->price, $coin_price, 2);
+            unset($item->skp);
+            return $item;
+        })->forPage($page, $page_size);
         return collect([])->merge($list);
     }
 
