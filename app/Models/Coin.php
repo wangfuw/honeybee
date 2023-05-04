@@ -11,6 +11,7 @@ class Coin extends Base
 
     protected $fillable = [
         'id','name','address','money','created_at','updated_at'
+
     ];
 
 }
