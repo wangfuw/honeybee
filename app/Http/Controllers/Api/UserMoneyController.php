@@ -149,7 +149,7 @@ class UserMoneyController extends BaseController
     {
         $user = Auth::user();
         $wallet_address= AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
-        $other_coin = Coin::query()->select('id','name','address')->get();
+        $other_coin = Coin::query()->select('id','name','address')->where('status',1)->get();
         $asac_arr = ['id'=>'-1','name'=>'ASAC','address'=>$wallet_address];
         $data = [];
         if($other_coin){
