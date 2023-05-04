@@ -16,11 +16,11 @@ class CoinController extends AdminBaseController
     public function addCoin(Request $request)
     {
         if (!$request->filled("name")) {
-            return $this->error("币种名称");
+            return $this->error("通证名称");
         }
         $coin = Coin::where("name",$request->name)->first();
         if($coin){
-            return  $this->fail("币种已存在");
+            return  $this->fail("通证已存在");
         }
         if (!$request->filled("address")) {
             return $this->error("地址");
