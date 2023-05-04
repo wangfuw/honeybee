@@ -9,7 +9,7 @@ class MoneyValidate extends BaseValidate {
     protected $rule =[
         'num' => 'required|numeric',
         'charge_image' => 'required',
-        'phone'        => 'required',
+        'wallet_address'        => 'required',
         'sale_password'=>'required'
     ];
     //自定义验证信息
@@ -24,6 +24,6 @@ class MoneyValidate extends BaseValidate {
     //自定义场景
     protected $scene = [
         'add' => ['num','charge_image'],
-        'trade' => ['num','phone','sale_password'],
+        'trade' => ['num','wallet_address','sale_password'],
     ];
 }

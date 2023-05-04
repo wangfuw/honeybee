@@ -6,6 +6,7 @@ use App\Common\Rsa;
 use App\Exceptions\ApiException;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
+use App\Models\AsacNode;
 use App\Models\Config;
 use App\Models\MoneyTrade;
 use App\Models\Score;
@@ -44,20 +45,18 @@ class UserMoneyController extends BaseController
 
     public function trade(Request $request)
     {
-        $data = $request->only(['num','phone','sale_password']);
+        $data = $request->only(['num','wallet_address','sale_password']);
         if(!$this->validate->scene('trade')->check($data)){
             return $this->fail($this->validate->getError());
         }
-        $phone = Rsa::decodeByPrivateKey($data['phone']);
-        if(check_phone($phone) != true){
-            return $this->fail('电话号码格式错误');
-        }
+        $address = $data['wallet_address'];
         $user = Auth::user();
         if($user->money < $data['num']){
             return $this->fail('余额不足');
         }
         $user = User::query()->where('id',$user->id)->first();
-        $to_user = User::query()->where('phone',$phone)->where('is_ban',1)->first();
+        $to_user_id = AsacNode::query()->where('wallet_address',$address)->value('user_id');
+        $to_user = User::query()->where('id',$to_user_id)->where('is_ban',1)->first();
         if(!$to_user){
             return $this->fail('收款人不存在');
         }
