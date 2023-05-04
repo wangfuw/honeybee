@@ -19,6 +19,7 @@ use  App\Http\Controllers\Admin\OrderController;
 use  App\Http\Controllers\Admin\HomeController;
 use  App\Http\Controllers\Admin\ExpController;
 use  App\Http\Controllers\Admin\MoneyController;
+use  App\Http\Controllers\Admin\CoinController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -114,6 +115,10 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("userMoneyList",[MoneyController::class,"userMoneyList"]);
             Route::get("moneyTradeList",[MoneyController::class,"moneyTradeList"]);
             Route::post("editUserMoney",[MoneyController::class,"editUserMoney"])->middleware(['admin.response']);
+
+            Route::get("coinList",[CoinController::class,"coinList"]);
+            Route::post("addCoin",[CoinController::class,"addCoin"])->middleware(['admin.response']);
+            Route::post("editCoin",[CoinController::class,"editCoin"])->middleware(['admin.response']);
         });
     });
 });

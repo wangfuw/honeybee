@@ -25,6 +25,9 @@ class MoneyController extends AdminBaseController
                 $condition[] = ["user_money.id", "=", "-1"];
             }
         }
+        if($request->coin_id){
+            $condition[] = ["user_money.coin_id","=",$request->coin_id];
+        }
         if ($request->filled("status")) {
             $condition[] = ["status", "=", $request->status];
         }
