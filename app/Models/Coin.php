@@ -10,7 +10,7 @@ class Coin extends Base
     protected $table = 'coin';
 
     protected $fillable = [
-        'id','name','address','money','created_at','updated_at'
+        'id','name','address','money','created_at','updated_at','status'
 
     ];
 
