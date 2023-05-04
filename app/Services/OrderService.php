@@ -326,10 +326,13 @@ class OrderService
             }
             //检查余额
             if($info->coin_num > 0 && $info->coin_num > $user->coin_num){
-                throw new ApiException([0,'您的余额不足']);
+                throw new ApiException([0,'您的币余额不足']);
             }
             if($info->ticket_num > 0 && $info->ticket_num > $user->ticket_num){
                 throw new ApiException([0,'您的消费卷不足']);
+            }
+            if($info->money > 0 && $info->money > $user->money){
+                throw new ApiException([0,'余额不足']);
             }
             //检测商品分区
             $spu_id    = MallSku::query()->where('id',$info->sku_id)->value('spu_id');
