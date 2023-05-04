@@ -7,6 +7,7 @@ use App\Exceptions\ApiException;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\AsacNode;
+use App\Models\Coin;
 use App\Models\Config;
 use App\Models\MoneyTrade;
 use App\Models\Score;
@@ -16,7 +17,7 @@ use App\Validate\MoneyValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class UserMoneyController extends BaseController
 {
     protected $model;
@@ -29,16 +30,20 @@ class UserMoneyController extends BaseController
     }
 
     public function apply(Request $request){
-        $data = $request->only(['num','charge_image']);
+        $data = $request->only(['num','charge_image','id']);
         if(!$this->validate->scene('add')->check($data)){
             return $this->fail($this->validate->getError());
         }
-        $rate = Config::money_rate()??1;
+        if($data['id'] == -1){
+            return $this->fail('该币种充值方式错误');
+        }
+        $rate = Coin::query()->where('id',$data['id'])->value('money');
         $res = UserMoney::query()->create([
            'user_id' => Auth::user()->id,
             'num'    => $data['num'],
             'charge_image'=>$data['charge_image'],
-            'money' => bcmul($data['num'],$rate,2)
+            'money' => bcmul($data['num'],$rate,2),
+            'coin_id' => $data['id']
         ]);
         return $this->success('上传成功',$res);
     }
@@ -137,6 +142,24 @@ class UserMoneyController extends BaseController
 
         }
         $data = collect([])->merge($list)->toArray();
+        return $this->success('请求成功',$data);
+    }
+
+    public function get_coins()
+    {
+        $user = Auth::user();
+        $wallet_address= AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
+        $other_coin = Coin::query()->select('id','name','address')->get();
+        $asac_arr = ['id'=>'-1','name'=>'ASAC','address'=>$wallet_address];
+        $data = [];
+        if($other_coin){
+            $data= $other_coin->toArray();
+        }
+        array_push($data,$asac_arr);
+        foreach ($data as &$datum){
+            $img = QrCode::format('png')->size(200)->generate($datum['address']);
+            $datum['address_code'] = 'data:image/png;base64,' . base64_encode($img );
+        }
         return $this->success('请求成功',$data);
     }
 }

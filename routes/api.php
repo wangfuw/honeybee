@@ -202,6 +202,8 @@ Route::controller(UserController::class)->group(function () {
         Route::post('trade_money',[UserMoneyController::class,'trade']);
         //余额交易记录
         Route::post('money_trades',[UserMoneyController::class,'money_trades']);
+
+        Route::post('coins',[UserMoneyController::class,'get_coins']);
     });
 });
 

@@ -54,6 +54,7 @@ class MallSpu extends Base
         $page = $data['page'] ?? 1;
         $page_size = $data['page_size'] ?? 3;
         $keyword = $data['keyword'] ?? '';
+        $score_zone = $data['score_zone']??'';
         $handler = $this->with(['skp' => function ($query) {
             return $query->select('spu_id', 'price');
         }])->select('id', 'name', 'score_zone', 'logo', 'user_id')
@@ -61,10 +62,12 @@ class MallSpu extends Base
                 return $query->where('name', 'like', '%' . $keyword . '%');
             })
             ->where('saleable', 1);
-        if(in_array($data['score_zone'],[1,2])){
+        if(in_array($score_zone,[1,2])){
             $handler->where('score_zone', $data['score_zone']);
-        }else{
+        }else if ($score_zone>=3){
             $handler->where('score_zone','>=',$data['score_zone']);
+        }else{
+            $handler->where('score_zone','>',0);
         }
 
        $list = $handler->where('game_zone', 1)->get()->map(function ($item, $items) use ($coin_price) {
@@ -82,6 +85,7 @@ class MallSpu extends Base
         $page = $data['page'] ?? 1;
         $page_size = $data['page_size'] ?? 3;
         $keyword = $data['keyword'] ?? '';
+        $score_zone = $data['score_zone']??'';
         $handler = $this->with(['skp' => function ($query) {
             return $query->select('spu_id', 'price');
         }])->select('id', 'name', 'score_zone', 'logo')
@@ -90,10 +94,12 @@ class MallSpu extends Base
             })
             ->where('user_id', 0)
             ->where('saleable', 1);
-        if(in_array($data['score_zone'],[1,2])){
+        if(in_array($score_zone,[1,2])){
             $handler->where('score_zone', $data['score_zone']);
-        }else{
+        }else if ($score_zone>=3){
             $handler->where('score_zone','>=',$data['score_zone']);
+        }else{
+            $handler->where('score_zone','>',0);
         }
        $list = $handler->where('game_zone', 2)
         ->get()->map(function ($item, $items) use ($coin_price) {

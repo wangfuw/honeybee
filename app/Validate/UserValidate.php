@@ -15,6 +15,7 @@ class UserValidate extends BaseValidate {
         're_password' => 'required',
         'sale_password' => 'required',
         're_sale_password' => 'required',
+        'pay_type' => 'required',
         'page'          => 'numeric',
         'page_size'     => 'numeric'
     ];
@@ -29,6 +30,7 @@ class UserValidate extends BaseValidate {
         'sale_password.required'=>'请输入交易密码',
         're_sale_password.required'=>'请输入交易密码',
         'phone.required'=>'电话号码必须',
+        'pay_type.required'=>'选择支付方式',
         'page.numeric'=>'页码必须是数字',
         'page_size.numeric'=>'每页显示条数必须',
     ];
@@ -41,6 +43,7 @@ class UserValidate extends BaseValidate {
         'change'  =>"old_password,password,re_password",
         'forget'  =>"phone,code,password,re_password",
         'change_sale' =>"phone,code,sale_password,re_sale_password",
-        'team'    => "page,page_size"
+        'team'    => "page,page_size",
+        'auto'    => "id,phone,pay_type"
     ];
 }
