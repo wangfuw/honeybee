@@ -96,8 +96,11 @@ class freeScoreNew extends Command
 
                 $sale_num = bcmul($user->sale_score / 1000, $sale_rate, self::DE);
                 $asac_num = bcdiv($sale_num, $last_price, self::DE);
+                if($user->id == 14){
+                    printf("asac:%s\n",$asac_num);
+                }
                 if ($asac_num < self::MIN) {
-                    return true;
+                    continue;
                 }
                 $user->coin_num += $asac_num;
                 $user->sale_score -= $sale_num;
@@ -130,10 +133,6 @@ class freeScoreNew extends Command
                 $rate = $user->green_score_total - $user->green_score > $all_moeny ? $green_next : $green_before;
                 $num = bcmul($user->green_score / 1000, $rate, self::DE);
 
-                if ($user->id == 93) {
-                    printf("ss:%s\n", $user->green_score / 1000);
-                    printf("cal_num:%s\n", $num);
-                }
 
                 $num = min($user->luck_score, $num);
 
