@@ -33,12 +33,12 @@ class UserCompleteController extends BaseController
         if(!$this->validate->scene('identity')->check($params)){
             return $this->fail($this->validate->getError());
         }
-        if(UserIdentity::query()->where('id_card',$request->id_card)->exists()){
-            return $this->fail('该身份证已被使用');
-        }
-        if(checkIdentityCard($params['id_card']) == false){
-            return $this->fail('身份证不合法');
-        }
+//        if(UserIdentity::query()->where('id_card',$request->id_card)->exists()){
+//            return $this->fail('该身份证已被使用');
+//        }
+//        if(checkIdentityCard($params['id_card']) == false){
+//            return $this->fail('身份证不合法');
+//        }
         $user = auth()->user();
         $params['user_id'] = $user->id;
         try {
