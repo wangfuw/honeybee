@@ -175,6 +175,7 @@ class freeScore extends Command
    //给直推人加速释放
    protected function get_dict_free($user,$num,$pre_address,$last_price){
         $dict_users = User::query()->where('master_id',$user->id)->select('id','green_score','luck_score','ticket_num','phone')->get();
+        if(count($dict_users)==0) return true;
         $free_num = bcdiv($num * 0.1,count($dict_users));
         foreach ($dict_users as $user)
         {
@@ -316,21 +317,26 @@ class freeScore extends Command
            }else{
                if($user->contribution >= 60000000){
                    $users   = User::query()->where('master_id',$user->id)->select('green_score','sale_score','contribution')->get();
-                   $temp = 0;
-                   foreach ($users as $down){
-                       $self_contribution = bcadd(bcdiv($down->green_score,3),bcdiv($down->sale_score,6));
-                       $dict_contribution = bcadd($self_contribution,$down->contribution);
-                       if($dict_contribution > 5000000){
-                           $temp += 1;
+                   if(!$users){
+                       continue;
+                   }else{
+                       $temp = 0;
+                       foreach ($users as $down){
+                           $self_contribution = bcadd(bcdiv($down->green_score,3),bcdiv($down->sale_score,6));
+                           $dict_contribution = bcadd($self_contribution,$down->contribution);
+                           if($dict_contribution > 5000000){
+                               $temp += 1;
+                           }else{
+                               continue;
+                           }
+                       }
+                       if($temp >= 2){
+                           $grade = $this->grade($user->contribution,$temp);
                        }else{
-                           continue;
+                           $grade = $this->grade($user->contribution);
                        }
                    }
-                   if($temp >= 2){
-                       $grade = $this->grade($user->contribution,$temp);
-                   }else{
-                       $grade = $this->grade($user->contribution);
-                   }
+
                }else{
                    $grade = $this->grade($user->contribution);
                }

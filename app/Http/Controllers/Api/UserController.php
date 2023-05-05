@@ -174,7 +174,7 @@ class UserController extends BaseController
             $users   = User::query()->where('master_id',$user->id)->select('green_score','sale_score','contribution');
             $temp = 0;
             foreach ($users as $down){
-                $self_contribution = bcadd(bcdiv($down->green_score/3,2),bcdiv($down->sale_score,6,2));
+                $self_contribution = bcadd(bcdiv($down->green_score,3,2),bcdiv($down->sale_score,6,2));
                 $dict_contribution = bcadd($self_contribution,$down->contribution);
                 if($dict_contribution > 5000000){
                     $temp += 1;
@@ -362,7 +362,7 @@ class UserController extends BaseController
                     $six_team_ids = User::query()->where('master_id',$item->id)->select('green_score','sale_score','contribution')->get();
                     $temp = 0;
                     foreach ($six_team_ids as $down){
-                        $self_contribution = bcadd(bcdiv($down->green_score/3,2),bcdiv($down->sale_score,6,2));
+                        $self_contribution = bcadd(bcdiv($down->green_score,3,2),bcdiv($down->sale_score,6,2));
                         $dict_contribution = bcadd($self_contribution,$down->contribution);
                         if($dict_contribution > 5000000){
                             $temp += 1;
@@ -433,5 +433,27 @@ class UserController extends BaseController
         $data = AsacNode::query()->whereIn('id',[1,2])->pluck('number');
         $data = ['flow_address'=>$data[0],'pre_address'=>$data[1]];
         return $this->success('请求成功',$data);
+    }
+
+    //扫码自动注册
+    public function auto_register(Request $request){
+        $data = $request->only(['id','phone','pay_type','money']);
+        if(!$this->validate->scene('auto')->check($data)){
+            return $this->fail($this->validate->getError());
+        }
+        $phone = Rsa::decodeByPrivateKey($data['phone']);
+        $pay_type = $data['pay_type'];
+        $info = User::query()->where('phone',$phone)->first();
+        if($info){
+            switch ($pay_type){
+                case 1:
+                    //消费卷支付
+                    break;
+                case 2:
+
+            }
+        }else{
+
+        }
     }
 }
