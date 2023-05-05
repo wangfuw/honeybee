@@ -96,6 +96,9 @@ class UserController extends BaseController
         }
         $phone = Rsa::decodeByPrivateKey($request->phone);
         $f_users = User::query()->where('invite_code',$request->invite_code)->first();
+        if(User::query()->where('phone',$phone)->exists()){
+            return $this->fail('该电话已被占用');
+        }
         if(!$f_users){
             return $this->fail('邀请码不存在,请确认邀请码');
         }
