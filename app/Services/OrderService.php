@@ -316,9 +316,9 @@ class OrderService
         $order_no = $params['order_no'];
         try {
             DB::beginTransaction();
-//            if($c_sale_password != $user->sale_password){
-//                throw new ApiException([0,'支付密码错误']);
-//            }
+            if($c_sale_password != $user->sale_password){
+                throw new ApiException([0,'支付密码错误']);
+            }
             $info = Order::query()->where('order_no',$order_no)->where('status',1)->first();
             if(empty($info)){
                 throw new ApiException([0,'该订单不可支付']);
@@ -391,6 +391,8 @@ class OrderService
                     case 3:
                         $rate = Config::green_threefold_allowance()/100;
                         break;
+                    default:
+                        $rate = Config::green_threefold_allowance()/100;
                 }
                 $temp_num = bcmul($info->coin_num,$rate,2);
                 //流动扣除
@@ -468,6 +470,8 @@ class OrderService
                     case 3:
                         $rate = Config::consume_threefold_allowance()/100;
                         break;
+                    default:
+                        $rate = Config::consume_threefold_allowance()/100;
                 }
                 $temp_num = bcmul($info->coin_num,$rate,2);
 
