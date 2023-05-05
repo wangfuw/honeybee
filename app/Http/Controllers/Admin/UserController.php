@@ -28,6 +28,26 @@ class UserController extends AdminBaseController
         if ($request->filled("nickname")) {
             $condition[] = ["nickname", "like", "%$request->nickname%"];
         }
+        if ($request->filled("master_id")) {
+            $condition[] = ["master_id", "=", $request->master_id];
+        }
+        if($request->filled("master_phone")){
+            $user = User::where("phone",$request->phone)->first();
+            if(!$user){
+                $condition[] = ["master_id","=",$user->id];
+            }
+        }
+        if($request->filled("leader_id")){
+            $condition[] = ["master_pos","like","%,$request->leader_id,%"];
+        }
+
+        if($request->filled("leader_phone")){
+            $user = User::where("phone",$request->leader_phone)->first();
+            if(!$user){
+                $condition[] = ["master_pos","like","%,$user->id,%"];
+            }
+        }
+
         if ($request->filled("create_at")) {
             $start = $request->input("create_at.0");
             $end = $request->input("create_at.1");
@@ -279,13 +299,13 @@ class UserController extends AdminBaseController
         if (!$request->filled("id")) {
             return $this->error("id");
         }
-        $ua = UserIdentity::where("id",$request->id)->first();
-        if(!$ua){
+        $ua = UserIdentity::where("id", $request->id)->first();
+        if (!$ua) {
             return $this->error("id");
         }
         $flag = $request->input("flag", 1);
-        if($flag == 2){
-            if(!$request->filled("note")){
+        if ($flag == 2) {
+            if (!$request->filled("note")) {
                 return $this->fail("驳回原因必填");
             }
             $ua->note = $request->note;
