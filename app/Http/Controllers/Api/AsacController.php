@@ -193,24 +193,15 @@ class AsacController extends BaseController
             $address = AsacNode::query()->where('id',2)->value('wallet_address');
         }
         $page = $request->page??1;
-        $page_size = $request->page??6;
+        $page_size = $request->page_size??6;
         $handler = AsacTrade::query();
 
-        switch ($f_type){
-            case 1:
-                $handler->where('to_address',$address);
-                break;
-            case 2:
-                $handler->where('from_address',$address);
-                break;
-            default:
-                $handler->where(function ($query) use ($address){
-                    return $query->orWhere('to_address',$address)->orWhere('from_address',$address);
-                });
-        }
+        $handler->where(function ($query) use ($address){
+            return $query->where('to_address',$address)->orWhere('from_address',$address);
+        });
+
         $list = $handler->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->orderBy('id','desc')->get()
             ->map(function ($item,$items) use($address){
-
                 if($address == $item->from_address){
                     $item->type_name = AsacTrade::typeData[AsacTrade::BUY];
                     $item->num = '-'.$item->num;
@@ -219,8 +210,7 @@ class AsacController extends BaseController
                     $item->num = '+'.$item->num;
                 }
                 return $item;
-            })
-            ->forPage($page,$page_size);
+            })->forPage($page,$page_size);
         $data = collect([])->merge($list)->toArray();
         return $this->success('请求成功',$data);
     }
