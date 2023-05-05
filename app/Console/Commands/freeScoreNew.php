@@ -51,7 +51,7 @@ class freeScoreNew extends Command
     {
         Log::info('积分释放，开始时间：'.date('Y-m-d H:i:s'));
 
-        $users = User::query()->where("id",">=",93)->select('id','green_score','sale_score','luck_score','phone',
+        $users = User::query()->where("id",">=",94)->select('id','green_score','sale_score','luck_score','phone',
             'coin_num','master_id','ticket_num','green_score_total','sale_score_total','contribution','master_pos')->orderBy('id','asc')->get();
         //消费积分释放比例
         $sale_rate = Config::consume_free_rate();
