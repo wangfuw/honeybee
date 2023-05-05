@@ -115,7 +115,7 @@ class UserMoneyController extends BaseController
                         $item->num = '+'.$item->num;
                         $item->type_name = '转入';
                     }
-                    $item->to_user_address = AsacNode::query()->where('user_id','to_id')->value('wallet_address')??'';
+                    $item->to_address = AsacNode::query()->where('user_id','to_id')->value('wallet_address')??'';
                     return $item;
                 })->forPage($page,$page_size);
                 break;
@@ -130,7 +130,7 @@ class UserMoneyController extends BaseController
                         $item->num = '+'.$item->num;
                         $item->type_name = '交易转入';
                     }
-                    $item->to_user_address = AsacNode::query()->where('user_id','to_id')->value('wallet_address')??'';
+                    $item->to_address = AsacNode::query()->where('user_id','to_id')->value('wallet_address')??'';
                     return $item;
                 })->forPage($page,$page_size);
                 break;
