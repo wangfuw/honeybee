@@ -68,5 +68,14 @@ class Config extends Base
     public static function freeze_free(){
         return self::query()->value('freeze_free');
     }
+    public static function consume_free_rate(){
+        return self::query()->value('consume_free_rate');
+    }
+    public static function green_free_before_rate(){
+        return self::query()->value('green_free_before_rate');
+    }
+    public static function green_free_next_rate(){
+        return self::query()->value('green_free_next_rate');
+    }
 
 }

@@ -155,6 +155,8 @@ Route::controller(UserController::class)->group(function () {
         Route::post('del_revoke',[OrderController::class,'del_revoke']);
         //钱包明细
         Route::post('list',[WalletController::class,'list']);
+        //充值记录
+        Route::post('coin_log',[WalletController::class,'coin_log']);
     });
 
     Route::group(['middleware' => 'auth'],function (){

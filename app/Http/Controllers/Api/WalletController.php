@@ -6,7 +6,10 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\AsacNode;
 use App\Models\AsacTrade;
+use App\Models\Coin;
+use App\Models\UserMoney;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WalletController extends BaseController
 {
@@ -101,5 +104,34 @@ class WalletController extends BaseController
                 return $item;
             })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
+    }
+
+    public function coin_log(Request $request){
+        $id = $request->id;
+        $user_id = Auth::user()->id;
+        $page = $request->page??1;
+        $page_size = $request->page_size??6;
+        switch ($id){
+            case -1:
+                //获取我的地址
+                $wallet_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
+                $list = AsacTrade::query()->where('to_address',$wallet_address)->where('type',AsacTrade::RECHARGE)->get()
+                    ->map(function ($item,$items){
+                        $item->type_name = "充值";
+                        $item->num = '+'.$item->num;
+                        $item->coin = 'ASAC';
+                    })->forPage($page,$page_size);
+                return collect([])->merge($list)->toArray();
+                break;
+            default:
+                $list = UserMoney::query()->where('user_id',$user_id)->where('status',1)->select('id','money as num','created_at','coin_id')
+                    ->orderBy('created_at','desc')->get()->map(function ($item,$items){
+                        $item->type_name = "充值成功";
+                        $item->num = "+".$item->num;
+                        $item->coin = Coin::query()->where('id',$item->coin_id)->value('name');
+                        return $item;
+                    })->forPage($page,$page_size);
+                return collect([])->merge($list)->toArray();
+        }
     }
 }

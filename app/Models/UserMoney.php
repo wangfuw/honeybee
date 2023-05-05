@@ -10,7 +10,7 @@ class UserMoney extends Base
     protected $table = 'user_money';
 
     protected $fillable = [
-        'id','user_id','num','charge_image','money','status','admin_id','note','created_at','updated_at','type'
+        'id','user_id','num','charge_image','money','status','admin_id','note','created_at','updated_at','type','coin_id'
     ];
 
     protected $hidden = [
