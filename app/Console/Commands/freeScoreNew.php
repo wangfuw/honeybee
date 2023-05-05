@@ -181,8 +181,6 @@ class freeScoreNew extends Command
                 ]);
                 $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
 
-                $user->save();
-                $pre_address->save();
                 $green_free_num[$user->id] = $num;
                 DB::commit();
                 Log::info('静态释放成功:' . $user->id);
@@ -200,7 +198,7 @@ class freeScoreNew extends Command
     {
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
         $dict_users = User::query()->where('master_id', $current_user_id)
-            ->select('id', 'green_score', 'luck_score', 'ticket_num', 'phone')
+            ->select('id', 'green_score', 'luck_score', 'ticket_num', 'phone','coin_num')
             ->get();
         if (count($dict_users) == 0) return true;
         if ($current_user_id == 93) {
@@ -285,7 +283,7 @@ class freeScoreNew extends Command
         //获取上两人
         $up_users = User::query()
             ->where('id', '<', $current_user_id)
-            ->select('id', 'green_score', 'luck_score', 'ticket_num', 'phone')
+            ->select('id', 'green_score', 'luck_score', 'ticket_num', 'phone','coin_num')
             ->orderBy('id', 'desc')->limit(2)
             ->get();
         $free_num = bcmul($num, 0.05, self::DE);
