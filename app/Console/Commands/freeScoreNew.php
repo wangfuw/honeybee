@@ -61,7 +61,7 @@ class freeScoreNew extends Command
         $green_next = Config::green_free_next_rate();
         $pre_address_info = AsacNode::query()->where('id',2)->select('id','wallet_address','number')->first();
         $last_price = Asaconfig::get_price();
-        printf("这是新的命令");
+        printf("这是新的命令\n");
         //静态释放
 
         $user_array = [];
@@ -204,6 +204,9 @@ class freeScoreNew extends Command
         foreach ($dict_users as $u)
         {
             $user = $user_array[$u->id];
+            if($user->id == 94){
+                printf("free_num:%s\n",$free_num);
+            }
             if($user->luck_score <= 0 || $user->green_score <=0){
                continue;
             }else{
