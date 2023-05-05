@@ -115,6 +115,7 @@ class UserMoneyController extends BaseController
                         $item->num = '+'.$item->num;
                         $item->type_name = '转入';
                     }
+                    $item->to_user = User::query()->where('id',$item->to_id)->first()??[];
                     return $item;
                 })->forPage($page,$page_size);
                 break;
@@ -129,6 +130,7 @@ class UserMoneyController extends BaseController
                         $item->num = '+'.$item->num;
                         $item->type_name = '交易转入';
                     }
+                    $item->to_user = User::query()->where('id',$item->to_id)->first()??[];
                     return $item;
                 })->forPage($page,$page_size);
                 break;
