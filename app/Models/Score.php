@@ -11,7 +11,9 @@ class Score extends Base
     protected $table = 'score';
 
     protected $guarded = [];
-
+    public $fillable = [
+        'id','user_id','flag','num','type','f_type','amount','created_at','updated_at'
+    ];
     protected $hidden = [
         'deleted_at'
     ];
@@ -35,7 +37,7 @@ class Score extends Base
         self::BACK_SUB => "后台扣除",
         self::FREE_USED => "释放消耗",
         self::BURN_HAVE => "燃烧所得",
-        self::LUCKY_FREE_USED => "释放消耗幸运值",
+        self::LUCKY_FREE_USED => "释放消耗",
         self::TRADE_HAVE => "购买得到",
         self::TRADE_USED => "出售消耗",
         self::TRADE_REWARD=>"消费发奖励",
