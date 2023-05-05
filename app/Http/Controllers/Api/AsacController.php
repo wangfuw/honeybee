@@ -36,8 +36,7 @@ class AsacController extends BaseController
         }
         $wallet_address = AsacNode::query()->select('wallet_address','number','user_id')
             ->where('private_key',$request->private_key)
-            ->first()
-            ->toArray();
+            ->first();
         if($wallet_address->user_id != 0){
             $wallet_address->number = User::query()->where('id',$wallet_address->user_id)->value('coin_num')??0;
         }
