@@ -180,7 +180,7 @@ class freeScoreNew extends Command
                     'type' => AsacTrade::FREE_USED
                 ]);
                 $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
-                $users->save();
+                $user->save();
                 $pre_address->save();
                 $green_free_num[$user->id] = $num;
                 DB::commit();
