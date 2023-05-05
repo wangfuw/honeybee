@@ -135,12 +135,17 @@ class freeScoreNew extends Command
        if($user->green_score_total - $user->green_score > $all_moeny){
            //回本了
            $num = bcmul($user->green_score/1000, $green_next,self::DE);
-           $num = min($user->luck_score, $num);
        }else {
            //未回本
            $num = bcmul($user->green_score/1000, $green_before,self::DE);
-           $num = min($user->luck_score, $num);
        }
+
+       if($user->id == 93){
+           printf("ss:%s\n",$user->green_score/1000);
+           printf("cal_num:%s\n",$num);
+       }
+
+       $num = min($user->luck_score, $num);
 
        $asac_num = bcdiv($num * 0.8, $last_price,self::DE);
        if($asac_num < self::MIN){
