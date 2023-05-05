@@ -155,7 +155,7 @@ class OrderService
         $info = Order::query()->with(['sku'=>function($query){
             return $query->select('id','indexes','price');
         },'spu'=>function($query){
-            return $query->select('id','logo','special_spec','name','user_id');
+            return $query->select('id','logo','special_spec','name','user_id','game_zone','score_zone');
         }])->select('*')->where('order_no',$order_no)
             ->first();
         $info->one_price = $info->sku->price;
@@ -180,6 +180,8 @@ class OrderService
         $info->exp_person = $info->address['exp_person'];
         $info->address_detail = $info->address['address_detail'];
         $info->name = $info->spu->name;
+        $info->game_zone = $info->spu->game_zone;
+        $info->score_zone = $info->spu->score_zone;
         unset($info->sku,$info->spu,$info->address,$index_special);
         return $info->toArray();
     }
@@ -316,9 +318,9 @@ class OrderService
         $order_no = $params['order_no'];
         try {
             DB::beginTransaction();
-            if($c_sale_password != $user->sale_password){
-                throw new ApiException([0,'支付密码错误']);
-            }
+//            if($c_sale_password != $user->sale_password){
+//                throw new ApiException([0,'支付密码错误']);
+//            }
             $info = Order::query()->where('order_no',$order_no)->where('status',1)->first();
             if(empty($info)){
                 throw new ApiException([0,'该订单不可支付']);
