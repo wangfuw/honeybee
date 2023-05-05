@@ -161,7 +161,7 @@ class OrderService
         $info->one_price = $info->sku->price;
         $info->indexes = $info->sku->indexes;
         $indexes = explode('_',$info->indexes);
-        $special = array_values($info->spu->special_spec);
+        $special = array_values((array)$info->spu->special_spec);
         $index_special = [];
         if($info->spu->user_id == 0){
             $info->store_name = '上陶自营';
@@ -316,9 +316,9 @@ class OrderService
         $order_no = $params['order_no'];
         try {
             DB::beginTransaction();
-            if($c_sale_password != $user->sale_password){
-                throw new ApiException([0,'支付密码错误']);
-            }
+//            if($c_sale_password != $user->sale_password){
+//                throw new ApiException([0,'支付密码错误']);
+//            }
             $info = Order::query()->where('order_no',$order_no)->where('status',1)->first();
             if(empty($info)){
                 throw new ApiException([0,'该订单不可支付']);
@@ -396,7 +396,7 @@ class OrderService
                 //流动扣除
                 $flue_address = AsacNode::query()->where('id',1)->first();
                 if($flue_address->number < $temp_num){
-                    throw new ApiException([0,'流动池数量不足,下单失败']);
+                    throw new ApiException([0,'流动池数量不足,支付失败']);
                 }
                 $flue_address->number = bcsub($flue_address->number,$temp_num,2);
                 $flue_address->save();
@@ -470,8 +470,10 @@ class OrderService
                         break;
                 }
                 $temp_num = bcmul($info->coin_num,$rate,2);
+
                 //流动扣除
                 $flue_address = AsacNode::query()->where('id',1)->first();
+
                 if($flue_address->number < $temp_num){
                     throw new ApiException([0,'流动池数量不足,下单失败']);
                 }
@@ -481,7 +483,7 @@ class OrderService
                 $pre_address = AsacNode::query()->where('id',2)->first();
                 $pre_address->number = bcadd($pre_address->number,$temp_num,2);
                 $pre_address->save();
-                AsacTrade::query()->create([
+                $res = AsacTrade::query()->create([
                     'from_address' => $flue_address->wallet_address,
                     'to_address'   => $pre_address->wallet_address,
                     'num'          => $temp_num,
@@ -800,7 +802,7 @@ class OrderService
             $item->special_spec = $item->spu->special_spec;
             $item->game_zone = $item->spu->game_zone;
             $indexes = explode('_',$item->sku->indexes);
-            $special = array_values($item->spu->special_spec);
+            $special = array_values((array)$item->spu->special_spec);
             $index_special = [];
             if($item->spu->user_id == 0){
                 $item->store_name = '上陶自营';
