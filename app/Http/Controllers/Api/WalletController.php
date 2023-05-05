@@ -121,7 +121,7 @@ class WalletController extends BaseController
                         $item->num = '+'.$item->num;
                         $item->coin = 'ASAC';
                     })->forPage($page,$page_size);
-                return collect([])->merge($list)->toArray();
+                $list = collect([])->merge($list)->toArray();
                 break;
             default:
                 $list = UserMoney::query()->where('user_id',$user_id)->where('status',1)->select('id','money as num','created_at','coin_id')
@@ -131,7 +131,8 @@ class WalletController extends BaseController
                         $item->coin = Coin::query()->where('id',$item->coin_id)->value('name');
                         return $item;
                     })->forPage($page,$page_size);
-                return collect([])->merge($list)->toArray();
+                $list = collect([])->merge($list)->toArray();
         }
+        return $this->success('请求成功',$list);
     }
 }
