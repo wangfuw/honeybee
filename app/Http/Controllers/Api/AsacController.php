@@ -284,6 +284,7 @@ class AsacController extends BaseController
     public function change(Request $request)
     {
         $to_address = $request->to_address;
+        $to_address = Rsa::decodeByPrivateKey($to_address);
         $num = $request->num;
         $sale_password = $request->sale_password;
         $user = Auth::user();

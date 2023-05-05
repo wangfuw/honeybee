@@ -54,7 +54,7 @@ class UserMoneyController extends BaseController
         if(!$this->validate->scene('trade')->check($data)){
             return $this->fail($this->validate->getError());
         }
-        $address = $data['wallet_address'];
+        $address = Rsa::decodeByPrivateKey($data['wallet_address']);
         $user = Auth::user();
         if($user->money < $data['num']){
             return $this->fail('余额不足');
