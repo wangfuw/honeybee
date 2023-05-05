@@ -61,6 +61,7 @@ class freeScoreNew extends Command
         $green_next = Config::green_free_next_rate();
         $pre_address_info = AsacNode::query()->where('id',2)->select('id','wallet_address','number')->first();
         $last_price = Asaconfig::get_price();
+        printf("这是新的命令");
         //静态释放
         try {
             DB::beginTransaction();
