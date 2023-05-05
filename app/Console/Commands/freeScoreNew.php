@@ -200,6 +200,10 @@ class freeScoreNew extends Command
    protected function get_dict_free($current_user,$num,$pre_address,$last_price,$user_array){
         $dict_users = User::query()->where('master_id',$current_user->id)->select('id')->get();
         if(count($dict_users)==0) return true;
+        if($current_user->id == 93){
+            printf("num:%s\n",$num);
+            printf("num:%s\n",$num* 0.1);
+        }
         $free_num = bcdiv($num * 0.1,count($dict_users),self::DE);
         foreach ($dict_users as $u)
         {
