@@ -43,8 +43,8 @@ class WalletController extends BaseController
         $wallet_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
         $list = AsacTrade::query()->where('to_address',$wallet_address)->where('type',AsacTrade::RECHARGE)->get()
             ->map(function ($item,$items){
-                $item->note = "充值";
-                $item->flag =1;
+                $item->type_name = "充值";
+                $item->num = '+'.$item->num;
             })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
     }
@@ -54,8 +54,8 @@ class WalletController extends BaseController
         $wallet_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
         $list = AsacTrade::query()->where('from_address',$wallet_address)->where('type',AsacTrade::WITHDRAW)->get()
             ->map(function ($item,$items){
-                $item->note = "提现";
-                $item->flag =2;
+                $item->type_name = "提现";
+                $item->num = '-'.$item->num;
             })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
     }
@@ -71,11 +71,11 @@ class WalletController extends BaseController
         })->whereIn('type',[AsacTrade::CHANG_IN,AsacTrade::CHANG_OUT])->select('num','from_address','to_address','created_at')
             ->get()->map(function ($item,$items) use($wallet_address){
                 if($item->from_address == $wallet_address){
-                    $item->note = '转出';
-                    $item->flag = 2;
+                    $item->type_name = '转出';
+                    $item->num = '-'.$item->num;
                 }else{
-                    $item->note = '转入';
-                    $item->flag = 1;
+                    $item->type_name = '转入';
+                    $item->num = '+'.$item->num;
                 }
                 return $item;
             })->forPage($page,$page_size);
@@ -92,11 +92,11 @@ class WalletController extends BaseController
         })->whereIn('type',[AsacTrade::BUY,AsacTrade::SELL])->select('num','from_address','to_address','created_at')
             ->get()->map(function ($item,$items) use($wallet_address){
                 if($item->from_address == $wallet_address){
-                    $item->note = '购买商品花费';
-                    $item->flag = 2;
+                    $item->type_name = '购买商品花费';
+                    $item->num = '-'.$item->num;
                 }else{
-                    $item->note = '售出商品获得';
-                    $item->flag = 1;
+                    $item->type_name = '售出商品获得';
+                    $item->num = '+'.$item->num;
                 }
                 return $item;
             })->forPage($page,$page_size);
