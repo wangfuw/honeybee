@@ -19,4 +19,9 @@ class DownController extends BaseController
         }
         return $this->success("请求成功",['wgt_url'=>$url]);
     }
+
+    public function download(){
+        $down = DB::table("down")->first();
+        return $this->success("请求成功",$down);
+    }
 }
