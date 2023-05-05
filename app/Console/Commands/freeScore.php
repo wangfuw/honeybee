@@ -49,7 +49,7 @@ class freeScore extends Command
     {
         Log::info('积分释放，开始时间：'.date('Y-m-d H:i:s'));
 
-        $users = User::query()->where('is_ban',1)->where('id',36)->select('id','green_score','sale_score','luck_score','phone',
+        $users = User::query()->where('is_ban',1)->select('id','green_score','sale_score','luck_score','phone',
             'coin_num','master_id','ticket_num','green_score_total','sale_score_total','contribution','master_pos')->orderBy('id','asc')->get();
         //消费积分释放比例
         $sale_rate = Config::consume_free_rate();
@@ -57,22 +57,20 @@ class freeScore extends Command
         $green_before = Config::green_free_before_rate();
         //回本后
         $green_next = Config::green_free_next_rate();
-        $flue_address = AsacNode::query()->where('id',1)->value('wallet_address');
-        $pre_address = AsacNode::query()->where('id',2)->value('wallet_address');
+        $pre_address_info = AsacNode::query()->where('id',2)->select('id','wallet_address','number')->first();
         $last_price = Asaconfig::get_price();
         //静态释放
-        echo $sale_rate.'*'.$green_before.'*'.$green_next.'*'.$pre_address.'*'.$last_price.'*'.$pre_address;
         try {
             DB::beginTransaction();
             foreach ($users as $user){
                 //释放消费积分
                 $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
                 if($user->sale_score > 0){
-                    $this->sale_free($user,$sale_rate,$last_price,$flue_address,$pre_address,$user_address);
+                    $this->sale_free($user,$sale_rate,$last_price,$pre_address_info,$user_address);
                 }
                 //释放绿色积分
                 if($user->green_score > 0){
-                    $this->green_free($user,$green_before,$green_next,$last_price,$flue_address,$pre_address,$user_address);
+                    $this->green_free($user,$green_before,$green_next,$last_price,$pre_address_info,$user_address);
                 }
             }
             DB::commit();
@@ -84,23 +82,25 @@ class freeScore extends Command
 
     }
 
-    protected function sale_free($user,$sale_rate,$last_price,$flue_address,$pre_address,$user_address)
+    protected function sale_free($user,$sale_rate,$last_price,$pre_address,$user_address)
     {
-        $sale_num = bcmul($user->sale_score/1000,$sale_rate,2);
-        $asac_num = bcdiv($sale_num,$last_price,2);
+        $sale_num = bcmul($user->sale_score/1000,$sale_rate);
+        $asac_num = bcdiv($sale_num,$last_price);
         $user->coin_num += $asac_num;
         $user->sale_score -= $sale_num;
         $user->save();
         AsacTrade::query()->create([
-            'from_address' => $pre_address,
+            'from_address' => $pre_address->wallet_address,
             'to_address'   => $user_address,
             'num'          => $asac_num,
             'trade_hash'   => rand_str_pay(64),
             'type'         => AsacTrade::FREE_USED
         ]);
+        $pre_address->number = bcsub($pre_address->number,$asac_num);
+        $pre_address->save();
     }
 
-   protected function green_free($user,$green_before,$green_next,$last_price,$flue_address,$pre_address,$user_address)
+   protected function green_free($user,$green_before,$green_next,$last_price,$pre_address,$user_address)
    {
        //消费总额
        $all_moeny = Order::query()->where('user_id',$user->id)->where('give_green_score','>',0)->sum('price');
@@ -112,33 +112,20 @@ class freeScore extends Command
        //检查回本
        if($user->green_score_total - $user->green_score > $all_moeny){
            //回本了
-           $num = bcmul($user->green_score/1000, $green_next, 2);
+           $num = bcmul($user->green_score/1000, $green_next);
            $num = min($user->luck_score, $num);
-           $asac_num = bcdiv($num * 0.8, $last_price, 2);
-           $user->coin_num += $asac_num;
-           $user->green_score -= $num;
-           $ticket_num = bcmul($num , 0.2, 2);
-           $user->luck_score -= $num;
-           $user->ticket_num += $ticket_num;
-           $user->save();
        }else {
            //未回本
-
-           $num = bcmul($user->green_score/1000, $green_before, 2);
-
+           $num = bcmul($user->green_score/1000, $green_before);
            $num = min($user->luck_score, $num);
-           echo $num.'&&';
-           $asac_num = bcdiv($num * 0.8, $last_price, 2);
-           echo $asac_num.'&&';
-           echo  bcmul($num , 0.2, 2).'^^';
-           $user->coin_num = bcadd($asac_num,$user->coin_num,2);
-           $user->green_score = bcsub($user->green_score,$num,2);
-           $ticket_num = bcmul($num , 0.2, 2);
-           $user->luck_score = bcsub($user->luck_score,$num,2);
-           $user->ticket_num = bcadd($ticket_num,$user->ticket_num,2);
-           $user->save();
-           echo $user->coin_num;
        }
+       $asac_num = bcdiv($num * 0.8, $last_price,2);
+       $user->coin_num += $asac_num;
+       $user->green_score -= $num;
+       $ticket_num = bcmul($num , 0.2);
+       $user->luck_score -= $num;
+       $user->ticket_num += $ticket_num;
+       $user->save();
         //写释放日志 绿色积分 幸运值 消费卷
         Score::query()->create([
             'user_id'=>$user->id,
@@ -166,24 +153,29 @@ class freeScore extends Command
         ]);
         //於挖池释放给用户
         AsacTrade::query()->create([
-           'from_address' => $pre_address,
+           'from_address' => $pre_address->wallet_address,
            'to_address'   => $user_address,
            'num'          => $asac_num,
            'trade_hash'   => rand_str_pay(64),
            'type'         => AsacTrade::FREE_USED
         ]);
+       $pre_address->number = bcsub($pre_address->number,$asac_num);
+       $pre_address->save();
+       Log::info($user->phone.'个人静态释放完毕哦：'.date('Y-m-d H:i:s'));
         //直推人加速
        $this->get_dict_free($user,$num,$pre_address,$last_price);
        //前面两人加速
+       Log::info('前面两人加速开始：'.date('Y-m-d H:i:s'));
        $this->get_up_two($user,$num,$pre_address,$last_price);
        //团队释放
+       Log::info('团队释放：'.date('Y-m-d H:i:s'));
        $this->free_team($user,$num,$pre_address,$last_price);
    }
 
    //给直推人加速释放
    protected function get_dict_free($user,$num,$pre_address,$last_price){
-        $dict_users = User::query()->where('master_id',$user->id)->select('id','green_score','luck_score','ticket_num')->get();
-        $free_num = bcdiv($num * 0.1,count($dict_users),2);
+        $dict_users = User::query()->where('master_id',$user->id)->select('id','green_score','luck_score','ticket_num','phone')->get();
+        $free_num = bcdiv($num * 0.1,count($dict_users));
         foreach ($dict_users as $user)
         {
             if($user->luck_score <= 0 || $user->green_score <=0){
@@ -191,12 +183,12 @@ class freeScore extends Command
             }else{
                 $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
                 //按小释放
-                $num = min($user->green_score,$user->luck_score,$free_num);
-                $asac_num = bcdiv($num * 0.8, $last_price, 2);
+                $num1 = min($user->green_score,$user->luck_score,$free_num);
+                $asac_num = bcdiv($num1 * 0.8, $last_price,2);
                 $user->coin_num += $asac_num;
-                $user->green_score -= $num;
-                $ticket_num = bcmul($num , 0.2, 2);
-                $user->luck_score -= $num;
+                $user->green_score -= $num1;
+                $ticket_num = bcmul($num1 , 0.2);
+                $user->luck_score -= $num1;
                 $user->ticket_num += $ticket_num;
                 $user->save();
 
@@ -204,7 +196,7 @@ class freeScore extends Command
                 Score::query()->create([
                     'user_id'=>$user->id,
                     'flag'   => 2,
-                    'num'    => $num,
+                    'num'    => $num1,
                     'type'   => 1,
                     'f_type' => Score::LUCKY_FREE_USED,
                     'amount' => $asac_num,
@@ -212,7 +204,7 @@ class freeScore extends Command
                 Score::query()->create([
                     'user_id'=>$user->id,
                     'flag'   => 2,
-                    'num'    => $num,
+                    'num'    => $num1,
                     'type'   => 3,
                     'f_type' => Score::LUCKY_FREE_USED,
                     'amount' => 0,
@@ -227,12 +219,15 @@ class freeScore extends Command
                 ]);
                 //於挖池释放给用户
                 AsacTrade::query()->create([
-                    'from_address' => $pre_address,
+                    'from_address' => $pre_address->wallet_address,
                     'to_address'   => $user_address,
                     'num'          => $asac_num,
                     'trade_hash'   => rand_str_pay(64),
                     'type'         => AsacTrade::FREE_USED
                 ]);
+                $pre_address->number = bcsub($pre_address->number,$asac_num);
+                $pre_address->save();
+                Log::info($user->phone.'的个直推加速态释放完毕哦：'.date('Y-m-d H:i:s'));
             }
         }
    }
@@ -241,31 +236,33 @@ class freeScore extends Command
    protected function get_up_two($user,$num,$pre_address,$last_price)
    {
        //获取上两人
-       $up_users = User::query()->where('id','<',$user->id)->select('id','green_score','luck_score','ticket_num')->orderBy('id','desc')->limit(2)->get();
-       $free_num = bcdiv($num , 0.05,2);
-       if(isEmpty($up_users)){
+       $up_users = User::query()->where('id','<',$user->id)->select('id','green_score','luck_score','ticket_num','phone')
+           ->orderBy('id','desc')->limit(2)
+           ->get();
+       $free_num = bcmul($num , 0.05,3);
+       if(!$up_users){
            Log::info('前面没人:'.date("y-m-d H:i:s"));
            return true;
        }else{
             foreach ($up_users as $user){
                 if($user->luck_score <= 0 || $user->green_score <=0){
-                    break;
+                   continue;
                 }else{
                     $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
-                    $num = min($user->green_score,$user->luck_score,$free_num);
-                    $asac_num = bcdiv($num * 0.8, $last_price, 2);
-                    $user->coin_num += $asac_num;
-                    $user->green_score -= $num;
-                    $ticket_num = bcmul($num , 0.2, 2);
-                    $user->luck_score -= $num;
-                    $user->ticket_num += $ticket_num;
+                    $num1 = min($user->green_score,$user->luck_score,$free_num);
+                    $asac_num = bcdiv($num1 * 0.8, $last_price,2);
+                    $user->coin_num = bcadd($user->coin_num,$asac_num,2);
+                    $user->green_score = bcsub($user->green_score,$num1);
+                    $ticket_num = bcmul($num1 , 0.2,2);
+                    $user->luck_score = bcsub($user->luck_score,$num1);
+                    $user->ticket_num = bcadd($ticket_num,$user->ticket_num);
                     $user->save();
 
                     //写释放日志 绿色积分 幸运值 消费卷
                     Score::query()->create([
                         'user_id'=>$user->id,
                         'flag'   => 2,
-                        'num'    => $num,
+                        'num'    => $num1,
                         'type'   => 1,
                         'f_type' => Score::LUCKY_FREE_USED,
                         'amount' => $asac_num,
@@ -273,7 +270,7 @@ class freeScore extends Command
                     Score::query()->create([
                         'user_id'=>$user->id,
                         'flag'   => 2,
-                        'num'    => $num,
+                        'num'    => $num1,
                         'type'   => 3,
                         'f_type' => Score::LUCKY_FREE_USED,
                         'amount' => 0,
@@ -288,12 +285,16 @@ class freeScore extends Command
                     ]);
                     //於挖池释放给用户
                     AsacTrade::query()->create([
-                        'from_address' => $pre_address,
+                        'from_address' => $pre_address->wallet_address,
                         'to_address'   => $user_address,
                         'num'          => $asac_num,
                         'trade_hash'   => rand_str_pay(64),
                         'type'         => AsacTrade::FREE_USED
                     ]);
+                    $pre_address->number = bcsub($pre_address->number,$asac_num,2);
+                    $pre_address->save();
+
+                    Log::info($user->phone.'的个排序加速态释放完毕哦：'.date('Y-m-d H:i:s'));
                 }
             }
        }
@@ -303,9 +304,9 @@ class freeScore extends Command
    {
        $masters =  explode(',',substr($user->master_pos,1,strlen($user->master_pos) - 2));
        $up_level_users = User::query()->whereIn('id',$masters)
-           ->select('id','green_score','luck_score','ticket_num','contribution','green_score_total','sale_score_total')
+           ->select('id','green_score','luck_score','ticket_num','contribution','green_score_total','sale_score_total','phone','coin_num')
            ->get();
-       if(isEmpty($up_level_users)){
+       if(!$up_level_users){
            Log::info('团队加速放完毕:'.date('Y-m-d H:i:s'));
            return true;
        }
@@ -313,11 +314,11 @@ class freeScore extends Command
            if($user->luck_score <= 0 || $user->green_score <= 0){
                continue;
            }else{
-               if($user->contribution > 60000000){
-                   $users   = User::query()->where('master_id',$user->id)->select('green_score','sale_score','contribution');
+               if($user->contribution >= 60000000){
+                   $users   = User::query()->where('master_id',$user->id)->select('green_score','sale_score','contribution')->get();
                    $temp = 0;
                    foreach ($users as $down){
-                       $self_contribution = bcadd(bcdiv($down->green_score/3,2),bcdiv($down->sale_score,6,2));
+                       $self_contribution = bcadd(bcdiv($down->green_score,3),bcdiv($down->sale_score,6));
                        $dict_contribution = bcadd($self_contribution,$down->contribution);
                        if($dict_contribution > 5000000){
                            $temp += 1;
@@ -326,22 +327,25 @@ class freeScore extends Command
                        }
                    }
                    if($temp >= 2){
-                       $grade = grade($user->contribution,$temp);
+                       $grade = $this->grade($user->contribution,$temp);
+                   }else{
+                       $grade = $this->grade($user->contribution);
                    }
                }else{
-                   $grade = grade($user->contribution);
+                   $grade = $this->grade($user->contribution);
                }
-               $num = $this->get_grade_num($grade,$num);
-               if($num == 0){
+               $free_num = $this->get_grade_num($grade,$num);
+               if($free_num == 0){
                    continue;
                }else{
-                   $num = min($user->green_score,$user->luck_score,$num);
+                   $free_num = min($user->green_score,$user->luck_score,$free_num);
+
                    $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
-                   $asac_num = bcdiv($num * 0.8, $last_price, 2);
-                   $user->coin_num += $asac_num;
-                   $user->green_score -= $num;
-                   $ticket_num = bcmul($num , 0.2, 2);
-                   $user->luck_score -= $num;
+                   $asac_num = bcdiv($free_num * 0.8, $last_price,2);
+                   $user->coin_num = bcadd($asac_num,$user->coin_num,2);
+                   $user->green_score -= $free_num;
+                   $ticket_num = bcmul($free_num , 0.2);
+                   $user->luck_score -= $free_num;
                    $user->ticket_num += $ticket_num;
                    $user->save();
 
@@ -349,7 +353,7 @@ class freeScore extends Command
                    Score::query()->create([
                        'user_id'=>$user->id,
                        'flag'   => 2,
-                       'num'    => $num,
+                       'num'    => $free_num,
                        'type'   => 1,
                        'f_type' => Score::LUCKY_FREE_USED,
                        'amount' => $asac_num,
@@ -357,7 +361,7 @@ class freeScore extends Command
                    Score::query()->create([
                        'user_id'=>$user->id,
                        'flag'   => 2,
-                       'num'    => $num,
+                       'num'    => $free_num,
                        'type'   => 3,
                        'f_type' => Score::LUCKY_FREE_USED,
                        'amount' => 0,
@@ -372,12 +376,16 @@ class freeScore extends Command
                    ]);
                    //於挖池释放给用户
                    AsacTrade::query()->create([
-                       'from_address' => $pre_address,
+                       'from_address' => $pre_address->wallet_address,
                        'to_address'   => $user_address,
                        'num'          => $asac_num,
                        'trade_hash'   => rand_str_pay(64),
                        'type'         => AsacTrade::FREE_USED
                    ]);
+
+                   $pre_address->number = bcsub($pre_address->number,$asac_num);
+                   $pre_address->save();
+                   Log::info($user->phone.'的个团队加速态释放完毕哦：'.date('Y-m-d H:i:s'));
                }
            }
        }
@@ -399,5 +407,33 @@ class freeScore extends Command
            default:
                return 0;
        }
+   }
+
+   protected  function grade($number,$base_num = 0)
+   {
+       $grade = 0;
+       switch ($number){
+           case $number >= 150000 && $number < 1000000:
+               $grade = 1;
+               break;
+           case $number >= 1000000 && $number < 5000000:
+               $grade = 2;
+               break;
+           case $number >= 5000000 && $number < 20000000:
+               $grade = 3;
+               break;
+           case $number >= 20000000 && $number < 60000000:
+               $grade = 4;
+               break;
+           case $number >= 60000000 && $base_num >= 2:
+               $grade = 5;
+               break;
+           case $number >= 60000000 && $base_num < 2:
+               $grade = 4;
+               break;
+           default:
+               $grade = 0;
+       }
+       return $grade;
    }
 }
