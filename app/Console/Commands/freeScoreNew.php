@@ -63,10 +63,9 @@ class freeScoreNew extends Command
         $last_price = Asaconfig::get_price();
         printf("这是新的命令");
         //静态释放
-        try {
+        foreach ($users as $user){
             DB::beginTransaction();
-            foreach ($users as $user){
-                //释放消费积分
+            try{
                 $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
                 if($user->sale_score > 0){
                     $this->sale_free($user,$sale_rate,$last_price,$pre_address_info,$user_address);
@@ -75,13 +74,33 @@ class freeScoreNew extends Command
                 if($user->green_score > 0){
                     $this->green_free($user,$green_before,$green_next,$last_price,$pre_address_info,$user_address);
                 }
+                DB::commit();
+                return true;
+            }catch (\Exception $e){
+                DB::rollBack();
+                Log::info('错误：'.$e->getMessage().date('Y-m-d H:i:s'));
             }
-            DB::commit();
-            return true;
-        }catch (\Exception $e){
-            DB::rollBack();
-            Log::info('错误：'.$e->getMessage().date('Y-m-d H:i:s'));
         }
+
+//        try {
+//
+//            foreach ($users as $user){
+//                //释放消费积分
+//                $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
+//                if($user->sale_score > 0){
+//                    $this->sale_free($user,$sale_rate,$last_price,$pre_address_info,$user_address);
+//                }
+//                //释放绿色积分
+//                if($user->green_score > 0){
+//                    $this->green_free($user,$green_before,$green_next,$last_price,$pre_address_info,$user_address);
+//                }
+//            }
+//            DB::commit();
+//            return true;
+//        }catch (\Exception $e){
+//            DB::rollBack();
+//            Log::info('错误：'.$e->getMessage().date('Y-m-d H:i:s'));
+//        }
 
     }
 
