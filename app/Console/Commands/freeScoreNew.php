@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use function PHPUnit\Framework\isEmpty;
 
-class freeScore extends Command
+class freeScoreNew extends Command
 {
     /**
      * The name and signature of the console command.
