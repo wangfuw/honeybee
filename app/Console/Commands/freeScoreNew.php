@@ -75,7 +75,6 @@ class freeScoreNew extends Command
                     $this->green_free($user,$green_before,$green_next,$last_price,$pre_address_info,$user_address);
                 }
                 DB::commit();
-                return true;
             }catch (\Exception $e){
                 DB::rollBack();
                 Log::info('错误：'.$e->getMessage().date('Y-m-d H:i:s'));
