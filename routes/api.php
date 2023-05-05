@@ -133,7 +133,7 @@ Route::controller(UserController::class)->group(function () {
         Route::post('areas', [AreaController::class, 'get_area']);
 
         Route::get('update', [DownController::class, 'update']);
-        Route::get('download', [DownController::class, 'download']);
+        Route::post('download', [DownController::class, 'download']);
     });
     //order
     Route::group(['middleware' => 'auth'], function () {
