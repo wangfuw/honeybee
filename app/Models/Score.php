@@ -32,6 +32,9 @@ class Score extends Base
     const TRADE_REWARD = 8;
     const REGISTER_REWARD = 9;
     const FREE_HAVE = 10;
+    const DICT_FREE_USED = 11;
+    const TEAM_FREE_USED = 12;
+    const SORT_FREE_USED = 13;
     const F_TYPES = [
         self::BACK_ADD => "后台增加",
         self::BACK_SUB => "后台扣除",
@@ -43,6 +46,9 @@ class Score extends Base
         self::TRADE_REWARD=>"消费发奖励",
         self::REGISTER_REWARD=>"注册赠送幸运值",
         self::FREE_HAVE=>"释放获得",
+        self::DICT_FREE_USED=>"直推加速释放",
+        self::TEAM_FREE_USED=>"团队加速释放",
+        self::SORT_FREE_USED=>"排序加速释放",
     ];
 
 
@@ -51,16 +57,16 @@ class Score extends Base
         $used_num = 0;
         switch ($type){
             case 1:
-                $used_num = self::query()->where('user_id',$user_id)->where('type',self::FREE_USED)->where('type',1)->count('num');
+                $used_num = self::query()->where('user_id',$user_id)->where('f_type',self::FREE_USED)->where('type',1)->count('num');
                 break;
             case 2:
-                $used_num = self::query()->where('user_id',$user_id)->where('type',self::FREE_USED)->where('type',2)->count('num');
+                $used_num = self::query()->where('user_id',$user_id)->where('f_type',self::FREE_USED)->where('type',2)->count('num');
                 break;
             case 3:
-                $used_num = self::query()->where('user_id',$user_id)->where('type',self::LUCKY_FREE_USED)->where('type',3)->count('num');
+                $used_num = self::query()->where('user_id',$user_id)->where('f_type',self::LUCKY_FREE_USED)->where('type',3)->count('num');
                 break;
             case 4:
-                $used_num = self::query()->where('user_id',$user_id)->where('type',self::TRADE_USED)->where('type',4)->count('num');
+                $used_num = self::query()->where('user_id',$user_id)->where('f_type',self::TRADE_USED)->where('type',4)->count('num');
                 break;
         }
         $page = $data['page']??1;
