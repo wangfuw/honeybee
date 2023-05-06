@@ -44,7 +44,7 @@ class WalletController extends BaseController
         $user_id = $user->id;
         //获取我的地址
         $wallet_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
-        $list = AsacTrade::query()->where('to_address',$wallet_address)->where('type',AsacTrade::RECHARGE)->get()
+        $list = AsacTrade::query()->where('to_address',$wallet_address)->where('type',AsacTrade::RECHARGE)->orderBy('created_at','desc')->get()
             ->map(function ($item,$items){
                 $item->type_name = "充值";
                 $item->num = '+'.$item->num;
@@ -55,7 +55,7 @@ class WalletController extends BaseController
         $user_id = $user->id;
         //获取我的地址
         $wallet_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
-        $list = AsacTrade::query()->where('from_address',$wallet_address)->where('type',AsacTrade::WITHDRAW)->get()
+        $list = AsacTrade::query()->where('from_address',$wallet_address)->where('type',AsacTrade::WITHDRAW)->orderBy('created_at','desc')->get()
             ->map(function ($item,$items){
                 $item->type_name = "提现";
                 $item->num = '-'.$item->num;
@@ -71,7 +71,7 @@ class WalletController extends BaseController
 
         $list = AsacTrade::query()->where(function ($query) use($wallet_address){
             return $query->where('from_address',$wallet_address)->orWhere('to_address',$wallet_address);
-        })->whereIn('type',[AsacTrade::CHANG_IN,AsacTrade::CHANG_OUT])->select('num','from_address','to_address','created_at')
+        })->whereIn('type',[AsacTrade::CHANG_IN,AsacTrade::CHANG_OUT])->select('num','from_address','to_address','created_at')->orderBy('created_at','desc')
             ->get()->map(function ($item,$items) use($wallet_address){
                 if($item->from_address == $wallet_address){
                     $item->type_name = '转出';
@@ -92,7 +92,7 @@ class WalletController extends BaseController
 
         $list = AsacTrade::query()->where(function ($query) use($wallet_address){
             return $query->where('from_address',$wallet_address)->orWhere('to_address',$wallet_address);
-        })->whereIn('type',[AsacTrade::BUY,AsacTrade::SELL])->select('num','from_address','to_address','created_at','game_zone','type')
+        })->whereIn('type',[AsacTrade::BUY,AsacTrade::SELL])->select('num','from_address','to_address','created_at','game_zone','type')->orderBy('created_at','desc')
             ->get()->map(function ($item,$items) use($wallet_address){
                 if($item->from_address == $wallet_address){
                     $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[$item->type];
@@ -128,7 +128,7 @@ class WalletController extends BaseController
             case -1:
                 //获取我的地址
                 $wallet_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
-                $list = AsacTrade::query()->where('to_address',$wallet_address)->where('type',AsacTrade::RECHARGE)->get()
+                $list = AsacTrade::query()->where('to_address',$wallet_address)->where('type',AsacTrade::RECHARGE)->orderBy('created_at','desc')->get()
                     ->map(function ($item,$items){
                         $item->type_name = "充值";
                         $item->num = '+'.$item->num;
