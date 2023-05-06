@@ -126,7 +126,7 @@ class BlockController extends AdminBaseController
 
         $data = AsacNode::join("users", "users.id", "=", "asac_node.user_id")
             ->where($condition)
-            ->select("asac_node.*,users.phone")
+            ->select("asac_node.*","users.phone")
             ->paginate($size);
         return $this->executeSuccess("request", $data);
     }
