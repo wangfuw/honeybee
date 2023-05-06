@@ -8,6 +8,7 @@ use App\Models\Recharge;
 use App\Models\User;
 use App\Models\Withdraw;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RechargeController extends AdminBaseController
 {
@@ -70,6 +71,11 @@ class RechargeController extends AdminBaseController
                 $condition[] = ["withdraw.id", "=", "-1"];
             }
         }
+
+        if ($request->filled("status")) {
+            $condition[] = ["withdraw.status", "=", $request->status];
+        }
+
         if ($request->filled("create_at")) {
             $start = $request->input("create_at.0");
             $end = $request->input("create_at.1");
@@ -78,7 +84,7 @@ class RechargeController extends AdminBaseController
         }
         $data = Withdraw::join("users", "users.id", "=", "withdraw.user_id")
             ->where($condition)
-            ->orderByDesc("id")
+            ->orderBy("status")
             ->select("withdraw.*", "users.phone")
             ->paginate($size);
         return $this->executeSuccess("请求", $data);
@@ -107,10 +113,21 @@ class RechargeController extends AdminBaseController
         $withdraw = Withdraw::find($request->id);
         if (!$withdraw) {
             return $this->error("ID");
+        } else {
+            $user = User::find($withdraw->user_id);
+            $user->coin_num += $withdraw->amount;
+            $withdraw->status = $flag;
+            $withdraw->err = $request->err;
+            DB::beginTransaction();
+            try {
+                $user->save();
+                $withdraw->save();
+                DB::commit();
+                return $this->executeSuccess("驳回");
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                return $this->executeFail("驳回");
+            }
         }
-        $user = User::find($withdraw->user_id);
-        $user->coin_num += $withdraw->amount;
-        $user->save();
-        return $this->executeSuccess("驳回");
     }
 }
