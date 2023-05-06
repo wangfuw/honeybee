@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Common\Rsa;
+use App\Exceptions\ApiException;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\Asac;
@@ -259,15 +260,23 @@ class AsacController extends BaseController
         $num = $request->num;
         $fee_rate = Config::get_fee();
         $fee = bcmul($num,$fee_rate);
-        $res = Withdraw::query()->create([
-            'user_id' => $user->id,
-            'withdraw_address' => $to_address,
-            'amount' => $num,
-            'fee'    => $fee,
-            'actual'    => bcsub($num,$fee,2),
-            'status'=>0,
-        ]);
-        return $this->success('提现申请成功',$res);
+        try{
+            DB::beginTransaction();
+            $res = Withdraw::query()->create([
+                'user_id' => $user->id,
+                'withdraw_address' => $to_address,
+                'amount' => $num,
+                'fee'    => $fee,
+                'actual'    => bcsub($num,$fee,2),
+                'status'=>0,
+            ]);
+            $user->coin_num = bcsub($user->coin_num,$num,4);
+            DB::commit();
+            return $this->success('提现申请成功',$res);
+        }catch (ApiException $e){
+            DB::rollBack();
+            return $this->fail('提现申请失败');
+        }
     }
 
     //转账
