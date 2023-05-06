@@ -123,17 +123,17 @@ class UserController extends BaseController
                 'master_id'=>$f_users->id,
                 'master_pos'=>','.$f_users->id.$f_users->master_pos??'',
                 //--todo 注册成功赠送幸运值
-                'luck_score'=>$num??188,
+                'luck_score'=>$num??180,
                 //注册写入最大幸运值
-                'max_luck_num'=>$num??188,
+                'max_luck_num'=>$num??180,
             ]);
             //注册赠送幸运值
             Score::query()->create([
                 "user_id"=>$user->id,
                 "flag"   => 1,
-                "num"    =>env('BASE_LUCK',100),
-                "type"=>4,
-                "f_type"=>9
+                "num"    =>$num??180,
+                "type"=>3,
+                "f_type"=>Score::REGISTER_REWARD
             ]);
             $user_id = $user->id;
             $asac_address = AsacNode::create([
