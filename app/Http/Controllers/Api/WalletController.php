@@ -137,7 +137,7 @@ class WalletController extends BaseController
     {
         switch ($game_zone){
             case 1:
-                return '幸福专区';
+                return '福利专区';
             case 2:
                 return '优选专区';
             case 3:
