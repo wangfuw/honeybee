@@ -258,6 +258,7 @@ class freeScoreNew extends Command
                     $user->save();
                     $pre_address->save();
                     DB::commit();
+                    echo $current_user_id.'$$$'.PHP_EOL;
                     Log::info($current_user_id . ':的直推加速态释放成功：' . $user->id);
                 } catch (\Exception $exception) {
                     DB::rollBack();
@@ -340,6 +341,7 @@ class freeScoreNew extends Command
                         $user->save();
                         $pre_address->save();
                         DB::commit();
+                        echo $current_user_id.'$$$'.PHP_EOL;
                         Log::info($current_user_id . ':的排序加速态释放成功：' . $user->id);
                     } catch (\Exception $exception) {
                         DB::rollBack();
@@ -450,6 +452,7 @@ class freeScoreNew extends Command
                         $user->save();
                         $pre_address->save();
                         DB::commit();
+                        echo $current_user_id.'$$$'.PHP_EOL;
                         Log::info($current_user_id . ':的个团队加速态释放完成功：' . $user->id);
                     } catch (\Exception $exception) {
                         DB::rollBack();
