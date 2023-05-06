@@ -139,8 +139,8 @@ class UserMoneyController extends BaseController
                 })->forPage($page,$page_size);
                 break;
             case 4:
-                $list = Score::query()->where('type',5)->select('id','num','created_at')->orderBy('created_at','desc')->get()->map(function ($item,$items){
-                    $item->type_name = '释放获得';
+                $list = Score::query()->where('type',5)->select('id','num','created_at','f_type')->orderBy('created_at','desc')->get()->map(function ($item,$items){
+                    $item->type_name = Score::F_TYPES[$item->f_type];
                     $item->num = '+'.$item->num;
                     return $item;
                 })->forPage($page,$page_size);
