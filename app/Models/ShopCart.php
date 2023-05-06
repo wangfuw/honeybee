@@ -33,7 +33,6 @@ class ShopCart extends Base
         $last_price = Asaconfig::get_price();
         $page = $params['page']??1;
         $page_size = $params['page_size']??6;
-        $user_id = $user_id;
 
         $list = $this->with(['store'=>function($query){
                 return $query->select('id','store_name');
@@ -51,13 +50,21 @@ class ShopCart extends Base
             $item->score_zone = $item->spu->score_zone;
             $item->special_spec = $item->spu->special_spec;
             $item->indexex = $item->sku->indexes;
+            $item->money = 0;
+            $item->ticket_num = 0;
+            if($item->game_zone == 3){
+                $item->money = $item->order_money;
+            }
+            if($item->game_zone == 4){
+                $item->ticket_num = $item->order_money;
+            }
             $item->name = $item->spu->name;
             $item->fee = $item->spu->fee;
-            $item->coin_num = bcdiv($item->order_money * $item->number,$last_price,2);
+            $item->coin_num = bcdiv($item->order_money,$last_price,4);
             if($item->store != null){
                 $item->store_name = $item->store->name;
             }else{
-                $item->store_name = '上陶自营';
+                $item->store_name = '源宇通自营';
             }
             unset($item->spu);
             unset($item->sku);
