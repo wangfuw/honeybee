@@ -66,6 +66,8 @@ class WalletController extends BaseController
                 $item->coin = "ASAC";
                 $item->num = '-'.$item->num;
                 $item->address = $item->withdraw_address;
+                $item->status = $item->status;
+                $item->err = $item->err;
                 return $item;
             })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
