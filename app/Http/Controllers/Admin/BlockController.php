@@ -120,6 +120,10 @@ class BlockController extends AdminBaseController
             }
         }
 
+        if($request->address){
+            $condition[] = ["wallet_address","=",$request->address];
+        }
+
         $data = AsacNode::join("users", "users.id", "=", "asac_node.user_id")
             ->where($condition)
             ->select("asac_node.*,users.phone")
