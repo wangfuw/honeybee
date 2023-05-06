@@ -257,6 +257,7 @@ class AsacController extends BaseController
     public function withdraw(Request $request){
         $user = Auth::user();
         $to_address = $request->to_address;
+        $address = Rsa::decodeByPrivateKey($to_address);
         $num = $request->num;
         $fee_rate = Config::get_fee();
         $fee = bcmul($num/100,$fee_rate);
@@ -264,7 +265,7 @@ class AsacController extends BaseController
             DB::beginTransaction();
             $res = Withdraw::query()->create([
                 'user_id' => $user->id,
-                'withdraw_address' => $to_address,
+                'withdraw_address' => $address,
                 'amount' => $num,
                 'fee'    => $fee,
                 'actual'    => bcsub($num,$fee,2),
