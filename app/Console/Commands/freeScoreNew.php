@@ -42,7 +42,8 @@ class freeScoreNew extends Command
 
     const DE = 4;
     const MIN = 0.0001;
-
+    const GREEN_FREE_RATE = 0.9;
+    const SALE_FREE_RATE = 0.1;
     /**
      * Execute the console command.
      *
@@ -137,13 +138,13 @@ class freeScoreNew extends Command
 
                 $num = min($user->luck_score, $num);
 
-                $asac_num = bcdiv($num * 0.8, $last_price, self::DE);
+                $asac_num = bcdiv($num * self::GREEN_FREE_RATE, $last_price, self::DE);
                 if ($asac_num < self::MIN) {
                     return true;
                 }
                 $user->coin_num = bcadd($asac_num, $user->coin_num, self::DE);
                 $user->green_score = bcsub($user->green_score, $num, self::DE);
-                $ticket_num = bcmul($num, 0.2, self::DE);
+                $ticket_num = bcmul($num, self::SALE_FREE_RATE, self::DE);
                 $user->luck_score = bcsub($user->luck_score, $num, self::DE);
                 $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
                 //写释放日志 绿色积分 幸运值 消费卷
@@ -218,13 +219,13 @@ class freeScoreNew extends Command
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                 //按小释放
                 $num1 = min($user->green_score, $user->luck_score, $free_num);
-                $asac_num = bcdiv($num1 * 0.8, $last_price, self::DE);
+                $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
                 if ($asac_num < self::MIN) {
                     continue;
                 }
                 $user->coin_num += $asac_num;
                 $user->green_score -= $num1;
-                $ticket_num = bcmul($num1, 0.2, self::DE);
+                $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
                 $user->luck_score -= $num1;
                 $user->ticket_num += $ticket_num;
 
@@ -299,13 +300,13 @@ class freeScoreNew extends Command
 
                     $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                     $num1 = min($user->green_score, $user->luck_score, $free_num);
-                    $asac_num = bcdiv($num1 * 0.8, $last_price, self::DE);
+                    $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
                     if ($asac_num < self::MIN) {
                         continue;
                     }
                     $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                     $user->green_score = bcsub($user->green_score, $num1, self::DE);
-                    $ticket_num = bcmul($num1, 0.2, self::DE);
+                    $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
                     $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
                     $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
 
@@ -408,13 +409,13 @@ class freeScoreNew extends Command
                 } else {
                     $free_num = min($user->green_score, $user->luck_score, $free_num);
                     $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
-                    $asac_num = bcdiv($free_num * 0.8, $last_price, self::DE);
+                    $asac_num = bcdiv($free_num * self::GREEN_FREE_RATE, $last_price, self::DE);
                     if ($asac_num < self::MIN) {
                         continue;
                     }
                     $user->coin_num = bcadd($asac_num, $user->coin_num, self::DE);
                     $user->green_score -= $free_num;
-                    $ticket_num = bcmul($free_num, 0.2, self::DE);
+                    $ticket_num = bcmul($free_num, self::SALE_FREE_RATE, self::DE);
                     $user->luck_score -= $free_num;
                     $user->ticket_num += $ticket_num;
 
