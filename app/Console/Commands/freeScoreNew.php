@@ -58,13 +58,14 @@ class freeScoreNew extends Command
         $last_price = Asaconfig::get_price();
 
         printf("这是新的命令:%s\n",count($users));
-        
+
         // 1. 释放所有人的消费积分和绿色积分，并记录绿色积分释放数量
         $green_free_num = $this->sale_and_green($users, $last_price);
 
         if (count($green_free_num)>0) {
             foreach ($green_free_num as $k => $v) {
                 // 2. 直推加速
+                echo $k;
                 $this->get_dict_free($k, $v, $last_price);
                 // 3. 排序加速
                 $this->get_up_two($k, $v, $last_price);
@@ -198,15 +199,9 @@ class freeScoreNew extends Command
             ->select('id', 'green_score', 'luck_score', 'ticket_num', 'phone','coin_num')
             ->get();
         if (count($dict_users) == 0) return true;
-        if ($current_user_id == 93) {
-            printf("num:%s\n", $num);
-            printf("num:%s\n", $num * 0.1);
-        }
+
         $free_num = bcdiv($num * 0.1, count($dict_users), self::DE);
         foreach ($dict_users as $user) {
-            if ($user->id == 94) {
-                printf("free_num:%s\n", $free_num);
-            }
             if ($user->luck_score <= 0 || $user->green_score <= 0) {
                 continue;
             } else {
