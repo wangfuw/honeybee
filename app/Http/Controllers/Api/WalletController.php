@@ -97,11 +97,11 @@ class WalletController extends BaseController
                 if($item->from_address == $wallet_address){
                     $item->type_name = '转出';
                     $item->num = '-'.$item->num;
-                    $item->address = $item->from_address;
+                    $item->address = $item->to_address;
                 }else{
                     $item->type_name = '转入';
                     $item->num = '+'.$item->num;
-                    $item->address = $item->to_address;
+                    $item->address = $item->from_address;
                 }
                 $item->coin = "ASAC";
                 return $item;
