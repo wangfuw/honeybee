@@ -62,7 +62,7 @@ class freeScoreNew extends Command
 
         // 1. 释放所有人的消费积分和绿色积分，并记录绿色积分释放数量
         $green_free_num = $this->sale_and_green($users, $last_price);
-
+        dd($green_free_num);
         if (count($green_free_num)>0) {
             foreach ($green_free_num as $k => $v) {
                 // 2. 直推加速
@@ -97,11 +97,8 @@ class freeScoreNew extends Command
 
                 $sale_num = bcmul($user->sale_score / 1000, $sale_rate, self::DE);
                 $asac_num = bcdiv($sale_num, $last_price, self::DE);
-                if($user->id == 14){
-                    printf("asac:%s\n",$asac_num);
-                }
                 if ($asac_num < self::MIN) {
-                    continue;
+                    break;
                 }
                 $user->coin_num += $asac_num;
                 $user->sale_score -= $sale_num;
