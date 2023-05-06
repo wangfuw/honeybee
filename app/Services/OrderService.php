@@ -61,7 +61,7 @@ class OrderService
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
                     return $query->select('id','logo','special_spec','name','user_id','game_zone');
-                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money','created_at','updated_at')
+                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money','created_at','updated_at',)
                     ->where('status',1)
                     ->where('user_id',$user->id)
                     ->where('is_return',0)
@@ -90,7 +90,7 @@ class OrderService
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
                     return $query->select('id','logo','special_spec','name','user_id','game_zone');
-                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money','created_at','updated_at')
+                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money','created_at','updated_at','express_no','express_name')
                     ->where('status',2)
                     ->where('express_status',1)
                     ->where('user_id',$user->id)
@@ -105,7 +105,7 @@ class OrderService
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
                     return $query->select('id','logo','special_spec','name','user_id','game_zone');
-                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money','created_at','updated_at')
+                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money','created_at','updated_at','express_no','express_name')
                     ->where('status',2)
                     ->where('express_status',2)
                     ->where('user_id',$user->id)
@@ -119,7 +119,7 @@ class OrderService
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
                     return $query->select('id','logo','special_spec','name','user_id','game_zone');
-                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money','created_at','updated_at')
+                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money','created_at','updated_at','express_no','express_name')
                     ->where('user_id',$user->id)
                     ->where('is_return',0)
                     ->orderBy('created_at','desc')
