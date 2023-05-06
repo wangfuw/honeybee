@@ -60,13 +60,13 @@ class Score extends Base
         $used_num = 0;
         switch ($type){
             case 1:
-                $used_num = self::query()->where('user_id',$user_id)->whereIn('f_type',[self::LUCKY_FREE_USED,self::FREE_USED,self::DICT_FREE_USED,self::TEAM_FREE_USED])->where('type',1)->sum('num');
+                $used_num = self::query()->where('user_id',$user_id)->whereIn('f_type',[self::LUCKY_FREE_USED,Score::SORT_FREE_USED,self::FREE_USED,self::DICT_FREE_USED,self::TEAM_FREE_USED])->where('type',1)->sum('num');
                 break;
             case 2:
                 $used_num = self::query()->where('user_id',$user_id)->where('f_type', self::FREE_USED)->where('type',2)->sum('num');
                 break;
             case 3:
-                $used_num = self::query()->where('user_id',$user_id)->whereIn('f_type',[self::LUCKY_FREE_USED,self::FREE_USED,self::DICT_FREE_USED,self::TEAM_FREE_USED])->where('type',3)->sum('num');
+                $used_num = 0;
                 break;
             case 4:
                 $used_num = self::query()->where('user_id',$user_id)->where('f_type',self::BUY_USED)->where('type',4)->sum('num');
