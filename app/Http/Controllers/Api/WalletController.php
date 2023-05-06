@@ -92,13 +92,13 @@ class WalletController extends BaseController
 
         $list = AsacTrade::query()->where(function ($query) use($wallet_address){
             return $query->where('from_address',$wallet_address)->orWhere('to_address',$wallet_address);
-        })->whereIn('type',[AsacTrade::BUY,AsacTrade::SELL])->select('num','from_address','to_address','created_at')
+        })->whereIn('type',[AsacTrade::BUY,AsacTrade::SELL])->select('num','from_address','to_address','created_at','game_zone','type','f_type')
             ->get()->map(function ($item,$items) use($wallet_address){
                 if($item->from_address == $wallet_address){
-                    $item->type_name = '购买商品花费';
+                    $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[$item->f_type];
                     $item->num = '-'.$item->num;
                 }else{
-                    $item->type_name = '售出商品获得';
+                    $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[$item->f_type];
                     $item->num = '+'.$item->num;
                 }
                 return $item;
@@ -106,6 +106,19 @@ class WalletController extends BaseController
         return collect([])->merge($list)->toArray();
     }
 
+    protected function get_game($game_zone)
+    {
+        switch ($game_zone){
+            case 1:
+                return '幸福专区';
+            case 2:
+                return '优选专区';
+            case 3:
+                return '幸运专区';
+            case 4:
+                return '消费专区';
+        }
+    }
     public function coin_log(Request $request){
         $id = $request->id;
         $user_id = Auth::user()->id;
