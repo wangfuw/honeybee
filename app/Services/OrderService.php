@@ -72,7 +72,7 @@ class OrderService
                 $list = Order::query()->with(['sku'=>function($query){
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
-                    return $query->select('id','logo','special_spec','name','user_id');
+                    return $query->select('id','logo','special_spec','name','user_id','game_zone');
                 }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money')
                     ->where('status',2)
                     ->where('express_status',0)
