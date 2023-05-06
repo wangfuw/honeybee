@@ -204,8 +204,9 @@ class freeScoreNew extends Command
             ->select('id', 'green_score', 'luck_score', 'ticket_num', 'phone','coin_num')
             ->get();
         if (count($dict_users) == 0) return true;
-        dd($dict_users->toArray());
+       // dd($dict_users->toArray());
         $free_num = bcdiv($num * 0.1, count($dict_users), self::DE);
+        DB::beginTransaction();
         foreach ($dict_users as $user) {
             if ($user->luck_score <= 0 || $user->green_score <= 0) {
                 continue;
@@ -217,8 +218,7 @@ class freeScoreNew extends Command
                 if ($asac_num < self::MIN) {
                     continue;
                 }
-
-                DB::beginTransaction();
+                
                 try {
                     $user->coin_num += $asac_num;
                     $user->green_score -= $num1;
