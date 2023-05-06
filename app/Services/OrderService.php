@@ -341,6 +341,10 @@ class OrderService
             //检测商品分区
             $spu_id    = MallSku::query()->where('id',$info->sku_id)->value('spu_id');
             $spuS      = MallSpu::query()->where('id',$spu_id)->select('game_zone','user_id','score_zone')->first();
+            //自营
+            if($spuS->user_id == 0){
+                $spuS->user_id = 1;
+            }
             $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
             //写日志,币流转
             $this->read_zone_log($spuS,$info,$user,$user_address);
@@ -422,6 +426,24 @@ class OrderService
                 $user->save();
                 //增加团队贡献值
                 $masters = $user->master_pos;
+                //绿色积分日志
+                Score::query()->create([
+                    'user_id'=>$user->id,
+                    'flag' => 1,
+                    'num' =>$info->give_green_score,
+                    'type'=>1,
+                    'f_type'=>Score::TRADE_HAVE,
+                    'amount' => '-'.$info->coin_num
+                ]);
+
+                Score::query()->create([
+                    'user_id'=>$user_id,
+                    'flag' => 2,
+                    'num' => $info->give_green_score,
+                    'type'=>1,
+                    'f_type'=>Score::TRADE_USED,
+                    'amount' => '+'.$info->coin_num
+                ]);
 
                 if($masters){
                     $masters =  explode(',',substr($masters,1,strlen($masters) - 2));
@@ -432,24 +454,6 @@ class OrderService
                         $user->save();
                     }
                 }
-                //绿色积分日志
-                Score::query()->create([
-                    'user_id'=>$user->id,
-                    'flag' => 1,
-                    'num' =>$info->give_green_score,
-                    'type'=>1,
-                    'f_type'=>Score::TRADE_HAVE,
-                    'amount' => '-'.$info->coin_num
-                ]);
-                Score::query()->create([
-                    'user_id'=>$user_id,
-                    'flag' => 2,
-                    'num' => $info->give_green_score,
-                    'type'=>1,
-                    'f_type'=>Score::TRADE_USED,
-                    'amount' => '+'.$info->coin_num
-                ]);
-
                 break;
             case 2:
                 //消费积分区 -- 不会立马获得
@@ -516,10 +520,20 @@ class OrderService
                 //上级user_id
                 $master_id = $user->master_id;
                 //给自己加幸运值,减余额,跟新幸运值最大消费
-                $user->luck_score = bcadd($user->luck_score,$info->give_lucky_score,2);
-                $user->money = bcsub($user->money,$info->money,2);
+                $user->luck_score = bcadd($user->luck_score,$info->give_lucky_score,4);
+                $user->money = bcsub($user->money,$info->money,4);
                 $user->max_luck_num = max($max_luck_num,$price);
                 $user->save();
+
+                //获取幸运值日志
+                Score::query()->create([
+                    'user_id'=>$user->id,
+                    'flag' => 1,
+                    'num' =>$info->give_lucky_score,
+                    'type'=>3,
+                    'f_type'=>Score::TRADE_HAVE,
+                ]);
+
                 //上级发asac奖励---凭空产生
                 $masters = User::query()->where('id',$master_id)->first();
                 //上级钱包地址
@@ -538,7 +552,7 @@ class OrderService
 
                 }
                 //幸运值专区给商家发asac
-                $masters->coin_num += bcmul($info->money,$rate,2);
+                $masters->coin_num += bcmul($info->money,$rate,4);
                 $masters->save();
 
                 //奖励发放
@@ -552,14 +566,7 @@ class OrderService
                     ]);
                 }
 
-                //获取幸运值日志
-                Score::query()->create([
-                    'user_id'=>$user->id,
-                    'flag' => 1,
-                    'num' =>$info->give_lucky_score,
-                    'type'=>3,
-                    'f_type'=>Score::TRADE_HAVE,
-                ]);
+
 
                 //给旗舰店/形象店发幸运值
                 $model_store = User::query()->where('identity',1)
