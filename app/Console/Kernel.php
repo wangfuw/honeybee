@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('free_score')
+        $schedule->command('free_score_new')
             ->everyTenMinutes()
             ->withoutOverlapping() //防止重复执行
             ->onOneServer() //在单台服务器上跑
