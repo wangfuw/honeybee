@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\AsacNode;
+use App\Models\AsacTrade;
 use App\Models\Score;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -58,5 +60,37 @@ class ScoreController extends AdminBaseController
             ->select("score.*", "users.phone")
             ->paginate($size);
         return $this->executeSuccess("请求", $data);
+    }
+
+    public function asacLogType()
+    {
+        $ts = [];
+        foreach (AsacTrade::typeData as $k => $v) {
+            $ts[] = ["id" => $k, "name" => $v];
+        }
+        return $this->executeSuccess("请求", $ts);
+    }
+
+    public function asacLog()
+    {
+        $size = $request->size ?? $this->size;
+        $wallet_address = "";
+        if ($request->user_id) {
+            //获取我的地址
+            $wallet_address = AsacNode::query()->where('user_id', $request->user_id)->value('wallet_address');
+        }
+        if ($request->address) {
+            $wallet_address = $request->address;
+        }
+        if ($wallet_address) {
+            $data = AsacTrade::where("from_address", $wallet_address)
+                ->orWhere("to_address", $wallet_address)
+                ->orderByDesc("id")
+                ->paginagte($size);
+        } else {
+            $data = AsacTrade::orderByDesc("id")
+                ->paginagte($size);
+        }
+        return $this->executeSuccess("request", $data);
     }
 }
