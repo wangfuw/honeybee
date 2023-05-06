@@ -23,7 +23,7 @@ class MoneyFree extends Command
      *
      * @var string
      */
-    protected $description = 'free money';
+    protected $description = 'free_money';
 
     /**
      * Create a new command instance.
@@ -51,13 +51,12 @@ class MoneyFree extends Command
                 $user = User::query()->where('id',$l)->first();
                 $temp = bcmul($user->freeze_money,$free_rate/1000,2);
                 $user->money = bcadd($user->money,$temp,2);
-                $user->freeze_money = bcsub($user->freeze_money,$temp,2);
                 $user->save();
                 //写入释放记录
                 Score::query()->create([
                     'user_id'=>$user->id,
                     'num'=>$temp,
-                    'type'=>Score::LUCKY_FREE_USED,
+                    'type'=>5,
                     'f_type'=>Score::FREE_HAVE,
                 ]);
                 unset($temp);
