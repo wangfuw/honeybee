@@ -318,9 +318,9 @@ class OrderService
         $order_no = $params['order_no'];
         try {
             DB::beginTransaction();
-//            if($c_sale_password != $user->sale_password){
-//                throw new ApiException([0,'支付密码错误']);
-//            }
+            if($c_sale_password != $user->sale_password){
+                throw new ApiException([0,'支付密码错误']);
+            }
             $info = Order::query()->where('order_no',$order_no)->where('status',1)->first();
             if(empty($info)){
                 throw new ApiException([0,'该订单不可支付']);
@@ -335,7 +335,7 @@ class OrderService
             if($info->ticket_num > 0 && $info->ticket_num > $user->ticket_num){
                 throw new ApiException([0,'您的消费卷不足']);
             }
-            if($info->money > 0 && $info->money > $user->money){
+            if($user->money - $info->money < 0){
                 throw new ApiException([0,'余额不足']);
             }
             //检测商品分区
