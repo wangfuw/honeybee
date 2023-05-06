@@ -75,6 +75,7 @@ class UserMoneyController extends BaseController
             $user->save();
             //加余额
             $to_user->money = bcadd($to_user->money,$data['num'],2);
+            $to_user->save();
             //写入交易记录
             MoneyTrade::query()->create([
                 'from_id'=>$user->id,
