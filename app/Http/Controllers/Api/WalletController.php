@@ -56,6 +56,16 @@ class WalletController extends BaseController
             })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
     }
+    protected function get_status($status){
+        switch ($status){
+            case 0:
+                return '待审核';
+            case 1:
+                return '审核通过';
+            case 2:
+                return '审核撤回';
+        }
+    }
     protected function get_withdraw($user,$page,$page_size){
         $user_id = $user->id;
         //获取我的地址
@@ -67,6 +77,7 @@ class WalletController extends BaseController
                 $item->num = $item->amount;
                 $item->address = $item->withdraw_address;
                 $item->status = $item->status;
+                $item->status_name =get_status($item->status);
                 $item->err = $item->err;
                 return $item;
             })->forPage($page,$page_size);
