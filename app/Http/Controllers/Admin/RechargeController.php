@@ -111,7 +111,6 @@ class RechargeController extends AdminBaseController
             return $this->fail("第三方接口未接通");
         }
         $withdraw = Withdraw::find($request->id);
-        var_dump($withdraw->id);
         if (!$withdraw) {
             return $this->error("ID");
         } else {
