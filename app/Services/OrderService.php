@@ -405,6 +405,7 @@ class OrderService
                     'num'          => $info->coin_num,
                     'trade_hash'   => rand_str_pay(64),
                     'type'         => AsacTrade::BUY,
+                    'game_zone'    => 1,
                 ]);
                 //根据商品倍数分区
                 switch ($score_zone){
@@ -439,6 +440,7 @@ class OrderService
                     'num'          => $temp_num,
                     'trade_hash'   => rand_str_pay(64),
                     'type'         => AsacTrade::STORE,
+                    'game_zone'    => 1,
                 ]);
                 //用户获得绿色积分，减少余额,累计绿色积分
                 $user->green_score = bcadd($info->give_green_score,$user->green_score,2);
@@ -454,7 +456,8 @@ class OrderService
                     'num' =>$info->give_green_score,
                     'type'=>1,
                     'f_type'=>Score::TRADE_HAVE,
-                    'amount' => '-'.$info->coin_num
+                    'amount' => '-'.$info->coin_num,
+                    'game_zone'    => 1,
                 ]);
 
                 Score::query()->create([
@@ -463,7 +466,8 @@ class OrderService
                     'num' => $info->give_green_score,
                     'type'=>1,
                     'f_type'=>Score::TRADE_USED,
-                    'amount' => '+'.$info->coin_num
+                    'amount' => '+'.$info->coin_num,
+                    'game_zone'    => 1,
                 ]);
 
                 if($masters){
@@ -485,7 +489,8 @@ class OrderService
                     'to_address'   => $to_address,
                     'num'          => $info->coin_num,
                     'trade_hash'   => rand_str_pay(64),
-                    'type'         => AsacTrade::BUY
+                    'type'         => AsacTrade::BUY,
+                    'game_zone'    => 2,
                 ]);
                 switch ($score_zone){
                     case 1:
@@ -521,6 +526,7 @@ class OrderService
                     'num'          => $temp_num,
                     'trade_hash'   => rand_str_pay(64),
                     'type'         => AsacTrade::STORE,
+                    'game_zone'    => 2,
                 ]);
                 //用户减少余额
                 $user->coin_num = bcsub($user->coin_num,$info->coin_num,2);
@@ -555,6 +561,7 @@ class OrderService
                     'num' =>$info->give_lucky_score,
                     'type'=>3,
                     'f_type'=>Score::TRADE_HAVE,
+                    'game_zone'    => 3,
                 ]);
 
                 //上级发asac奖励---凭空产生
@@ -586,6 +593,7 @@ class OrderService
                         'num'          =>  $masters->coin_num,
                         'trade_hash'   => rand_str_pay(64),
                         'type'         => AsacTrade::REWARD,
+                        'game_zone'    => 3,
                     ]);
                 }
 
@@ -609,6 +617,7 @@ class OrderService
                             'num' =>$num,
                             'type'=>3,
                             'f_type'=>Score::TRADE_REWARD,
+                            'game_zone'    => 3,
                         ]);
                     }
                 }
@@ -628,6 +637,7 @@ class OrderService
                             'num' =>$num,
                             'type'=>3,
                             'f_type'=>Score::TRADE_REWARD,
+                            'game_zone'    => 3,
                         ]);
                     }
                 }
@@ -640,7 +650,8 @@ class OrderService
                     'num' =>$info->ticket_num,
                     'type'=>4,
                     'f_type'=>Score::BUY_USED,
-                    'amount'=>0
+                    'amount'=>0,
+                    'game_zone'    => 4,
                 ]);
                 //减少消费卷
                 $user->ticket_num = bcsub($user->ticket_num,$info->ticket_num);
@@ -667,6 +678,7 @@ class OrderService
                             'num'          => $coin_num,
                             'trade_hash'   => rand_str_pay(64),
                             'type'         => AsacTrade::REWARD,
+                            'game_zone'    => 4,
                         ]);
                     }
                 }
@@ -690,6 +702,7 @@ class OrderService
                             'num'          => $coin_num,
                             'trade_hash'   => rand_str_pay(64),
                             'type'         => AsacTrade::REWARD,
+                            'game_zone'    => 4,
                         ]);
                     }
                 }
@@ -733,6 +746,7 @@ class OrderService
                                 'num'          =>  $true_six_team->coin_num,
                                 'trade_hash'   => rand_str_pay(64),
                                 'type'         => AsacTrade::REWARD,
+                                'game_zone'    => 4,
                             ]);
                         }
                     }
@@ -771,7 +785,8 @@ class OrderService
                 'num' =>$info->give_sale_score,
                 'type'=>2,
                 'f_type'=>Score::TRADE_HAVE,
-                'amount'=>'-'.$info->coin_num
+                'amount'=>'-'.$info->coin_num,
+                'game_zone'    => 3,
             ]);
             //增加团队幸运值
             $masters = $user->master_pos;

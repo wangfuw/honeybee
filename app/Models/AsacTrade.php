@@ -45,7 +45,7 @@ class AsacTrade extends Base
         self::STORE => '商家让利',
     ];
     protected $fillable = [
-        'id','from_address','to_address','num','trade_hash','block_id','created_at','updated_at','type'
+        'id','from_address','to_address','num','trade_hash','block_id','created_at','updated_at','type','game_zone'
     ];
 
     protected $hidden = [

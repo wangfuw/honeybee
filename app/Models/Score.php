@@ -12,7 +12,7 @@ class Score extends Base
 
     protected $guarded = [];
     public $fillable = [
-        'id','user_id','flag','num','type','f_type','amount','created_at','updated_at'
+        'id','user_id','flag','num','type','f_type','amount','created_at','updated_at', 'game_zone'
     ];
     protected $hidden = [
         'deleted_at'
