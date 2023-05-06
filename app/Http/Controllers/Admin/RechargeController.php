@@ -70,6 +70,11 @@ class RechargeController extends AdminBaseController
                 $condition[] = ["withdraw.id", "=", "-1"];
             }
         }
+
+        if($request->filled("status")){
+            $condition[] = ["withdraw.status","=",$request->status];
+        }
+
         if ($request->filled("create_at")) {
             $start = $request->input("create_at.0");
             $end = $request->input("create_at.1");
@@ -78,7 +83,7 @@ class RechargeController extends AdminBaseController
         }
         $data = Withdraw::join("users", "users.id", "=", "withdraw.user_id")
             ->where($condition)
-            ->orderByDesc("id")
+            ->orderBy("status")
             ->select("withdraw.*", "users.phone")
             ->paginate($size);
         return $this->executeSuccess("请求", $data);
