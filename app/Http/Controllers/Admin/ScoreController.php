@@ -101,11 +101,11 @@ class ScoreController extends AdminBaseController
                         ->where("from_address",$wallet_address);
                 })
                 ->orderByDesc("id")
-                ->paginagte($size);
+                ->paginate($size);
         } else {
             $data = AsacTrade::where($condition)
                 ->orderByDesc("id")
-                ->paginagte($size);
+                ->paginate($size);
         }
         return $this->executeSuccess("request", $data);
     }
