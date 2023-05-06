@@ -78,4 +78,8 @@ class Config extends Base
         return self::query()->value('green_free_next_rate');
     }
 
+    public static function get_fee(){
+        return self::query()->value('fee');
+    }
+
 }
