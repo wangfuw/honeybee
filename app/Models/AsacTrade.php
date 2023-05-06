@@ -42,7 +42,7 @@ class AsacTrade extends Base
         self::FREE_USED => '释放花费',
         self::CHANG_IN  => '转入',
         self::CHANG_OUT => '转出',
-        self::STORE => '商家让利',
+        self::STORE => '商品利润质押',
     ];
     protected $fillable = [
         'id','from_address','to_address','num','trade_hash','block_id','created_at','updated_at','type','game_zone'
