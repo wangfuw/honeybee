@@ -39,7 +39,7 @@ class AsacTrade extends Base
         self::WITHDRAW => '提现花费',
         self::REWARD => '奖励获得',
         self::FREE_HAVED => '释放获得',
-        self::FREE_USED => '释放花费',
+        self::FREE_USED => '释放消耗',
         self::CHANG_IN  => '转入',
         self::CHANG_OUT => '转出',
         self::STORE => '商品利润质押',

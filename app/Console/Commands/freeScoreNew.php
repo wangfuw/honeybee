@@ -110,14 +110,14 @@ class freeScoreNew extends Command
                     'to_address' => $user_address,
                     'num' => $asac_num,
                     'trade_hash' => rand_str_pay(64),
-                    'type' => AsacTrade::FREE_USED
+                    'type' => AsacTrade::FREE_HAVED
                 ]);
                 Score::query()->create([
                     'user_id' => $user->id,
                     'flag' => 2,
                     'num' => $sale_num,
                     'type' => 2,
-                    'f_type' => Score::LUCKY_FREE_USED,
+                    'f_type' => Score::FREE_USED,
                     'amount' => $asac_num,
                 ]);
                 $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
@@ -152,7 +152,7 @@ class freeScoreNew extends Command
                     'flag' => 2,
                     'num' => $num,
                     'type' => 1,
-                    'f_type' => Score::LUCKY_FREE_USED,
+                    'f_type' => Score::FREE_USED,
                     'amount' => $asac_num,
                 ]);
                 Score::query()->create([
@@ -160,7 +160,7 @@ class freeScoreNew extends Command
                     'flag' => 2,
                     'num' => $num,
                     'type' => 3,
-                    'f_type' => Score::LUCKY_FREE_USED,
+                    'f_type' => Score::FREE_USED,
                     'amount' => 0,
                 ]);
                 Score::query()->create([
