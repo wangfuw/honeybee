@@ -49,7 +49,13 @@ class MoneyFree extends Command
             DB::beginTransaction();
             foreach ($list as $l){
                 $user = User::query()->where('id',$l)->first();
-                $temp = bcmul($user->freeze_money,$free_rate/1000,2);
+                $used_money = Score::query()->where('user_id',$l)->sum('num');
+                if($used_money > $user->freeze_money){
+                    continue;
+                }
+                $temp1 = bcmul($user->freeze_money,$free_rate/1000,2);
+                $temp2 = bcsub($user->freeze_money ,$used_money,2);
+                $temp = min($temp2,$temp1);
                 $user->money = bcadd($user->money,$temp,2);
                 $user->save();
                 //写入释放记录
