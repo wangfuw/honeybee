@@ -135,7 +135,7 @@ class OrderService
             $special = array_values((array)$item->spu->special_spec);
             $index_special = [];
             if($item->spu->user_id == 0){
-                $item->store_name = '上陶自营';
+                $item->store_name = '源宇通自营';
             }else{
                 $item->store_name = Store::query()->where('user_id',$item->spu->user_id)->value('store_name')??'';
             }
@@ -164,7 +164,7 @@ class OrderService
         $special = array_values((array)$info->spu->special_spec);
         $index_special = [];
         if($info->spu->user_id == 0){
-            $info->store_name = '上陶自营';
+            $info->store_name = '源宇通自营';
         }else{
             $info->store_name = Store::query()->where('user_id',$info->spu->user_id)->value('store_name')??'';
         }
@@ -811,7 +811,7 @@ class OrderService
             $special = array_values((array)$item->spu->special_spec);
             $index_special = [];
             if($item->spu->user_id == 0){
-                $item->store_name = '上陶自营';
+                $item->store_name = '源宇通自营';
             }else{
                 $item->store_name = Store::query()->where('user_id',$item->spu->user_id)->value('store_name')??'';
             }

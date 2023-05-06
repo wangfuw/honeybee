@@ -64,7 +64,7 @@ class UserController extends BaseController
         }
         $code = make_code();
         //        将验证码储在缓冲，设置过期时间为六分钟
-        $content = "【上陶商城】您的验证码是".$code."。如非本人操作，请忽略本短信";
+        $content = "【源宇通商城】您的验证码是".$code."。如非本人操作，请忽略本短信";
         Redis::setex($phone,600,$code);
         send_sms($phone,$content);
         return $this->success('发送成功',[]);
@@ -79,7 +79,7 @@ class UserController extends BaseController
         }
         $code = make_code();
         //        将验证码储在缓冲，设置过期时间为六分钟
-        $content = "【上陶商城】您的验证码是".$code."。如非本人操作，请忽略本短信";
+        $content = "【源宇通商城】您的验证码是".$code."。如非本人操作，请忽略本短信";
         Redis::setex($phone,600,$code);
         send_sms($phone,$content);
         return $this->success('发送成功',[]);
