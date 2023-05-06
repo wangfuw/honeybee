@@ -781,7 +781,7 @@ class OrderService
                    'type'=>2,
                    'f_type'=>Score::TRADE_HAVE,
                    'amount'=>'-'.$info->coin_num,
-                   'game_zone'    => 3,
+                   'game_zone'    => 2,
                ]);
                //增加团队幸运值
                $masters = $user->master_pos;
