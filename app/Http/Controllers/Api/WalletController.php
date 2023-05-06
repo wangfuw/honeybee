@@ -64,7 +64,7 @@ class WalletController extends BaseController
             ->map(function ($item,$items){
                 $item->type_name = "提现";
                 $item->coin = "ASAC";
-                $item->num = $item->num;
+                $item->num = $item->amount;
                 $item->address = $item->withdraw_address;
                 $item->status = $item->status;
                 $item->err = $item->err;
