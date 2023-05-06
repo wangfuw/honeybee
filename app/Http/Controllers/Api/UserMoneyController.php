@@ -59,6 +59,10 @@ class UserMoneyController extends BaseController
         if($user->money < $data['num']){
             return $this->fail('余额不足');
         }
+        $self_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
+        if($address == $self_address){
+            return  $this->fail('不能自转');
+        }
         $user = User::query()->where('id',$user->id)->first();
         $to_user_id = AsacNode::query()->where('wallet_address',$address)->value('user_id');
         $to_user = User::query()->where('id',$to_user_id)->where('is_ban',1)->first();
