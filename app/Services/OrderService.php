@@ -59,7 +59,7 @@ class OrderService
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
                     return $query->select('id','logo','special_spec','name','user_id','game_zone');
-                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price')
+                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money')
                     ->where('status',1)
                     ->where('user_id',$user->id)
                     ->where('is_return',0)
@@ -73,7 +73,7 @@ class OrderService
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
                     return $query->select('id','logo','special_spec','name','user_id');
-                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price')
+                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money')
                     ->where('status',2)
                     ->where('express_status',0)
                     ->where('user_id',$user->id)
@@ -88,7 +88,7 @@ class OrderService
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
                     return $query->select('id','logo','special_spec','name','user_id','game_zone');
-                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price')
+                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money')
                     ->where('status',2)
                     ->where('express_status',1)
                     ->where('user_id',$user->id)
@@ -103,7 +103,7 @@ class OrderService
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
                     return $query->select('id','logo','special_spec','name','user_id','game_zone');
-                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price')
+                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money')
                     ->where('status',2)
                     ->where('express_status',2)
                     ->where('user_id',$user->id)
@@ -117,7 +117,7 @@ class OrderService
                     return $query->select('id','indexes','price');
                 },'spu'=>function($query){
                     return $query->select('id','logo','special_spec','name','user_id','game_zone');
-                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price')
+                }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status','price','money')
                     ->where('user_id',$user->id)
                     ->where('is_return',0)
                     ->orderBy('created_at','desc')
@@ -318,9 +318,9 @@ class OrderService
         $order_no = $params['order_no'];
         try {
             DB::beginTransaction();
-            if($c_sale_password != $user->sale_password){
-                throw new ApiException([0,'支付密码错误']);
-            }
+//            if($c_sale_password != $user->sale_password){
+//                throw new ApiException([0,'支付密码错误']);
+//            }
             $info = Order::query()->where('order_no',$order_no)->where('status',1)->first();
             if(empty($info)){
                 throw new ApiException([0,'该订单不可支付']);
