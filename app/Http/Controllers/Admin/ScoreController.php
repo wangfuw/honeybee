@@ -82,13 +82,30 @@ class ScoreController extends AdminBaseController
         if ($request->address) {
             $wallet_address = $request->address;
         }
+
+        $condition = [];
+        if($request->type){
+            $condition[] = ["type","=",$request->type];
+        }
+        if ($request->filled("create_at")) {
+            $start = $request->input("create_at.0");
+            $end = $request->input("create_at.1");
+            $condition[] = ["created_at", ">=", strtotime($start)];
+            $condition[] = ["created_at", "<", strtotime($end)];
+        }
+
         if ($wallet_address) {
-            $data = AsacTrade::where("from_address", $wallet_address)
-                ->orWhere("to_address", $wallet_address)
+            $data = AsacTrade::where($condition)
+                ->where("from_address", $wallet_address)
+                ->orWhere(function ($query) use ($wallet_address) {
+                    $query->where("to_address", $wallet_address)
+                        ->where("from_address",$wallet_address);
+                })
                 ->orderByDesc("id")
                 ->paginagte($size);
         } else {
-            $data = AsacTrade::orderByDesc("id")
+            $data = AsacTrade::where($condition)
+                ->orderByDesc("id")
                 ->paginagte($size);
         }
         return $this->executeSuccess("request", $data);
