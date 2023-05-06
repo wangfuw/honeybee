@@ -183,7 +183,6 @@ class AsacController extends BaseController
     public function get_flue(Request $request)
     {
         $type = $request->type; //1 流动池子 2 预挖池
-        $f_type = $request->f_type??0; // 0 全部 1-流入 2-流出
         if($type == 1){
             //流动池地址
             $address = AsacNode::query()->where('id',1)->value('wallet_address');
@@ -202,11 +201,13 @@ class AsacController extends BaseController
         $list = $handler->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->orderBy('id','desc')->get()
             ->map(function ($item,$items) use($address){
                 if($address == $item->from_address){
-                    $item->type_name = AsacTrade::typeData[AsacTrade::BUY];
+                    $item->type_name = AsacTrade::typeData[$item->type];
                     $item->num = '-'.$item->num;
+                    $item->address = $item->to_address;
                 }else{
-                    $item->type_name = AsacTrade::typeData[AsacTrade::SELL];
+                    $item->type_name = AsacTrade::typeData[$item->type];
                     $item->num = '+'.$item->num;
+                    $item->address = $item->from_address;
                 }
                 return $item;
             })->forPage($page,$page_size);
