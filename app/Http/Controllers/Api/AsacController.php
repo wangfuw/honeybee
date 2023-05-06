@@ -272,6 +272,7 @@ class AsacController extends BaseController
                 'status'=>0,
             ]);
             $user->coin_num = bcsub($user->coin_num,$num,4);
+            $user->save();
             DB::commit();
             return $this->success('提现申请成功',$res);
         }catch (ApiException $e){
