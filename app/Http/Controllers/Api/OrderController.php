@@ -88,7 +88,7 @@ class OrderController extends BaseController
         }
         $res = $this->service->sign_order($order_no,$this->user);
         if($res == true){
-            return $this->success('签收成功,获得消费积分',[]);
+            return $this->success('签收成功,订单完成',[]);
         }else{
             return $this->fail('签收失败,稍后再试');
         }
