@@ -50,6 +50,7 @@ class WalletController extends BaseController
                 $item->coin = "ASAC";
                 $item->num = '+'.$item->num;
                 $item->address = $item->to_address;
+                return $item;
             })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
     }
@@ -63,6 +64,7 @@ class WalletController extends BaseController
                 $item->coin = "ASAC";
                 $item->num = '-'.$item->num;
                 $item->address = $item->from_address;
+                return $item;
             })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
     }
