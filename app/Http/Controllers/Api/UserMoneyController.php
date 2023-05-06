@@ -81,6 +81,7 @@ class UserMoneyController extends BaseController
                 'from_id'=>$user->id,
                 'to_id'  =>$to_user->id,
                 'num'    =>$data['num'],
+                'type'   => MoneyTrade::CHANGE
             ]);
             DB::commit();
             return $this->success('转账成功');
