@@ -201,7 +201,7 @@ class UserController extends BaseController
             $user->status = $status->status;
             $user->identity_note = $status->note;
         }
-
+        $user->freeze_money = $user->new_freeze;
         return $this->success('success',['user' => $user]);
 
     }
