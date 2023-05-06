@@ -35,13 +35,15 @@ class Score extends Base
     const DICT_FREE_USED = 11;
     const TEAM_FREE_USED = 12;
     const SORT_FREE_USED = 13;
+
+    const BUY_USED = 14;
     const F_TYPES = [
         self::BACK_ADD => "后台增加",
         self::BACK_SUB => "后台扣除",
         self::FREE_USED => "释放消耗",
         self::BURN_HAVE => "燃烧所得",
         self::LUCKY_FREE_USED => "释放消耗",
-        self::TRADE_HAVE => "购买得到",
+        self::TRADE_HAVE => "购买奖励",
         self::TRADE_USED => "出售消耗",
         self::TRADE_REWARD=>"消费发奖励",
         self::REGISTER_REWARD=>"注册赠送幸运值",
@@ -49,6 +51,7 @@ class Score extends Base
         self::DICT_FREE_USED=>"直推加速释放",
         self::TEAM_FREE_USED=>"团队加速释放",
         self::SORT_FREE_USED=>"排序加速释放",
+        self::BUY_USED => '购买消耗'
     ];
 
 

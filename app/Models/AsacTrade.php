@@ -23,23 +23,26 @@ class AsacTrade extends Base
     //释放花费
     const FREE_USED = 7;
 
+
     //转入
     const CHANG_IN = 8;
     //转出
     const CHANG_OUT = 9;
-
+    //商家让利
+    const STORE = 10;
     protected $table = 'asac_trade';
 
     const typeData = [
-        self::BUY => '买卖花费',
-        self::SELL => '买卖获得',
+        self::BUY => '购买花费',
+        self::SELL => '出售获得',
         self::RECHARGE => '充值获得',
         self::WITHDRAW => '提现花费',
         self::REWARD => '奖励获得',
         self::FREE_HAVED => '释放获得',
         self::FREE_USED => '释放花费',
         self::CHANG_IN  => '转入',
-        self::CHANG_OUT => '转出'
+        self::CHANG_OUT => '转出',
+        self::STORE => '商家让利',
     ];
     protected $fillable = [
         'id','from_address','to_address','num','trade_hash','block_id','created_at','updated_at','type'

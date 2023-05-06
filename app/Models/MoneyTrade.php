@@ -14,6 +14,16 @@ class MoneyTrade extends Base
     protected $fillable = [
         'id','from_id','to_id','num','type','created_at','updated_at'
     ];
+    //转账
+    const CHANGE = 1;
+
+    //消费
+    const BUY = 2;
+
+    protected $types = [
+        self::BUY => '消费',
+        self::CHANGE => '转账',
+    ];
     public function fromUser()
     {
         return $this->hasOne(User::class, 'id', 'from_id');

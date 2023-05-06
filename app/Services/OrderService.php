@@ -27,6 +27,8 @@ class OrderService
 
     protected $model;
 
+    const GREEN = 3;
+    const SALE  = 6;
     public function __construct(MallSku $model){
         $this->model = $model;
     }
@@ -402,6 +404,7 @@ class OrderService
                     'to_address'   => $to_address,
                     'num'          => $info->coin_num,
                     'trade_hash'   => rand_str_pay(64),
+                    'type'         => AsacTrade::BUY,
                 ]);
                 //根据商品倍数分区
                 switch ($score_zone){
@@ -435,7 +438,7 @@ class OrderService
                     'to_address'   => $pre_address->wallet_address,
                     'num'          => $temp_num,
                     'trade_hash'   => rand_str_pay(64),
-                    'type'         => 0
+                    'type'         => AsacTrade::STORE,
                 ]);
                 //用户获得绿色积分，减少余额,累计绿色积分
                 $user->green_score = bcadd($info->give_green_score,$user->green_score,2);
@@ -465,7 +468,7 @@ class OrderService
 
                 if($masters){
                     $masters =  explode(',',substr($masters,1,strlen($masters) - 2));
-                    $temp = bcdiv($info->give_green_score,3,2);
+                    $temp = bcdiv($info->give_green_score,self::GREEN,2);
                     foreach ($masters as $master){
                         $user = User::query()->where('id',$master)->select('id','contribution')->first();
                         $user->contribution += $temp;
@@ -482,6 +485,7 @@ class OrderService
                     'to_address'   => $to_address,
                     'num'          => $info->coin_num,
                     'trade_hash'   => rand_str_pay(64),
+                    'type'         => AsacTrade::BUY
                 ]);
                 switch ($score_zone){
                     case 1:
@@ -516,6 +520,7 @@ class OrderService
                     'to_address'   => $pre_address->wallet_address,
                     'num'          => $temp_num,
                     'trade_hash'   => rand_str_pay(64),
+                    'type'         => AsacTrade::STORE,
                 ]);
                 //用户减少余额
                 $user->coin_num = bcsub($user->coin_num,$info->coin_num,2);
@@ -529,7 +534,7 @@ class OrderService
                     'from_id' => $user->id,
                     'to_id'   => 1,
                     'num'     => $info->money,
-                    'type'    => 2,
+                    'type'    => MoneyTrade::BUY,
                 ]);
                 //单次消费最大额
                 $max_luck_num = $user->max_luck_num;
@@ -591,7 +596,7 @@ class OrderService
                     ->where('identity_status',1)
                     ->where('identity_area_code',$user_area)->pluck('id');
 
-                if(!isEmpty($model_store)){
+                if($model_store){
                     $num = bcmul($info->give_lucky_score,0.15,2);
                     foreach ($model_store as $value){
                         $res = User::query()->where('id',$value)->select('id','lucky_score')->first();
@@ -610,7 +615,7 @@ class OrderService
                 $up_store = User::query()->where('identity',1)
                     ->where('identity_status',1)
                     ->where('identity_area_code',$up_area)->pluck('id');
-                if(!isEmpty($up_store)){
+                if($up_store){
                     $num = bcmul($info->give_lucky_score,0.05,2);
                     foreach ($up_store as $value){
                         $res = User::query()->where('id',$value)->select('id','lucky_score')->first();
@@ -634,7 +639,7 @@ class OrderService
                     'flag' => 2,
                     'num' =>$info->ticket_num,
                     'type'=>4,
-                    'f_type'=>Score::TRADE_USED,
+                    'f_type'=>Score::BUY_USED,
                     'amount'=>0
                 ]);
                 //减少消费卷
@@ -697,7 +702,7 @@ class OrderService
                         $down_user = User::query()->where('master_id',$six_team_id)->select('green_score','sale_score','contribution')->get();
                         $temp = 0;
                         foreach ($down_user as $down){
-                            $self_contribution = bcadd(bcdiv($down->green_score/3,2),bcdiv($down->sale_score,6,2));
+                            $self_contribution = bcadd(bcdiv($down->green_score,self::GREEN,4),bcdiv($down->sale_score,self::SALE,4));
                             $dict_contribution = bcadd($self_contribution,$down->contribution);
                             if($dict_contribution > 5000000){
                                 $temp += 1;
@@ -772,7 +777,7 @@ class OrderService
             $masters = $user->master_pos;
             if($masters){
                 $masters =  explode(',',substr($masters,1,strlen($masters) - 2));
-                $temp = bcdiv($info->give_sale_score,6,2);
+                $temp = bcdiv($info->give_sale_score,self::SALE,2);
                 foreach ($masters as $master){
                     $user = User::query()->where('id',$master)->select('id','contribution')->first();
                     $user->contribution += $temp;
@@ -824,7 +829,7 @@ class OrderService
             return $query->select('id','indexes','price');
         },'spu'=>function($query){
             return $query->select('id','logo','special_spec','name','user_id','game_zone');
-        }])->select('id','spu_id','sku_id','sku_num','order_no','coin_num','ticket_num','status','express_status')
+        }])->select('*')
             ->where('user_id',$user->id)
             ->where('is_return',1)
             ->get();
@@ -835,6 +840,7 @@ class OrderService
             $item->logo = $item->spu->logo;
             $item->special_spec = $item->spu->special_spec;
             $item->game_zone = $item->spu->game_zone;
+            $item->game_name = $this->get_name($item->spu->game_zone);
             $indexes = explode('_',$item->sku->indexes);
             $special = array_values((array)$item->spu->special_spec);
             $index_special = [];
