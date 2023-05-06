@@ -60,28 +60,41 @@ class Score extends Base
         $used_num = 0;
         switch ($type){
             case 1:
-                $used_num = self::query()->where('user_id',$user_id)->where('flag',2)->where('type',1)->count('num');
+                $used_num = self::query()->where('user_id',$user_id)->where('f_type',self::FREE_USED)->where('type',1)->count('num');
                 break;
             case 2:
-                $used_num = self::query()->where('user_id',$user_id)->where('flag',2)->where('type',2)->count('num');
+                $used_num = self::query()->where('user_id',$user_id)->where('f_type', self::FREE_USED)->where('type',2)->count('num');
                 break;
             case 3:
-                $used_num = self::query()->where('user_id',$user_id)->where('flag',2)->where('type',3)->count('num');
+                $used_num = self::query()->where('user_id',$user_id)->where('f_type',self::LUCKY_FREE_USED)->where('type',3)->count('num');
                 break;
             case 4:
-                $used_num = self::query()->where('user_id',$user_id)->where('flag',2)->where('type',4)->count('num');
+                $used_num = self::query()->where('user_id',$user_id)->where('f_type',self::BUY_USED)->where('type',4)->count('num');
                 break;
         }
         $page = $data['page']??1;
         $page_size = $data['page_size']??8;
         $types = self::F_TYPES;
-        $list = self::query()->select('id','flag','created_at','num','f_type','amount')->where('user_id',$user_id)
+        $list = self::query()->select('id','flag','created_at','num','f_type','amount','game_zone')->where('user_id',$user_id)
             ->where('type',$type)
             ->orderBy('created_at','desc')->get()->map(function ($item,$items) use($types){
-                $item->note = $types[$item->f_type];
+                $item->note = $this->get_name($item->game_zone).$types[$item->f_type];
                 return $item;
             })->forPage($page,$page_size);
         $data =  collect([])->merge($list);
         return compact('used_num','data');
+    }
+
+    protected function get_name($game_zone){
+        switch ($game_zone){
+            case 1:
+                return '幸福专区';
+            case 2:
+                return '优选专区';
+            case 3:
+                return '幸运专区';
+            case 4:
+                return '消费专区';
+        }
     }
 }

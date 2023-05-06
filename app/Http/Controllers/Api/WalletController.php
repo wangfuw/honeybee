@@ -92,13 +92,13 @@ class WalletController extends BaseController
 
         $list = AsacTrade::query()->where(function ($query) use($wallet_address){
             return $query->where('from_address',$wallet_address)->orWhere('to_address',$wallet_address);
-        })->whereIn('type',[AsacTrade::BUY,AsacTrade::SELL])->select('num','from_address','to_address','created_at','game_zone','type','f_type')
+        })->whereIn('type',[AsacTrade::BUY,AsacTrade::SELL])->select('num','from_address','to_address','created_at','game_zone','type')
             ->get()->map(function ($item,$items) use($wallet_address){
                 if($item->from_address == $wallet_address){
-                    $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[$item->f_type];
+                    $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[$item->type];
                     $item->num = '-'.$item->num;
                 }else{
-                    $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[$item->f_type];
+                    $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[$item->type];
                     $item->num = '+'.$item->num;
                 }
                 return $item;
