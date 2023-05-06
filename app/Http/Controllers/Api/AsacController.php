@@ -268,8 +268,6 @@ class AsacController extends BaseController
             'status'=>0,
         ]);
         return $this->success('提现申请成功',$res);
-
-
     }
 
     //转账
