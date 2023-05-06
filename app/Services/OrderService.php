@@ -130,6 +130,7 @@ class OrderService
             $indexes = explode('_',$item->sku->indexes);
             $item->logo = $item->spu->logo;
             $item->game_zone = $item->spu->game_zone;
+            $item->game_name = $this->get_name($item->spu->game_zone);
             $item->special_spec = $item->spu->special_spec;
             $item->allTotal = $item->sku_num * $item->price;
             $special = array_values((array)$item->spu->special_spec);
@@ -148,6 +149,19 @@ class OrderService
             return $item;
         })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
+    }
+
+    protected function get_name($game_zone){
+        switch ($game_zone){
+            case 1:
+                return '幸福专区';
+            case 2:
+                return '优选专区';
+            case 3:
+                return '幸运专区';
+            case 4:
+                return '消费专区';
+        }
     }
     //详情
     public function info($order_no)
@@ -184,6 +198,7 @@ class OrderService
         $info->address_detail = $info->address['address_detail'];
         $info->name = $info->spu->name;
         $info->game_zone = $info->spu->game_zone;
+        $info->game_name = $this->get_name($info->spu->game_zone);
         $info->score_zone = $info->spu->score_zone;
         unset($info->sku,$info->spu,$info->address,$index_special);
         return $info->toArray();
