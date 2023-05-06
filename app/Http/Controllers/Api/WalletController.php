@@ -49,6 +49,7 @@ class WalletController extends BaseController
                 $item->type_name = "充值";
                 $item->coin = "ASAC";
                 $item->num = '+'.$item->num;
+                $item->address = $item->to_address;
             })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
     }
@@ -61,6 +62,7 @@ class WalletController extends BaseController
                 $item->type_name = "提现";
                 $item->coin = "ASAC";
                 $item->num = '-'.$item->num;
+                $item->address = $item->from_address;
             })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
     }
@@ -78,9 +80,11 @@ class WalletController extends BaseController
                 if($item->from_address == $wallet_address){
                     $item->type_name = '转出';
                     $item->num = '-'.$item->num;
+                    $item->address = $item->from_address;
                 }else{
                     $item->type_name = '转入';
                     $item->num = '+'.$item->num;
+                    $item->address = $item->to_address;
                 }
                 $item->coin = "ASAC";
                 return $item;
@@ -100,9 +104,11 @@ class WalletController extends BaseController
                 if($item->from_address == $wallet_address){
                     $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[$item->type];
                     $item->num = '-'.$item->num;
+                    $item->address = $item->from_address;
                 }else{
                     $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[$item->type];
                     $item->num = '+'.$item->num;
+                    $item->address = $item->to_address;
                 }
                 $item->coin = "ASAC";
                 return $item;
