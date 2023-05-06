@@ -562,6 +562,7 @@ class OrderService
                     'type'=>3,
                     'f_type'=>Score::TRADE_HAVE,
                     'game_zone'    => 3,
+                    'amount' => '-'.$info->money,
                 ]);
 
                 //上级发asac奖励---凭空产生
@@ -652,6 +653,7 @@ class OrderService
                     'f_type'=>Score::BUY_USED,
                     'amount'=>0,
                     'game_zone'    => 4,
+                    'amount' => '-'.$info->ticket_num,
                 ]);
                 //减少消费卷
                 $user->ticket_num = bcsub($user->ticket_num,$info->ticket_num);
@@ -759,14 +761,14 @@ class OrderService
     {
         //已支付订单
         $info = Order::query()->where('order_no',$order_no)->where('status',2)->where('express_status',1)->first();
+        if(empty($info)){
+            throw new ApiException([0,'该订单不可签收']);
+        }
+        if($info->user_id != $user->id){
+            throw new ApiException([0,'该订单不是您的订单']);
+        }
         try{
             DB::beginTransaction();
-            if(empty($info)){
-                throw new ApiException([0,'该订单不可签收']);
-            }
-            if($info->user_id != $user->id){
-                throw new ApiException([0,'该订单不是您的订单']);
-            }
             $spu_id    = MallSku::query()->where('id',$info->sku_id)->value('spu_id');
             $spuS      = MallSpu::query()->where('id',$spu_id)->select('game_zone','user_id','score_zone')->first();
            if($info->give_sale_score > 0){
