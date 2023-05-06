@@ -217,14 +217,16 @@ class freeScoreNew extends Command
                 if ($asac_num < self::MIN) {
                     continue;
                 }
-                $user->coin_num += $asac_num;
-                $user->green_score -= $num1;
-                $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
-                $user->luck_score -= $num1;
-                $user->ticket_num += $ticket_num;
 
                 DB::beginTransaction();
                 try {
+                    $user->coin_num += $asac_num;
+                    $user->green_score -= $num1;
+                    $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
+                    $user->luck_score -= $num1;
+                    $user->ticket_num += $ticket_num;
+                    $user->save();
+                    echo $num1;
                     //写释放日志 绿色积分 幸运值 消费卷
                     Score::query()->create([
                         'user_id' => $user->id,
@@ -259,7 +261,6 @@ class freeScoreNew extends Command
                         'type' => AsacTrade::FREE_USED
                     ]);
                     $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
-                    $user->save();
                     $pre_address->save();
                     DB::commit();
                     Log::info($current_user_id . ':的直推加速态释放成功：' . $user->id);
@@ -299,13 +300,14 @@ class freeScoreNew extends Command
                         continue;
                     }
                     echo $num1.PHP_EOL;
+
+
+                    DB::beginTransaction();
                     $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                     $user->green_score = bcsub($user->green_score, $num1, self::DE);
                     $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
                     $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
                     $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
-
-                    DB::beginTransaction();
                     try {
                         //写释放日志 绿色积分 幸运值 消费卷
                         Score::query()->create([
