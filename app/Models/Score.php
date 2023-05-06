@@ -88,7 +88,7 @@ class Score extends Base
     protected function get_name($game_zone){
         switch ($game_zone){
             case 1:
-                return '幸福专区';
+                return '福利专区';
             case 2:
                 return '优选专区';
             case 3:
