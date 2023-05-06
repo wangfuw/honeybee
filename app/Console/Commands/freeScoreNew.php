@@ -204,7 +204,7 @@ class freeScoreNew extends Command
             ->select('id', 'green_score', 'luck_score', 'ticket_num', 'phone','coin_num')
             ->get();
         if (count($dict_users) == 0) return true;
-
+        dd($dict_users->toArray());
         $free_num = bcdiv($num * 0.1, count($dict_users), self::DE);
         foreach ($dict_users as $user) {
             if ($user->luck_score <= 0 || $user->green_score <= 0) {
