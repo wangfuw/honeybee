@@ -44,8 +44,7 @@ class RechargeController extends AdminBaseController
             $condition[] = ["created_at", "<", strtotime($end)];
         }
         $condition[] = ["type", "=", 3];
-        $data = AsacTrade::join("users", "users.id", "=", "recharge.user_id")
-            ->where($condition)
+        $data = AsacTrade::where($condition)
             ->orderByDesc("id")
             ->paginate($size)->toArray();
         foreach ($data["data"] as $k=>&$v){
