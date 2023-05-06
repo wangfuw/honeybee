@@ -124,7 +124,7 @@ class BlockController extends AdminBaseController
             $condition[] = ["wallet_address","=",$request->address];
         }
 
-        $data = AsacNode::join("users", "users.id", "=", "asac_node.user_id")
+        $data = AsacNode::leftJoin("users", "users.id", "=", "asac_node.user_id")
             ->where($condition)
             ->select("asac_node.*","users.phone")
             ->paginate($size);
