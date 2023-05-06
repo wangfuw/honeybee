@@ -144,7 +144,7 @@ class UserMoneyController extends BaseController
                 })->forPage($page,$page_size);
                 break;
             case 4:
-                $list = Score::query()->where('type',5)->select('id','num','created_at','f_type')->orderBy('created_at','desc')->get()->map(function ($item,$items){
+                $list = Score::query()->where('type',5)->select('id','num','created_at','f_type')->where('user_id',$user_id)->orderBy('created_at','desc')->get()->map(function ($item,$items){
                     $item->type_name = Score::F_TYPES[$item->f_type];
                     $item->num = '+'.$item->num;
                     return $item;
