@@ -96,16 +96,16 @@ class ScoreController extends AdminBaseController
 
         if ($wallet_address) {
             $data = AsacTrade::where($condition)
-                ->orWhere(function ($query) use ($wallet_address) {
+                ->where(function ($query) use ($wallet_address) {
                     $query->where("to_address", $wallet_address)
-                        ->where("from_address",$wallet_address);
+                        ->orWhere("from_address",$wallet_address);
                 })
                 ->orderByDesc("id")
-                ->paginagte($size);
+                ->paginate($size);
         } else {
             $data = AsacTrade::where($condition)
                 ->orderByDesc("id")
-                ->paginagte($size);
+                ->paginate($size);
         }
         return $this->executeSuccess("request", $data);
     }
