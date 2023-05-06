@@ -619,11 +619,15 @@ class OrderService
                     'f_type'=>Score::TRADE_USED,
                     'amount'=>0
                 ]);
+                //减少消费卷
+                $user->ticket_num = bcsub($user->ticket_num,$info->ticket_num);
+                $user->save();
+
                 //给形象店，旗舰店发币
                 $model_store = User::query()->where('identity',1)
                     ->where('identity_status',1)
                     ->where('identity_area_code',$user_area)->pluck('id');
-                if(!isEmpty($model_store)){
+                if(!$model_store){
                     $num = bcmul($info->ticket_num,0.15,2);
                     $coin_num = bcdiv($num,$last_price,2);
                     foreach ($model_store as $value){
@@ -646,7 +650,7 @@ class OrderService
                 $up_store = User::query()->where('identity',1)
                     ->where('identity_status',1)
                     ->where('identity_area_code',$up_area)->pluck('id');
-                if(!isEmpty($up_store)){
+                if(!$up_store){
                     $num = bcmul($info->ticket_num,0.05,2);
                     $coin_num = bcdiv($num,$last_price,2);
                     foreach ($up_store as $value){
@@ -666,8 +670,7 @@ class OrderService
                         ]);
                     }
                 }
-                $user->ticket_num = bcsub($user->ticket,$info->ticket_num);
-                $user->save();
+
                 //给全网六级的用户发奖 2%
                 $six_team_ids = User::query()->where('contribution',60000000)->pluck('id');
                 if(!isEmpty($six_team_ids)){
