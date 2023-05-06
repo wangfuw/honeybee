@@ -107,7 +107,11 @@ class UserController extends AdminBaseController
             } else if ($request->type == 4) {
                 $num = min($user->ticket_num, $request->num);
                 $user->ticket_num = $user->ticket_num - $num;
-            } else {
+            } else if($request->type == 5){
+                $num = min($user->money,$request->num);
+                $user->money = $user->money-$num;
+
+            }else{
                 $num = min($user->coin_num, $request->num);
                 $user->coin_num = $user->coin_num - $num;
             }
@@ -121,7 +125,10 @@ class UserController extends AdminBaseController
                 $user->luck_score = $user->luck_score + $num;
             } else if ($request->type == 4) {
                 $user->ticket_num = $user->ticket_num + $num;
-            } else {
+            } else if($request->type == 5){
+                $user->money += $num;
+
+            }else{
                 $user->coin_num += $num;
             }
         }
@@ -129,7 +136,7 @@ class UserController extends AdminBaseController
             DB::beginTransaction();
             try {
                 $user->save();
-                if ($request->type <= 4) {
+                if ($request->type <= 5) {
                     Score::create([
                         "user_id" => $user->id,
                         "flag" => $request->flag,
