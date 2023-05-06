@@ -259,7 +259,7 @@ class AsacController extends BaseController
         $to_address = $request->to_address;
         $num = $request->num;
         $fee_rate = Config::get_fee();
-        $fee = bcmul($num,$fee_rate);
+        $fee = bcmul($num/100,$fee_rate);
         try{
             DB::beginTransaction();
             $res = Withdraw::query()->create([
