@@ -47,8 +47,8 @@ class RechargeController extends AdminBaseController
         $data = AsacTrade::where($condition)
             ->orderByDesc("id")
             ->paginate($size)->toArray();
-        foreach ($data["data"] as $k=>&$v){
-            $an = AsacNode::where("wallet_address",$v["from_address"])->first();
+        foreach ($data["data"] as $k => &$v) {
+            $an = AsacNode::where("wallet_address", $v["from_address"])->first();
             $user = User::find($an->user_id);
             $v["user"] = $user->toArray();
         }
@@ -82,5 +82,35 @@ class RechargeController extends AdminBaseController
             ->select("withdraw.*", "users.phone")
             ->paginate($size);
         return $this->executeSuccess("请求", $data);
+    }
+
+    public function editWithdraw(Request $request)
+    {
+        $id = $request->id;
+        if (!$id) {
+            return $this->error("ID");
+        }
+        $flag = $request->flag;
+        if ($flag != 1 && $flag != 2) {
+            return $this->fail("操作");
+        }
+
+        if ($flag == 2) {
+            if (!$request->err) {
+                return $this->fail("驳回原因必填");
+            }
+        }
+        if ($flag == 1) {
+            // 接三方 ,写 币的交易记录
+            return $this->fail("第三方接口未接通");
+        }
+        $withdraw = Withdraw::find($request->id);
+        if (!$withdraw) {
+            return $this->error("ID");
+        }
+        $user = User::find($withdraw->user_id);
+        $user->coin_num += $withdraw->amount;
+        $user->save();
+        return $this->executeSuccess("驳回");
     }
 }

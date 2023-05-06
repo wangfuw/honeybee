@@ -83,6 +83,8 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
 
             Route::get("rechargeList", [RechargeController::class, "rechargeList"]);
             Route::get("withdrawList", [RechargeController::class, "withdrawList"]);
+            Route::post("editWithdraw", [RechargeController::class, "editWithdraw"])->middleware(['admin.response']);
+
             Route::get("areaList", [UserController::class, "areaList"]);
             Route::get("performance", [UserController::class, "performance"]);
             Route::post("editIdentity", [UserController::class, "editIdentity"])->middleware(['admin.response']);
