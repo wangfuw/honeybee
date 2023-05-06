@@ -62,26 +62,26 @@ class freeScore extends Command
         $pre_address_info = AsacNode::query()->where('id',2)->select('id','wallet_address','number')->first();
         $last_price = Asaconfig::get_price();
         //静态释放
-        try {
-            DB::beginTransaction();
-            foreach ($users as $user){
-                //释放消费积分
-                $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
-                if($user->sale_score > 0){
-                    $this->sale_free($user,$sale_rate,$last_price,$pre_address_info,$user_address);
-                }
-                //释放绿色积分
-                if($user->green_score > 0){
-                    $this->green_free($user,$green_before,$green_next,$last_price,$pre_address_info,$user_address);
-                }
+        foreach ($users as $user){
+            //释放消费积分
+            try {
+                    DB::beginTransaction();
+                    $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
+                    if($user->sale_score > 0){
+                        $this->sale_free($user,$sale_rate,$last_price,$pre_address_info,$user_address);
+                    }
+                    //释放绿色积分
+                    if($user->green_score > 0){
+                        $this->green_free($user,$green_before,$green_next,$last_price,$pre_address_info,$user_address);
+                    }
+                    DB::commit();
+            }catch (\Exception $e){
+                DB::rollBack();
+                Log::info('错误：'.$e->getMessage().date('Y-m-d H:i:s'));
             }
-            DB::commit();
-            return true;
-        }catch (\Exception $e){
-            DB::rollBack();
-            Log::info('错误：'.$e->getMessage().date('Y-m-d H:i:s'));
+            sleep(3);
         }
-
+        return true;
     }
 
     protected function sale_free($user,$sale_rate,$last_price,$pre_address,$user_address)
@@ -191,7 +191,7 @@ class freeScore extends Command
 
    //给直推人加速释放
    protected function get_dict_free($user,$num,$pre_address,$last_price){
-        $dict_users = User::query()->where('master_id',$user->id)->select('id','green_score','luck_score','ticket_num','phone')->get();
+        $dict_users = User::query()->where('master_id',$user->id)->select('id','green_score','luck_score','ticket_num','phone','coin_num')->get();
         if(count($dict_users)==0) return true;
         $free_num = bcdiv($num * 0.1,count($dict_users),self::DE);
         foreach ($dict_users as $user)
@@ -257,7 +257,7 @@ class freeScore extends Command
    protected function get_up_two($user,$num,$pre_address,$last_price)
    {
        //获取上两人
-       $up_users = User::query()->where('id','<',$user->id)->select('id','green_score','luck_score','ticket_num','phone')
+       $up_users = User::query()->where('id','<',$user->id)->select('id','green_score','luck_score','ticket_num','phone','coin_num')
            ->orderBy('id','desc')->limit(2)
            ->get();
        $free_num = bcmul($num , 0.05,3);
