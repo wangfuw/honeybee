@@ -113,12 +113,12 @@ class UserMoneyController extends BaseController
                     if($item->from_id = $user_id){
                         $item->num = '-'.$item->num;
                         $item->type_name = '转出';
-                        $item->to_address = AsacNode::query()->where('user_id',$item->to_id)->value('wallet_address')??'';
                     }else{
                         $item->num = '+'.$item->num;
                         $item->type_name = '转入';
-                        $item->from_address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
                     }
+                    $item->from_address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
+                    $item->to_address = AsacNode::query()->where('user_id',$item->to_id)->value('wallet_address')??'';
                     return $item;
                 })->forPage($page,$page_size);
                 break;
@@ -129,12 +129,12 @@ class UserMoneyController extends BaseController
                     if($item->from_id = $user_id){
                         $item->num = '-'.$item->num;
                         $item->type_name = '交易转出';
-                        $item->to_address = AsacNode::query()->where('user_id',$item->to_id)->value('wallet_address')??'';
                     }else{
                         $item->num = '+'.$item->num;
                         $item->type_name = '交易转入';
-                        $item->from_address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
                     }
+                    $item->from_address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
+                    $item->to_address = AsacNode::query()->where('user_id',$item->to_id)->value('wallet_address')??'';
                     return $item;
                 })->forPage($page,$page_size);
                 break;
