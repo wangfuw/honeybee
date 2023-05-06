@@ -55,7 +55,6 @@ class freeScoreNew extends Command
 
         $users = User::query()->select('id', 'green_score', 'sale_score', 'luck_score', 'phone',
             'coin_num', 'master_id', 'ticket_num', 'green_score_total', 'sale_score_total', 'contribution', 'master_pos')->orderBy('id', 'asc')->get();
-
         $last_price = Asaconfig::get_price();
 
         printf("这是新的命令:%s\n",count($users));
@@ -129,7 +128,7 @@ class freeScoreNew extends Command
                 //检查幸运值
                 if ($user->luck_score < 0 || $user->green_score < 0) {
                     Log::info($user->phone . '积分不足：' . date('Y-m-d H:i:s'));
-                    return true;
+                    continue;
                 }
                 //检查回本
                 $rate = $user->green_score_total - $user->green_score > $all_moeny ? $green_next : $green_before;
@@ -140,7 +139,7 @@ class freeScoreNew extends Command
 
                 $asac_num = bcdiv($num * self::GREEN_FREE_RATE, $last_price, self::DE);
                 if ($asac_num < self::MIN) {
-                    return true;
+                   continue;
                 }
                 $user->coin_num = bcadd($asac_num, $user->coin_num, self::DE);
                 $user->green_score = bcsub($user->green_score, $num, self::DE);
