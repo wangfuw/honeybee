@@ -286,6 +286,7 @@ class freeScoreNew extends Command
         $up_users = User::query()
             ->where('id', '<', $current_user_id)
             ->select('id', 'green_score', 'luck_score', 'ticket_num', 'phone','coin_num')
+            ->where('green_score','>',0)
             ->orderBy('id', 'desc')->limit(2)
             ->get();
         $free_num = bcmul($num, 0.05, self::DE);
