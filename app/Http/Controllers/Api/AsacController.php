@@ -91,7 +91,10 @@ class AsacController extends BaseController
     public function block_info(Request $request)
     {
         $id = $request->id;
-        $block = AsacBlock::query()->where('id',$id)->first()->toArray();
+        $block = AsacBlock::query()->where('id',$id)->first();
+        if(!$block){
+            return $this->fail('暂无数据');
+        }
         if(!empty($block)){
             $trades = AsacTrade::query()->where('block_id',$id)->get()->toArray();
             $data = [];
