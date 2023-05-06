@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\AsacNode;
+use App\Models\AsacTrade;
 use App\Models\Recharge;
 use App\Models\User;
 use App\Models\Withdraw;
@@ -15,31 +17,46 @@ class RechargeController extends AdminBaseController
         $size = $request->size ?? $this->size;
         $condition = [];
         if ($request->id) {
-            $condition[] = ["user_id", "=", $request->id];
+            $an = AsacNode::where("user_id", $request->id)->first();
+            if ($an) {
+                $condition[] = ["from_address", "=", $an->wallet_address];
+            } else {
+                $condition[] = ["id", "=", -1];
+            }
         }
         if ($request->phone) {
             $user = User::where("phone", $request->phone)->first();
             if ($user) {
-                $condition[] = ["user_id", "=", $user->id];
+                $an = AsacNode::where("user_id", $request->id)->first();
+                if ($an) {
+                    $condition[] = ["from_address", "=", $an->wallet_address];
+                } else {
+                    $condition[] = ["id", "=", -1];
+                }
             } else {
-                $condition[] = ["recharge.id", "=", "-1"];
+                $condition[] = ["id", "=", -1];
             }
         }
         if ($request->filled("create_at")) {
             $start = $request->input("create_at.0");
             $end = $request->input("create_at.1");
-            $condition[] = ["recharge.created_at", ">=", strtotime($start)];
-            $condition[] = ["recharge.created_at", "<", strtotime($end)];
+            $condition[] = ["created_at", ">=", strtotime($start)];
+            $condition[] = ["created_at", "<", strtotime($end)];
         }
-        $data = Recharge::join("users", "users.id", "=", "recharge.user_id")
-            ->where($condition)
+        $condition[] = ["type", "=", 3];
+        $data = AsacTrade::where($condition)
             ->orderByDesc("id")
-            ->select("recharge.*", "users.phone")
-            ->paginate($size);
+            ->paginate($size)->toArray();
+        foreach ($data["data"] as $k=>&$v){
+            $an = AsacNode::where("wallet_address",$v["from_address"])->first();
+            $user = User::find($an->user_id);
+            $v["user"] = $user->toArray();
+        }
         return $this->executeSuccess("请求", $data);
     }
 
-    public function withdrawList(Request  $request){
+    public function withdrawList(Request $request)
+    {
         $size = $request->size ?? $this->size;
         $condition = [];
         if ($request->id) {

@@ -52,4 +52,6 @@ class AsacTrade extends Base
         'updated_at'
     ];
 
+
+
 }
