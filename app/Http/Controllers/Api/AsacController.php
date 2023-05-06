@@ -11,8 +11,10 @@ use App\Models\AsacDestory;
 use App\Models\AsacNode;
 use App\Models\Asaconfig;
 use App\Models\AsacTrade;
+use App\Models\Config;
 use App\Models\Notice;
 use App\Models\User;
+use App\Models\Withdraw;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp;
@@ -253,34 +255,21 @@ class AsacController extends BaseController
     //提现
     public function withdraw(Request $request){
         $user = Auth::user();
-        $wallet_address = $user->wallet_address;
         $to_address = $request->to_address;
         $num = $request->num;
-        //向第三方发送http post 请求
-        $http = new GuzzleHttp\Client;
-        $response = $http->post('https://www.baidu.com',[
-            'form_params'=>[
-                'from_address'=>$wallet_address,
-                'to_address'=>$to_address,
-                'num'=>$num
-            ]
+        $fee_rate = Config::get_fee();
+        $fee = bcmul($num,$fee_rate);
+        $res = Withdraw::query()->create([
+            'user_id' => $user->id,
+            'withdraw_address' => $to_address,
+            'amount' => $num,
+            'fee'    => $fee,
+            'actual'    => bcsub($num,$fee,2),
+            'status'=>0,
         ]);
-        $result = json_decode($response->getBody(),true);
-        if($result['status'] == 1){
-            $user->coin_num -= $num;
-            $user->save();
-            //写入日志
-            AsacTrade::query()->create([
-               'from_address' => $wallet_address,
-                'to_address'  => $to_address,
-                'num' => $num,
-                'type'=>AsacTrade::WITHDRAW,
-                'trade_hash'=>rand_str_pay(64)
-            ]);
-            return $this->success('提现成功',[]);
-        }else{
-            return $this->fail('提现失败');
-        }
+        return $this->success('提现申请成功',$res);
+
+
     }
 
     //转账
