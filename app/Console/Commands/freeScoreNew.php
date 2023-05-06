@@ -65,21 +65,14 @@ class freeScoreNew extends Command
         if (count($green_free_num)>0) {
             foreach ($green_free_num as $k => $v) {
                 // 2. 直推加速
-                echo $k;
                 $this->get_dict_free($k, $v, $last_price);
 
             }
             foreach ($green_free_num as $k => $v) {
-                // 2. 直推加速
-
-                // 3. 排序加速
                 $this->get_up_two($k, $v, $last_price);
-                // 4. 团队加速
-
             }
 
             foreach ($green_free_num as $k => $v) {
-
                 $this->free_team($k, $v, $last_price);
             }
         }
@@ -201,6 +194,8 @@ class freeScoreNew extends Command
     }
 
 
+
+
     //给直推人加速释放
     protected function get_dict_free($current_user_id, $num, $last_price)
     {
@@ -215,7 +210,6 @@ class freeScoreNew extends Command
             if ($user->luck_score <= 0 || $user->green_score <= 0) {
                 continue;
             } else {
-
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                 //按小释放
                 $num1 = min($user->green_score, $user->luck_score, $free_num);
@@ -268,7 +262,6 @@ class freeScoreNew extends Command
                     $user->save();
                     $pre_address->save();
                     DB::commit();
-                    echo $current_user_id.'$$$'.PHP_EOL;
                     Log::info($current_user_id . ':的直推加速态释放成功：' . $user->id);
                 } catch (\Exception $exception) {
                     DB::rollBack();
@@ -299,13 +292,13 @@ class freeScoreNew extends Command
                 if ($user->luck_score <= 0 || $user->green_score <= 0) {
                     continue;
                 } else {
-
                     $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                     $num1 = min($user->green_score, $user->luck_score, $free_num);
                     $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
                     if ($asac_num < self::MIN) {
                         continue;
                     }
+                    echo $num1.PHP_EOL;
                     $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                     $user->green_score = bcsub($user->green_score, $num1, self::DE);
                     $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
@@ -351,7 +344,6 @@ class freeScoreNew extends Command
                         $user->save();
                         $pre_address->save();
                         DB::commit();
-                        echo $current_user_id.'$$$'.PHP_EOL;
                         Log::info($current_user_id . ':的排序加速态释放成功：' . $user->id);
                     } catch (\Exception $exception) {
                         DB::rollBack();
