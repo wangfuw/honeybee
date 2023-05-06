@@ -27,7 +27,7 @@ class WalletController extends BaseController
                 return $this->success('请求成功',$list);
             case 2:
                 //--todo 提现
-                $list = $this->get_excharge($user,$page,$page_size);
+                $list = $this->get_withdraw($user,$page,$page_size);
                 return $this->success('请求成功',$list);
             case 3:
                 //--todo 转账
