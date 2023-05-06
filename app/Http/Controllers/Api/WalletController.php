@@ -16,6 +16,7 @@ class WalletController extends BaseController
     //钱包明细
     public function list(Request $request)
     {
+
         $user = auth()->user();
         $type = $request->type;
         $page = $request->page??1;
