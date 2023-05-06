@@ -80,6 +80,8 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
 
             Route::get("scoreTypes", [ScoreController::class, "scoreTypes"]);
             Route::get("scoreList", [ScoreController::class, "scoreList"]);
+            Route::get("asacLogType", [ScoreController::class, "asacLogType"]);
+            Route::get("asacLog", [ScoreController::class, "asacLog"]);
 
             Route::get("rechargeList", [RechargeController::class, "rechargeList"]);
             Route::get("withdrawList", [RechargeController::class, "withdrawList"]);
