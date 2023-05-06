@@ -87,6 +87,10 @@ class ConfigController extends AdminBaseController
             return $this->error("公排拿下面2人的加速比例");
         }
 
+        if(!$request->filled("fee") || $request->fee < 0){
+            return $this->error("提现手续费");
+        }
+
         $config = Config::first();
         $param = $request->all();
         unset($param["rule_type"]);
