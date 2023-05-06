@@ -68,13 +68,13 @@ class freeScoreNew extends Command
                 $this->get_dict_free($k, $v, $last_price);
 
             }
-//            foreach ($green_free_num as $k => $v) {
-//                $this->get_up_two($k, $v, $last_price);
-//            }
+            foreach ($green_free_num as $k => $v) {
+                $this->get_up_two($k, $v, $last_price);
+            }
 
-//            foreach ($green_free_num as $k => $v) {
-//                $this->free_team($k, $v, $last_price);
-//            }
+            foreach ($green_free_num as $k => $v) {
+                $this->free_team($k, $v, $last_price);
+            }
         }
     }
 
@@ -218,7 +218,7 @@ class freeScoreNew extends Command
                 if ($asac_num < self::MIN) {
                     continue;
                 }
-                
+
                 try {
                     $user->coin_num += $asac_num;
                     $user->green_score -= $num1;
@@ -289,6 +289,7 @@ class freeScoreNew extends Command
             Log::info('前面没人:' . date("y-m-d H:i:s"));
             return true;
         } else {
+            DB::beginTransaction();
             foreach ($up_users as $user) {
                 if ($user->luck_score <= 0 || $user->green_score <= 0) {
                     continue;
@@ -299,7 +300,7 @@ class freeScoreNew extends Command
                     if ($asac_num < self::MIN) {
                         continue;
                     }
-                    DB::beginTransaction();
+
                     $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                     $user->green_score = bcsub($user->green_score, $num1, self::DE);
                     $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
@@ -368,6 +369,7 @@ class freeScoreNew extends Command
             Log::info($current_user . ':没有团队加速:');
             return true;
         }
+        DB::beginTransaction();
         foreach ($up_level_users as $user) {
             if ($user->luck_score <= 0 || $user->green_score <= 0) {
                 continue;
@@ -413,7 +415,7 @@ class freeScoreNew extends Command
                     $user->luck_score -= $free_num;
                     $user->ticket_num += $ticket_num;
 
-                    DB::beginTransaction();
+
                     try {
                         //写释放日志 绿色积分 幸运值 消费卷
                         Score::query()->create([
