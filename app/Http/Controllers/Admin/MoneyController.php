@@ -68,6 +68,7 @@ class MoneyController extends AdminBaseController
             $um->save();
             if ($status == 1) {
                 User::where("id", $um->user_id)->increment("freeze_money", $um->money);
+                User::where("id", $um->user_id)->increment("new_freeze", $um->money);
             }
             DB::commit();
             return $this->executeSuccess("操作");
