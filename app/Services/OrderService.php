@@ -769,36 +769,34 @@ class OrderService
             }
             $spu_id    = MallSku::query()->where('id',$info->sku_id)->value('spu_id');
             $spuS      = MallSpu::query()->where('id',$spu_id)->select('game_zone','user_id','score_zone')->first();
-            if($info->give_sale_score == 0){
-                $info->express_status = 2;
-                $info->save();
-                return true;
-            }
+           if($info->give_sale_score > 0){
+               $user->sale_score = bcadd($user->sale_score,$info->give_sale_score,2);
+               $user->sale_score_total = bcadd($user->sale_score_total,$info->give_sale_score,2);
+               $user->save();
+               //积分日志
+               Score::query()->create([
+                   'user_id'=>$user->id,
+                   'flag' => 1,
+                   'num' =>$info->give_sale_score,
+                   'type'=>2,
+                   'f_type'=>Score::TRADE_HAVE,
+                   'amount'=>'-'.$info->coin_num,
+                   'game_zone'    => 3,
+               ]);
+               //增加团队幸运值
+               $masters = $user->master_pos;
+               if($masters){
+                   $masters =  explode(',',substr($masters,1,strlen($masters) - 2));
+                   $temp = bcdiv($info->give_sale_score,self::SALE,2);
+                   foreach ($masters as $master){
+                       $user = User::query()->where('id',$master)->select('id','contribution')->first();
+                       $user->contribution += $temp;
+                       $user->save();
+                   }
+               }
+           }
             //给用户加消费积分
-            $user->sale_score = bcadd($user->sale_score,$info->give_sale_score,2);
-            $user->sale_score_total = bcadd($user->sale_score_total,$info->give_sale_score,2);
-            $user->save();
-            //积分日志
-            Score::query()->create([
-                'user_id'=>$user->id,
-                'flag' => 1,
-                'num' =>$info->give_sale_score,
-                'type'=>2,
-                'f_type'=>Score::TRADE_HAVE,
-                'amount'=>'-'.$info->coin_num,
-                'game_zone'    => 3,
-            ]);
-            //增加团队幸运值
-            $masters = $user->master_pos;
-            if($masters){
-                $masters =  explode(',',substr($masters,1,strlen($masters) - 2));
-                $temp = bcdiv($info->give_sale_score,self::SALE,2);
-                foreach ($masters as $master){
-                    $user = User::query()->where('id',$master)->select('id','contribution')->first();
-                    $user->contribution += $temp;
-                    $user->save();
-                }
-            }
+
             //签收订单
             $info->express_status = 2;
             $info->save();
