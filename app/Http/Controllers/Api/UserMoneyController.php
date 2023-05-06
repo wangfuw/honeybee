@@ -100,7 +100,7 @@ class UserMoneyController extends BaseController
             case 1:
                 $list = UserMoney::query()->where('user_id',$user_id)->where('status',1)->select('id','money as num','created_at')
                     ->orderBy('created_at','desc')->get()->map(function ($item,$items){
-                        $item->type_name = "充值成功";
+                        $item->type_name = "充值";
                         $item->num = "+".$item->num;
                         return $item;
                     })->forPage($page,$page_size);
@@ -112,11 +112,12 @@ class UserMoneyController extends BaseController
                     if($item->from_id = $user_id){
                         $item->num = '-'.$item->num;
                         $item->type_name = '转出';
+                        $item->to_address = AsacNode::query()->where('user_id',$item->to_id)->value('wallet_address')??'';
                     }else{
                         $item->num = '+'.$item->num;
                         $item->type_name = '转入';
+                        $item->from_address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
                     }
-                    $item->to_address = AsacNode::query()->where('user_id','to_id')->value('wallet_address')??'';
                     return $item;
                 })->forPage($page,$page_size);
                 break;
@@ -127,11 +128,12 @@ class UserMoneyController extends BaseController
                     if($item->from_id = $user_id){
                         $item->num = '-'.$item->num;
                         $item->type_name = '交易转出';
+                        $item->to_address = AsacNode::query()->where('user_id',$item->to_id)->value('wallet_address')??'';
                     }else{
                         $item->num = '+'.$item->num;
                         $item->type_name = '交易转入';
+                        $item->from_address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
                     }
-                    $item->to_address = AsacNode::query()->where('user_id','to_id')->value('wallet_address')??'';
                     return $item;
                 })->forPage($page,$page_size);
                 break;
@@ -141,8 +143,6 @@ class UserMoneyController extends BaseController
                     $item->num = '+'.$item->num;
                     return $item;
                 })->forPage($page,$page_size);
-
-
         }
         $data = collect([])->merge($list)->toArray();
         return $this->success('请求成功',$data);
