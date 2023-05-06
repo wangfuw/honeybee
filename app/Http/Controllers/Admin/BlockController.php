@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\AsacBlock;
 use App\Models\AsacDestory;
+use App\Models\AsacNode;
 use App\Models\Asaconfig;
 use App\Models\AsacTrade;
 use App\Models\User;
@@ -44,8 +45,8 @@ class BlockController extends AdminBaseController
         if ($request->filled("to_address")) {
             $condition[] = ["to_address", "=", $request->to_address];
         }
-        if($request->filled("trade_hash")){
-            $condition[] = ["trade_hash","=",$request->trade_hash];
+        if ($request->filled("trade_hash")) {
+            $condition[] = ["trade_hash", "=", $request->trade_hash];
         }
         if ($request->filled("create_at")) {
             $start = $request->input("create_at.0");
@@ -92,11 +93,37 @@ class BlockController extends AdminBaseController
         return $this->executeSuccess("请求", $data);
     }
 
-    public function editAsac(Request  $request){
-        $price = $request->input("last_price",10);
+    public function editAsac(Request $request)
+    {
+        $price = $request->input("last_price", 10);
         $config = Asaconfig::first();
         $config->last_price = $price;
         $config->save();
         return $this->executeSuccess("修改");
+    }
+
+
+    public function addressList(Request $request)
+    {
+        $size = $request->size ?? $this->size;
+        $condition = [];
+        if ($request->filled("user_id")) {
+            $condition[] = ["user_id", "=", $request->user_id];
+        }
+
+        if ($request->phone) {
+            $user = User::where("phone", $request->phone)->first();
+            if ($user) {
+                $condition[] = ["user_id", "=", $user->id];
+            } else {
+                $condition[] = ["asac_node.id", "=", "-1"];
+            }
+        }
+
+        $data = AsacNode::join("users", "users.id", "=", "asac_node.user_id")
+            ->where($condition)
+            ->select("asac_node.*,users.phone")
+            ->paginate($size);
+        return $this->executeSuccess("request", $data);
     }
 }
