@@ -33,10 +33,10 @@ class AsacTrade extends Base
     protected $table = 'asac_trade';
 
     const typeData = [
-        self::BUY => '购买花费',
+        self::BUY => '购买',
         self::SELL => '出售获得',
         self::RECHARGE => '充值获得',
-        self::WITHDRAW => '提现花费',
+        self::WITHDRAW => '提现',
         self::REWARD => '奖励获得',
         self::FREE_HAVED => '释放获得',
         self::FREE_USED => '释放消耗',
