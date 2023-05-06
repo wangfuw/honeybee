@@ -71,7 +71,7 @@ class ScoreController extends AdminBaseController
         return $this->executeSuccess("请求", $ts);
     }
 
-    public function asacLog()
+    public function asacLog(Request  $request)
     {
         $size = $request->size ?? $this->size;
         $wallet_address = "";
