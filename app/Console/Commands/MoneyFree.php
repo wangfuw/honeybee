@@ -55,7 +55,7 @@ class MoneyFree extends Command
                 $temp = bcmul($user->freeze_money,$free_rate/1000,4);
                 $temp = min($temp,$user->new_freeze);
                 $user->money = bcadd($user->money,$temp,4);
-                $user->new_freeze = bcsub($user->freeze_money,$temp,4);
+                $user->new_freeze = bcsub($user->new_freeze,$temp,4);
                 $user->save();
                 //写入释放记录
                 Score::query()->create([
