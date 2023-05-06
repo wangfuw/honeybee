@@ -8,6 +8,7 @@ use App\Models\AsacNode;
 use App\Models\AsacTrade;
 use App\Models\Coin;
 use App\Models\UserMoney;
+use App\Models\Withdraw;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -59,12 +60,12 @@ class WalletController extends BaseController
         $user_id = $user->id;
         //获取我的地址
         $wallet_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
-        $list = AsacTrade::query()->where('from_address',$wallet_address)->where('type',AsacTrade::WITHDRAW)->orderBy('created_at','desc')->get()
+        $list = Withdraw::query()->where('user_id',$user_id)->orderBy('created_at','desc')->get()
             ->map(function ($item,$items){
                 $item->type_name = "提现";
                 $item->coin = "ASAC";
                 $item->num = '-'.$item->num;
-                $item->address = $item->from_address;
+                $item->address = $item->withdraw_address;
                 return $item;
             })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
