@@ -77,7 +77,7 @@ class WalletController extends BaseController
                 $item->num = $item->amount;
                 $item->address = $item->withdraw_address;
                 $item->status = $item->status;
-                $item->status_name =get_status($item->status);
+                $item->status_name =$this->get_status($item->status);
                 $item->err = $item->err;
                 return $item;
             })->forPage($page,$page_size);
