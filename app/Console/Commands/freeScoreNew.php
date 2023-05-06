@@ -67,9 +67,19 @@ class freeScoreNew extends Command
                 // 2. 直推加速
                 echo $k;
                 $this->get_dict_free($k, $v, $last_price);
+
+            }
+            foreach ($green_free_num as $k => $v) {
+                // 2. 直推加速
+
                 // 3. 排序加速
                 $this->get_up_two($k, $v, $last_price);
                 // 4. 团队加速
+
+            }
+
+            foreach ($green_free_num as $k => $v) {
+
                 $this->free_team($k, $v, $last_price);
             }
         }
