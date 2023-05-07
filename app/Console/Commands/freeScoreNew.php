@@ -65,7 +65,7 @@ class freeScoreNew extends Command
 
         // 1. 释放所有人的消费积分和绿色积分，并记录绿色积分释放数量
         $green_free_num = $this->sale_and_green($users, $last_price)['green_free_num'];
-        //dd($green_free_num);
+        dd($green_free_num);
         $sale_free_num = $this->sale_and_green($users, $last_price)['sale_free_num'];
         if (count($green_free_num)>0) {
             foreach ($green_free_num as $k => $v) {
