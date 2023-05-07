@@ -330,7 +330,6 @@ class freeScoreNew extends Command
                         continue;
                     }
                 } else {
-                    DB::commit();
                     continue;
                 }
 
