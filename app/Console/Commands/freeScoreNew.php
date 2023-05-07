@@ -67,9 +67,9 @@ class freeScoreNew extends Command
         $green_free_num = $this->sale_and_green($users, $last_price);
 
         if (count($green_free_num)>0) {
-            //foreach ($green_free_num as $k => $v) {
-                $this->share_free();
-           // }
+            foreach ($green_free_num as $k => $v) {
+                $this->share_free($k,$v,$last_price);
+            }
 //            foreach ($green_free_num as $k => $v) {
 //                // 2. 直推加速
 //                $this->get_dict_free($k, $v, $last_price);
@@ -200,21 +200,21 @@ class freeScoreNew extends Command
         return $green_free_num;
     }
 
-    protected function  share_free($last_price = 10)
+    protected function  share_free($current_user_id,$num,$last_price = 10)
     {
-        $current_user_id = 36;
-        $num = 200;
+//        $current_user_id = 36;
+//        $num = 200;
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
 
         $user = User::query()->where('id', $current_user_id)->first();
 
         $re_dict_user = User::query()->where('id', $user->master_id)->where('is_ban', 1)->first(); //我的直推
-        //                if (!$re_dict_user) {
-        //                    continue;
-        //                }
-        //                if ($re_dict_user->luck_score <= 0 || $re_dict_user->green_score <= 0) {
-        //                    continue;
-        //                }
+        if (!$re_dict_user) {
+            return true;
+        }
+        if ($re_dict_user->luck_score <= 0 || $re_dict_user->green_score <= 0) {
+            return true;
+        }
         $re_dict_user_address = AsacNode::query()->where('user_id', $re_dict_user->id)->value('wallet_address') ?? '';
         Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
         try {
@@ -267,14 +267,12 @@ class freeScoreNew extends Command
 
             //我的减退
             $rej_dict_user = User::query()->where('id', $re_dict_user->master_id)->where('is_ban', 1)->first();
-//            if (!$rej_dict_user) {
-//                DB::commit();
-//                continue;
-//            }
-//            if ($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score <= 0) {
-//                DB::commit();
-//                continue;
-//            }
+            if (!$rej_dict_user) {
+                return true;
+            }
+            if ($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score <= 0) {
+                return true;
+            }
             $rej_dict_user_address = AsacNode::query()->where('user_id', $rej_dict_user->id)->value('wallet_address') ?? '';
             $free_num = bcmul($num, self::J_RATE, 4);
             $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
