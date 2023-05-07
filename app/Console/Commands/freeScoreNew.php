@@ -216,7 +216,7 @@ class freeScoreNew extends Command
                 if($re_dict_user){
                     $re_dict_user_address = AsacNode::query()->where('user_id',$re_dict_user->id)->value('wallet_address')??'';
                     //直推存在
-                    if($re_dict_user->luck_score <= 0 || $re_dict_user->green_score){
+                    if($re_dict_user->luck_score <= 0 || $re_dict_user->green_score <= 0 ){
                         Log::info('无直推人释放');
                         continue;
                     }else{
@@ -270,7 +270,7 @@ class freeScoreNew extends Command
                     $rej_dict_user = User::query()->where('id',$re_dict_user->master_id)->where('is_ban',1)->first(); //我的减退
                     if($rej_dict_user){
                         $rej_dict_user_address = AsacNode::query()->where('user_id',$rej_dict_user->id)->value('wallet_address')??'';
-                        if($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score){
+                        if($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score <= 0){
                             Log::info('无简推人释放');
                             continue;
                         }else{
