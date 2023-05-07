@@ -213,6 +213,8 @@ class freeScoreNew extends Command
 
             if($re_dict_user){
                 $re_dict_user_address = AsacNode::query()->where('user_id',$re_dict_user->id)->value('wallet_address')??'';
+            }else{
+                continue;
             }
             $rej_dict_user = [];
             if($re_dict_user){
@@ -220,6 +222,8 @@ class freeScoreNew extends Command
             }
             if($rej_dict_user){
                 $rej_dict_user_address = AsacNode::query()->where('user_id',$rej_dict_user->id)->value('wallet_address')??'';
+            }else{
+                continue;
             }
 
             DB::beginTransaction();
