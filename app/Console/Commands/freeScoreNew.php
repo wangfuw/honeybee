@@ -323,16 +323,14 @@ class freeScoreNew extends Command
                             $pre_address->save();
                             continue;
                         }
-                        DB::commit();
-                        Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
                     } else {
                         continue;
                     }
-                    DB::commit();
-                    Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
                 } else {
                     continue;
                 }
+                DB::commit();
+                Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
             }catch (\Exception $exception){
                 DB::rollBack();
                 Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
