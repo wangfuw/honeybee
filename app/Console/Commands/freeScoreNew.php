@@ -320,6 +320,7 @@ class freeScoreNew extends Command
                             ]);
                             $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
                             $pre_address->save();
+                            continue;
                         }
                     }else{
                         continue;
