@@ -439,10 +439,11 @@ class freeScoreNew extends Command
                     $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                     $num1 = min($user->green_score, $user->luck_score, $free_num);
                     $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
+                    echo $user->id.PHP_EOL;
                     if ($num1 < self::MIN) {
                         continue;
                     }
-                    echo $user->id.PHP_EOL;
+
                     $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                     $user->green_score = bcsub($user->green_score, $num1, self::DE);
                     $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
