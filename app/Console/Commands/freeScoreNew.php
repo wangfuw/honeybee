@@ -203,7 +203,7 @@ class freeScoreNew extends Command
     protected function  share_free($green_free_num,$last_price)
     {
         //dd($green_free_num);
-        DB::beginTransaction();
+       // DB::beginTransaction();
         foreach ($green_free_num as $current_user_id => $num) {
             try {
                 Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
@@ -324,10 +324,10 @@ class freeScoreNew extends Command
 //                ]);
 //                $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
 //                $pre_address->save();
-                DB::commit();
+                //DB::commit();
                 Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
             }catch (\Exception $exception){
-                DB::rollBack();
+               // DB::rollBack();
                 Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
             }
         }
