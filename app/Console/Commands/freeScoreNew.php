@@ -204,7 +204,7 @@ class freeScoreNew extends Command
         //dd($green_free_num);
         foreach ($green_free_num as $current_user_id => $num){
             Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
-            echo $current_user_id.PHP_EOL;
+
             $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
 
             $user = User::query()->where('id',$current_user_id)->first();
@@ -213,15 +213,6 @@ class freeScoreNew extends Command
 
             if($re_dict_user){
                 $re_dict_user_address = AsacNode::query()->where('user_id',$re_dict_user->id)->value('wallet_address')??'';
-            }else{
-                continue;
-            }
-            $rej_dict_user = [];
-            if($re_dict_user){
-                $rej_dict_user = User::query()->where('id',$re_dict_user->master_id)->where('is_ban',1)->first(); //我的减退
-            }
-            if($rej_dict_user){
-                $rej_dict_user_address = AsacNode::query()->where('user_id',$rej_dict_user->id)->value('wallet_address')??'';
             }else{
                 continue;
             }
@@ -283,6 +274,15 @@ class freeScoreNew extends Command
                         $pre_address->save();
                     }
                 }
+                if($re_dict_user){
+                    $rej_dict_user = User::query()->where('id',$re_dict_user->master_id)->where('is_ban',1)->first(); //我的减退
+                    if($rej_dict_user){
+                        $rej_dict_user_address = AsacNode::query()->where('user_id',$rej_dict_user->id)->value('wallet_address')??'';
+                    }else{
+                        continue;
+                    }
+                }
+
                 if($rej_dict_user){
                     if($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score){
                         Log::info('无简推人释放');
