@@ -787,7 +787,7 @@ class OrderService
                    'amount'=>'-'.$info->coin_num,
                    'game_zone'    => 2,
                ]);
-               //增加团队幸运值
+               //增加团队贡献值
                $masters = $user->master_pos;
                if($masters){
                    $masters =  explode(',',substr($masters,1,strlen($masters) - 2));
