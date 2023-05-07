@@ -110,11 +110,6 @@ class freeScoreNew extends Command
                 }
             }
         }
-
-        if(count($sale_free_num))
-        {
-
-        }
     }
 
     protected function sale_and_green($users, $last_price)
@@ -447,7 +442,6 @@ class freeScoreNew extends Command
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                 $num1 = min($user->green_score, $user->luck_score, $free_num);
                 $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
-                echo $user->id . PHP_EOL;
                 if ($num1 < self::MIN) {
                     return true;
                 }
