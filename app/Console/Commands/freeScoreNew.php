@@ -80,6 +80,7 @@ class freeScoreNew extends Command
                 $this->free_team($k, $v, $last_price);
             }
 
+            DB::beginTransaction();
             foreach ($green_free_num as  $k => $v)
             {
                 $this->share_free($k, $v, $last_price);
@@ -103,7 +104,7 @@ class freeScoreNew extends Command
         $green_free_num = [];
         foreach ($users as $user) {
             // 1.释放消费积分
-            DB::beginTransaction();
+
             try {
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
 
@@ -223,8 +224,6 @@ class freeScoreNew extends Command
 
 
         try{
-
-            DB::beginTransaction();
             if($re_dict_user){
                 //直推存在
                 if($re_dict_user->luck_score <= 0 || $re_dict_user->green_score){
