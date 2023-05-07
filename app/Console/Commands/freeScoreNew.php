@@ -203,9 +203,12 @@ class freeScoreNew extends Command
     protected function  share_free($green_free_num,$last_price)
     {
         //dd($green_free_num);
-       // DB::beginTransaction();
-        foreach ($green_free_num as $current_user_id => $num) {
+
+        //foreach ($green_free_num as $current_user_id => $num) {
+        $current_user_id = 36;
+        $num = 200;
             try {
+                 DB::beginTransaction();
                 Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
 
                 $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
@@ -213,12 +216,12 @@ class freeScoreNew extends Command
                 $user = User::query()->where('id', $current_user_id)->first();
 
                 $re_dict_user = User::query()->where('id', $user->master_id)->where('is_ban', 1)->first(); //我的直推
-                if (!$re_dict_user) {
-                    continue;
-                }
-                if ($re_dict_user->luck_score <= 0 || $re_dict_user->green_score <= 0) {
-                    continue;
-                }
+//                if (!$re_dict_user) {
+//                    continue;
+//                }
+//                if ($re_dict_user->luck_score <= 0 || $re_dict_user->green_score <= 0) {
+//                    continue;
+//                }
                 $re_dict_user_address = AsacNode::query()->where('user_id', $re_dict_user->id)->value('wallet_address') ?? '';
                 //直推存在
                 echo '123eee1231' . PHP_EOL;
@@ -324,13 +327,13 @@ class freeScoreNew extends Command
 //                ]);
 //                $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
 //                $pre_address->save();
-                //DB::commit();
+                DB::commit();
                 Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
             }catch (\Exception $exception){
-               // DB::rollBack();
+                DB::rollBack();
                 Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
             }
-        }
+       // }
 
 
     }
