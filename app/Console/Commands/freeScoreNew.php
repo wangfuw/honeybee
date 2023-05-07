@@ -204,8 +204,8 @@ class freeScoreNew extends Command
     {
         //dd($green_free_num);
         foreach ($green_free_num as $current_user_id => $num) {
+            DB::beginTransaction();
             try {
-                DB::beginTransaction();
                 Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
 
                 $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
