@@ -203,10 +203,9 @@ class freeScoreNew extends Command
     protected function  share_free($green_free_num,$last_price)
     {
         //dd($green_free_num);
-
+        DB::beginTransaction();
         foreach ($green_free_num as $current_user_id => $num) {
             try {
-                DB::beginTransaction();
                 Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
 
                 $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
