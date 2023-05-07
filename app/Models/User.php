@@ -22,7 +22,7 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
     'id','nickname','phone','is_shop','image','green_score','sale_score',
         'luck_score','coin_num','invite_code','master_id','master_pos','password',
-        'created_at','updated_at','sale_password','ticket_num','contribution',
+        'created_at','updated_at','sale_password','ticket_num','contribution','green_score_total','sale_score_total',
         'identity_area','identity_area_code','identity_status','max_luck_num','money','freeze_money','new_freeze'
     ];
 
