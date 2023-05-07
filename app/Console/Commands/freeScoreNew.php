@@ -68,6 +68,9 @@ class freeScoreNew extends Command
 
         if (count($green_free_num)>0) {
             foreach ($green_free_num as $k => $v) {
+                $this->share_free($k, $v, $last_price);
+            }
+            foreach ($green_free_num as $k => $v) {
                 // 2. 直推加速
                 $this->get_dict_free($k, $v, $last_price);
 
@@ -79,9 +82,7 @@ class freeScoreNew extends Command
             foreach ($green_free_num as $k => $v) {
                 $this->free_team($k, $v, $last_price);
             }
-            foreach ($green_free_num as $k => $v) {
-                $this->share_free($k, $v, $last_price);
-            }
+
 
 
         }
@@ -329,8 +330,6 @@ class freeScoreNew extends Command
             DB::rollBack();
             Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
         }
-       // }
-
 
     }
 
