@@ -203,9 +203,10 @@ class freeScoreNew extends Command
     protected function  share_free($green_free_num,$last_price)
     {
         //dd($green_free_num);
-        DB::beginTransaction();
+
         foreach ($green_free_num as $current_user_id => $num) {
             try {
+                DB::beginTransaction();
                 Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
 
                 $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
@@ -271,13 +272,14 @@ class freeScoreNew extends Command
                 //我的减退
                 $rej_dict_user = User::query()->where('id', $re_dict_user->master_id)->where('is_ban', 1)->first();
                 if (!$rej_dict_user) {
+                    DB::commit();
                     continue;
                 }
                 if ($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score <= 0) {
+                    DB::commit();
                     continue;
                 }
                 $rej_dict_user_address = AsacNode::query()->where('user_id', $rej_dict_user->id)->value('wallet_address') ?? '';
-                echo '12312EE31' . PHP_EOL;
                 $free_num = bcmul($num, self::J_RATE, 4);
                 $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
                 $rej_dict_user->green_score -= $num2;
