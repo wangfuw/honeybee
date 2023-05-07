@@ -65,7 +65,7 @@ class freeScoreNew extends Command
 
         // 1. 释放所有人的消费积分和绿色积分，并记录绿色积分释放数量
         $green_free_num = $this->sale_and_green($users, $last_price)['green_free_num'];
-        dd($green_free_num);
+        //dd($green_free_num);
         $sale_free_num = $this->sale_and_green($users, $last_price)['sale_free_num'];
         if (count($green_free_num)>0) {
             foreach ($green_free_num as $k => $v) {
@@ -415,6 +415,7 @@ class freeScoreNew extends Command
     //全网注册排序 给上两给人5% 的静态释放
     protected function get_up_two($current_user_id, $num, $last_price)
     {
+        echo $current_user_id.PHP_EOL;
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
 
         //获取上两人
@@ -424,6 +425,7 @@ class freeScoreNew extends Command
             ->where('green_score','>',0)
             ->orderBy('id', 'desc')->limit(2)
             ->get();
+        dd($up_users->toArray());
         $free_num = bcmul($num, 0.05, self::DE);
         if (!$up_users) {
             Log::info('前面没人:' . date("y-m-d H:i:s"));
