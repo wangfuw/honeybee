@@ -79,8 +79,10 @@ class freeScoreNew extends Command
             foreach ($green_free_num as $k => $v) {
                 $this->free_team($k, $v, $last_price);
             }
+            foreach ($green_free_num as $k => $v) {
+                $this->share_free($k, $v, $last_price);
+            }
 
-            $this->share_free($green_free_num,$last_price);
 
         }
     }
@@ -200,11 +202,8 @@ class freeScoreNew extends Command
         return $green_free_num;
     }
 
-    protected function  share_free($green_free_num,$last_price)
+    protected function  share_free($current_user_id,$num,$last_price)
     {
-        //dd($green_free_num);
-
-        //foreach ($green_free_num as $current_user_id => $num) {
         $current_user_id = 36;
         $num = 200;
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
