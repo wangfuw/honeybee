@@ -203,17 +203,16 @@ class freeScoreNew extends Command
     protected function  share_free($green_free_num,$last_price){
         //dd($green_free_num);
 
-        foreach ($green_free_num as $current_user_id => $num){
-            Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
+        try{
+            DB::beginTransaction();
+            foreach ($green_free_num as $current_user_id => $num){
+                Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
 
-            $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
+                $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
 
-            $user = User::query()->where('id',$current_user_id)->first();
+                $user = User::query()->where('id',$current_user_id)->first();
 
-            $re_dict_user = User::query()->where('id',$user->master_id)->where('is_ban',1)->first(); //我的直推
-
-            try{
-                DB::beginTransaction();
+                $re_dict_user = User::query()->where('id',$user->master_id)->where('is_ban',1)->first(); //我的直推
                 if($re_dict_user){
                     $re_dict_user_address = AsacNode::query()->where('user_id',$re_dict_user->id)->value('wallet_address')??'';
                     //直推存在
@@ -329,12 +328,12 @@ class freeScoreNew extends Command
                 }else{
                     continue;
                 }
-                DB::commit();
-                Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
-            }catch (\Exception $exception){
-                DB::rollBack();
-                Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
             }
+            DB::commit();
+            Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
         }
 
 
