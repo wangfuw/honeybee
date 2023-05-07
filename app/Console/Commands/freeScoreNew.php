@@ -204,7 +204,7 @@ class freeScoreNew extends Command
     }
 
     protected function  share_free($current_user_id,$num,$last_price){
-        Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
+        Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
         echo $current_user_id.PHP_EOL;
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
 
@@ -328,6 +328,7 @@ class freeScoreNew extends Command
                 }
             }
             DB::commit();
+            Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
             return true;
         }catch (\Exception $exception){
             DB::rollBack();
