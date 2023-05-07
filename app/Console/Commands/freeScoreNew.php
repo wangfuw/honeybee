@@ -67,24 +67,21 @@ class freeScoreNew extends Command
         $green_free_num = $this->sale_and_green($users, $last_price);
 
         if (count($green_free_num)>0) {
-            foreach ($green_free_num as $k => $v) {
-                $this->share_free($k, $v, $last_price);
-            }
-            foreach ($green_free_num as $k => $v) {
-                // 2. 直推加速
-                $this->get_dict_free($k, $v, $last_price);
-
-            }
-            foreach ($green_free_num as $k => $v) {
-                $this->get_up_two($k, $v, $last_price);
-            }
-
-            foreach ($green_free_num as $k => $v) {
-                $this->free_team($k, $v, $last_price);
-            }
-
-
-
+            //foreach ($green_free_num as $k => $v) {
+                $this->share_free();
+           // }
+//            foreach ($green_free_num as $k => $v) {
+//                // 2. 直推加速
+//                $this->get_dict_free($k, $v, $last_price);
+//
+//            }
+//            foreach ($green_free_num as $k => $v) {
+//                $this->get_up_two($k, $v, $last_price);
+//            }
+//
+//            foreach ($green_free_num as $k => $v) {
+//                $this->free_team($k, $v, $last_price);
+//            }
         }
     }
 
@@ -203,7 +200,7 @@ class freeScoreNew extends Command
         return $green_free_num;
     }
 
-    protected function  share_free($current_user_id,$num,$last_price)
+    protected function  share_free()
     {
         $current_user_id = 36;
         $num = 200;
