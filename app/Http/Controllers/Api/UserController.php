@@ -43,7 +43,7 @@ class UserController extends BaseController
         }
         $token = Auth::attempt($data);
         if (!$token) {
-            return $this->fail('登录失败');
+            return $this->fail('登录失败,账号或密码错误');
         }
         $user = Auth::user();
         return $this->success('登录成功',[
