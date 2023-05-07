@@ -218,7 +218,7 @@ class freeScoreNew extends Command
                     //直推存在
                     if($re_dict_user->luck_score <= 0 || $re_dict_user->green_score){
                         Log::info('无直推人释放');
-                        break;
+                        continue;
                     }else{
                         echo '123eee1231'.PHP_EOL;
                         $free_num = bcmul($num,self::DICT_RATE,4);
@@ -272,7 +272,7 @@ class freeScoreNew extends Command
                         $rej_dict_user_address = AsacNode::query()->where('user_id',$rej_dict_user->id)->value('wallet_address')??'';
                         if($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score){
                             Log::info('无简推人释放');
-                            break;
+                            continue;
                         }else{
                             echo '12312EE31'.PHP_EOL;
                             $free_num = bcmul($num,self::J_RATE,4);
@@ -322,10 +322,10 @@ class freeScoreNew extends Command
                             $pre_address->save();
                         }
                     }else{
-                       break;
+                        continue;
                     }
                 }else{
-                    break;
+                    continue;
                 }
                 DB::commit();
                 Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
