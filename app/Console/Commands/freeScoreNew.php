@@ -68,29 +68,29 @@ class freeScoreNew extends Command
         //dd($green_free_num);
         $sale_free_num = $this->sale_and_green($users, $last_price)['sale_free_num'];
         if (count($green_free_num)>0) {
-            foreach ($green_free_num as $k => $v) {
-                Log::info($k . ':的分享直推加速态释放开始：' . $k);
-                DB::beginTransaction();
-                try{
-                    $this->share_free($k,$v,$last_price);
-                    DB::commit();
-                }catch (\Exception $e){
-                    DB::rollBack();
-                }
-
-            }
-            foreach ($green_free_num as $k => $v) {
-                // 2. 直推加速
-                $this->get_dict_free($k, $v, $last_price);
-
-            }
+//            foreach ($green_free_num as $k => $v) {
+//                Log::info($k . ':的分享直推加速态释放开始：' . $k);
+//                DB::beginTransaction();
+//                try{
+//                    $this->share_free($k,$v,$last_price);
+//                    DB::commit();
+//                }catch (\Exception $e){
+//                    DB::rollBack();
+//                }
+//
+//            }
+//            foreach ($green_free_num as $k => $v) {
+//                // 2. 直推加速
+//                $this->get_dict_free($k, $v, $last_price);
+//
+//            }
             foreach ($green_free_num as $k => $v) {
                 $this->get_up_two($k, $v, $last_price);
             }
 
-            foreach ($green_free_num as $k => $v) {
-                $this->free_team($k, $v, $last_price);
-            }
+//            foreach ($green_free_num as $k => $v) {
+//                $this->free_team($k, $v, $last_price);
+//            }
         }
 
         if(count($sale_free_num))
@@ -415,7 +415,6 @@ class freeScoreNew extends Command
     //全网注册排序 给上两给人5% 的静态释放
     protected function get_up_two($current_user_id, $num, $last_price)
     {
-        echo $current_user_id.PHP_EOL;
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
 
         //获取上两人
