@@ -203,6 +203,7 @@ class freeScoreNew extends Command
     }
 
     protected function  share_free($current_user_id,$num,$last_price){
+        echo $current_user_id.PHP_EOL;
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
         $user = User::query()->where('id',$current_user_id)->first();
         $re_dict_user = User::query()->where('id',$user->master_id)->where('is_ban',1)->first(); //我的直推
