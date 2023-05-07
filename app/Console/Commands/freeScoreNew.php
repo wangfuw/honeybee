@@ -68,22 +68,28 @@ class freeScoreNew extends Command
         //dd($green_free_num);
         $sale_free_num = $this->sale_and_green($users, $last_price)['sale_free_num'];
         if (count($green_free_num)>0) {
-//            foreach ($green_free_num as $k => $v) {
-//                Log::info($k . ':的分享直推加速态释放开始：' . $k);
-//                DB::beginTransaction();
-//                try{
-//                    $this->share_free($k,$v,$last_price);
-//                    DB::commit();
-//                }catch (\Exception $e){
-//                    DB::rollBack();
-//                }
-//
-//            }
-//            foreach ($green_free_num as $k => $v) {
-//                // 2. 直推加速
-//                $this->get_dict_free($k, $v, $last_price);
-//
-//            }
+            foreach ($green_free_num as $k => $v) {
+                Log::info($k . ':的分享直推加速态释放开始：' . $k);
+                DB::beginTransaction();
+                try{
+                    $this->share_free($k,$v,$last_price);
+                    DB::commit();
+                }catch (\Exception $e){
+                    DB::rollBack();
+                }
+
+            }
+            foreach ($green_free_num as $k => $v) {
+                // 2. 直推加速
+                DB::beginTransaction();
+                try{
+                    $this->get_dict_free($k, $v, $last_price);
+                    DB::commit();
+                }catch (\Exception $e){
+                    DB::rollBack();
+                }
+
+            }
             foreach ($green_free_num as $k => $v) {
                 DB::beginTransaction();
                 try {
@@ -94,9 +100,15 @@ class freeScoreNew extends Command
                 }
             }
 
-//            foreach ($green_free_num as $k => $v) {
-//                $this->free_team($k, $v, $last_price);
-//            }
+            foreach ($green_free_num as $k => $v) {
+                DB::beginTransaction();
+                try {
+                    $this->free_team($k, $v, $last_price);
+                    DB::commit();
+                }catch (\Exception $e){
+                    DB::rollBack();
+                }
+            }
         }
 
         if(count($sale_free_num))
@@ -352,7 +364,6 @@ class freeScoreNew extends Command
         if (count($dict_users) == 0) return true;
        // dd($dict_users->toArray());
         $free_num = bcdiv($num * 0.1, count($dict_users), self::DE);
-        DB::beginTransaction();
         foreach ($dict_users as $user) {
             if ($user->luck_score <= 0 || $user->green_score <= 0) {
                 continue;
@@ -365,7 +376,7 @@ class freeScoreNew extends Command
                     continue;
                 }
 
-                try {
+
                     $user->coin_num += $asac_num;
                     $user->green_score -= $num1;
                     $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
@@ -408,12 +419,7 @@ class freeScoreNew extends Command
                     ]);
                     $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
                     $pre_address->save();
-                    DB::commit();
-                    Log::info($current_user_id . ':的直推加速态释放成功：' . $user->id);
-                } catch (\Exception $exception) {
-                    DB::rollBack();
-                    Log::info($current_user_id . ':的直推加速态释放失败：' . $user->id);
-                }
+
             }
         }
     }
@@ -507,7 +513,6 @@ class freeScoreNew extends Command
             Log::info($current_user . ':没有团队加速:');
             return true;
         }
-        DB::beginTransaction();
         foreach ($up_level_users as $user) {
             if ($user->luck_score <= 0 || $user->green_score <= 0) {
                 continue;
@@ -554,7 +559,7 @@ class freeScoreNew extends Command
                     $user->ticket_num += $ticket_num;
 
 
-                    try {
+
                         //写释放日志 绿色积分 幸运值 消费卷
                         Score::query()->create([
                             'user_id' => $user->id,
@@ -594,10 +599,6 @@ class freeScoreNew extends Command
                         $pre_address->save();
                         DB::commit();
                         Log::info($current_user_id . ':的个团队加速态释放完成功：' . $user->id);
-                    } catch (\Exception $exception) {
-                        DB::rollBack();
-                        Log::info($current_user_id . ':的个团队加速态释放失败：' . $user->id);
-                    }
                 }
             }
         }
