@@ -203,9 +203,8 @@ class freeScoreNew extends Command
     protected function  share_free($green_free_num,$last_price)
     {
         //dd($green_free_num);
-        DB::beginTransaction();
-        foreach ($green_free_num as $current_user_id => $num) {
 
+        foreach ($green_free_num as $current_user_id => $num) {
             try {
                 Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
 
@@ -214,6 +213,7 @@ class freeScoreNew extends Command
                 $user = User::query()->where('id', $current_user_id)->first();
 
                 $re_dict_user = User::query()->where('id', $user->master_id)->where('is_ban', 1)->first(); //我的直推
+                DB::beginTransaction();
                 if ($re_dict_user) {
                     $re_dict_user_address = AsacNode::query()->where('user_id', $re_dict_user->id)->value('wallet_address') ?? '';
                     //直推存在
@@ -268,6 +268,7 @@ class freeScoreNew extends Command
                         $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
                         $pre_address->save();
                     }
+
                     $rej_dict_user = User::query()->where('id', $re_dict_user->master_id)->where('is_ban', 1)->first(); //我的减退
                     if ($rej_dict_user) {
                         $rej_dict_user_address = AsacNode::query()->where('user_id', $rej_dict_user->id)->value('wallet_address') ?? '';
@@ -321,15 +322,18 @@ class freeScoreNew extends Command
                             ]);
                             $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
                             $pre_address->save();
+                            DB::commit();
                             continue;
                         }
                     } else {
+                        DB::commit();
                         continue;
                     }
                 } else {
+                    DB::commit();
                     continue;
                 }
-                DB::commit();
+
                 Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
             }catch (\Exception $exception){
                 DB::rollBack();
