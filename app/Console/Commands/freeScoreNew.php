@@ -64,8 +64,9 @@ class freeScoreNew extends Command
         printf("这是新的命令:%s\n",count($users));
 
         // 1. 释放所有人的消费积分和绿色积分，并记录绿色积分释放数量
-        $green_free_num = $this->sale_and_green($users, $last_price);
-
+        $green_free_num = $this->sale_and_green($users, $last_price)['green_free_num'];
+        dd($green_free_num);
+        $sale_free_num = $this->sale_and_green($users, $last_price)['sale_free_num'];
         if (count($green_free_num)>0) {
             foreach ($green_free_num as $k => $v) {
                 Log::info($k . ':的分享直推加速态释放开始：' . $k);
@@ -91,8 +92,12 @@ class freeScoreNew extends Command
                 $this->free_team($k, $v, $last_price);
             }
         }
-    }
 
+        if(count($sale_free_num))
+        {
+
+        }
+    }
 
     protected function sale_and_green($users, $last_price)
     {
@@ -105,11 +110,10 @@ class freeScoreNew extends Command
         $green_next = Config::green_free_next_rate();
 
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
-
+        $sale_free_num = [];
         $green_free_num = [];
         foreach ($users as $user) {
             // 1.释放消费积分
-
             try {
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
 
@@ -198,6 +202,7 @@ class freeScoreNew extends Command
                 $user->save();
                 $pre_address->save();
                 $green_free_num[$user->id] = $num;
+                $sale_free_num[$user->id] = $sale_num;
                 DB::commit();
                 Log::info('静态释放成功:' . $user->id);
             } catch (\Exception $exception) {
@@ -205,7 +210,7 @@ class freeScoreNew extends Command
                 Log::info('静态释放失败' . $user->id);
             }
         }
-        return $green_free_num;
+        return compact('green_free_num','sale_free_num');
     }
 
     protected function  share_free($current_user_id,$num,$last_price = 10)
