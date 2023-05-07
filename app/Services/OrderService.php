@@ -572,13 +572,13 @@ class OrderService
                 $max = $masters->max_luck_num;
                 switch ($max){
                     case $max > 1 && $max < 2000:
-                        $rate = Config::lucky_base();
+                        $rate = Config::lucky_base_reward_coin();
                         break;
                     case $max >= 2000 && $max < 10000;
-                        $rate = Config::lucky_middle();
+                        $rate = Config::lucky_middle_reward_coin();
                         break;
                     case $max >= 10000:
-                        $rate = Config::lucky_last();
+                        $rate = Config::lucky_last_reward_coin();
                         break;
 
                 }
