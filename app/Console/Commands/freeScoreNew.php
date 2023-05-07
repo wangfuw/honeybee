@@ -207,7 +207,8 @@ class freeScoreNew extends Command
         $user = User::query()->where('id',$current_user_id)->first();
         $re_dict_user = User::query()->where('id',$user->master_id)->where('is_ban',1)->first(); //我的直推
         $re_dict_user_address = AsacNode::query()->where('user_id',$re_dict_user->id)->value('wallet_address')??'';
-        $rej_dict_user = User::query()->where('id',$re_dict_user->$re_dict_user->master_id)->where('is_ban',1)->first(); //我的减退
+
+        $rej_dict_user = User::query()->where('id',$re_dict_user->master_id)->where('is_ban',1)->first(); //我的减退
         $rej_dict_user_address = AsacNode::query()->where('user_id',$rej_dict_user->id)->value('wallet_address')??'';
         if($re_dict_user){
             //直推存在
