@@ -59,7 +59,7 @@ class Score extends Base
         self::SORT_FREE_USED=>"全网公排加速",
         self::BUY_USED => '购买消耗',
         self::DICT_FREE => '分享直推',
-        self::J_DICT_FREE => '分享间接',
+        self::J_DICT_FREE => '分享间推',
     ];
 
 
