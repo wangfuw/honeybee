@@ -48,7 +48,7 @@ class Score extends Base
         self::TRADE_REWARD=>"消费发奖励",
         self::REGISTER_REWARD=>"注册赠送幸运值",
         self::FREE_HAVE=>"释放获得",
-        self::DICT_FREE_USED=>"直推加速释放",
+        self::DICT_FREE_USED=>"上层加速释放",
         self::TEAM_FREE_USED=>"团队加速释放",
         self::SORT_FREE_USED=>"排序加速释放",
         self::BUY_USED => '购买消耗'
