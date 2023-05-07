@@ -207,132 +207,129 @@ class freeScoreNew extends Command
         //foreach ($green_free_num as $current_user_id => $num) {
         $current_user_id = 36;
         $num = 200;
-            try {
-                 DB::beginTransaction();
-                Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
+        $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
 
-                $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
+        $user = User::query()->where('id', $current_user_id)->first();
 
-                $user = User::query()->where('id', $current_user_id)->first();
+        $re_dict_user = User::query()->where('id', $user->master_id)->where('is_ban', 1)->first(); //我的直推
+        //                if (!$re_dict_user) {
+        //                    continue;
+        //                }
+        //                if ($re_dict_user->luck_score <= 0 || $re_dict_user->green_score <= 0) {
+        //                    continue;
+        //                }
+        $re_dict_user_address = AsacNode::query()->where('user_id', $re_dict_user->id)->value('wallet_address') ?? '';
+        Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
+        try {
+            DB::beginTransaction();
+            $free_num = bcmul($num, self::DICT_RATE, 4);
+            $num1 = min($re_dict_user->green_score, $re_dict_user->luck_score, $free_num);
+            $re_dict_user->green_score -= $num1;
+            $re_dict_user->luck_score -= $num1;
+            $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
+            $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
+            $re_dict_user->coin_num += $asac_num;
+            $re_dict_user->ticket_num += $ticket_num;
+            $re_dict_user->save();
+            //写日志
+            //写释放日志 绿色积分 幸运值 消费卷
+            Score::query()->create([
+                'user_id' => $re_dict_user->id,
+                'flag' => 2,
+                'num' => $num1,
+                'type' => 1,
+                'f_type' => Score::DICT_FREE,
+                'amount' => $asac_num,
+            ]);
+            Score::query()->create([
+                'user_id' => $re_dict_user->id,
+                'flag' => 2,
+                'num' => $num1,
+                'type' => 3,
+                'f_type' => Score::DICT_FREE,
+                'amount' => 0,
+            ]);
+            Score::query()->create([
+                'user_id' => $re_dict_user->id,
+                'flag' => 1,
+                'num' => $ticket_num,
+                'type' => 4,
+                'f_type' => Score::FREE_HAVE,
+                'amount' => 0,
+            ]);
+            //於挖池释放给用户
+            AsacTrade::query()->create([
+                'from_address' => $pre_address->wallet_address,
+                'to_address' => $re_dict_user_address,
+                'num' => $asac_num,
+                'trade_hash' => rand_str_pay(64),
+                'type' => AsacTrade::FREE_USED
+            ]);
+            $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
+            $pre_address->save();
 
-                $re_dict_user = User::query()->where('id', $user->master_id)->where('is_ban', 1)->first(); //我的直推
-//                if (!$re_dict_user) {
-//                    continue;
-//                }
-//                if ($re_dict_user->luck_score <= 0 || $re_dict_user->green_score <= 0) {
-//                    continue;
-//                }
-                $re_dict_user_address = AsacNode::query()->where('user_id', $re_dict_user->id)->value('wallet_address') ?? '';
-                //直推存在
-                echo '123eee1231' . PHP_EOL;
-                $free_num = bcmul($num, self::DICT_RATE, 4);
-                $num1 = min($re_dict_user->green_score, $re_dict_user->luck_score, $free_num);
-                $re_dict_user->green_score -= $num1;
-                $re_dict_user->luck_score -= $num1;
-                $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
-                $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
-                $re_dict_user->coin_num += $asac_num;
-                $re_dict_user->ticket_num += $ticket_num;
-                $re_dict_user->save();
-                //写日志
-                //写释放日志 绿色积分 幸运值 消费卷
-                Score::query()->create([
-                    'user_id' => $re_dict_user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 1,
-                    'f_type' => Score::DICT_FREE,
-                    'amount' => $asac_num,
-                ]);
-                Score::query()->create([
-                    'user_id' => $re_dict_user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 3,
-                    'f_type' => Score::DICT_FREE,
-                    'amount' => 0,
-                ]);
-                Score::query()->create([
-                    'user_id' => $re_dict_user->id,
-                    'flag' => 1,
-                    'num' => $ticket_num,
-                    'type' => 4,
-                    'f_type' => Score::FREE_HAVE,
-                    'amount' => 0,
-                ]);
-                //於挖池释放给用户
-                AsacTrade::query()->create([
-                    'from_address' => $pre_address->wallet_address,
-                    'to_address' => $re_dict_user_address,
-                    'num' => $asac_num,
-                    'trade_hash' => rand_str_pay(64),
-                    'type' => AsacTrade::FREE_USED
-                ]);
-                $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
-                $pre_address->save();
-
-                //我的减退
-//                $rej_dict_user = User::query()->where('id', $re_dict_user->master_id)->where('is_ban', 1)->first();
-//                if (!$rej_dict_user) {
-//                    DB::commit();
-//                    continue;
-//                }
-//                if ($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score <= 0) {
-//                    DB::commit();
-//                    continue;
-//                }
-//                $rej_dict_user_address = AsacNode::query()->where('user_id', $rej_dict_user->id)->value('wallet_address') ?? '';
-//                $free_num = bcmul($num, self::J_RATE, 4);
-//                $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
-//                $rej_dict_user->green_score -= $num2;
-//                $asac_num = bcdiv($num2 * self::GREEN_FREE_RATE, $last_price, self::DE);
-//                $ticket_num = bcmul($num2, self::SALE_FREE_RATE, self::DE);
-//                $rej_dict_user->luck_score -= $num2;
-//                $rej_dict_user->coin_num += $asac_num;
-//                $rej_dict_user->ticket_num += $ticket_num;
-//                $rej_dict_user->save();
-//
-//                //写释放日志 绿色积分 幸运值 消费卷
-//                Score::query()->create([
-//                    'user_id' => $rej_dict_user->id,
-//                    'flag' => 2,
-//                    'num' => $num2,
-//                    'type' => 1,
-//                    'f_type' => Score::J_DICT_FREE,
-//                    'amount' => $asac_num,
-//                ]);
-//                Score::query()->create([
-//                    'user_id' => $rej_dict_user->id,
-//                    'flag' => 2,
-//                    'num' => $num2,
-//                    'type' => 3,
-//                    'f_type' => Score::J_DICT_FREE,
-//                    'amount' => 0,
-//                ]);
-//                Score::query()->create([
-//                    'user_id' => $rej_dict_user->id,
-//                    'flag' => 1,
-//                    'num' => $ticket_num,
-//                    'type' => 4,
-//                    'f_type' => Score::FREE_HAVE,
-//                    'amount' => 0,
-//                ]);
-//                //於挖池释放给用户
-//                AsacTrade::query()->create([
-//                    'from_address' => $pre_address->wallet_address,
-//                    'to_address' => $rej_dict_user_address,
-//                    'num' => $asac_num,
-//                    'trade_hash' => rand_str_pay(64),
-//                    'type' => AsacTrade::FREE_USED
-//                ]);
-//                $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
-//                $pre_address->save();
-                DB::commit();
-                Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
-            }catch (\Exception $exception){
-                DB::rollBack();
-                Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
-            }
+            //我的减退
+            //                $rej_dict_user = User::query()->where('id', $re_dict_user->master_id)->where('is_ban', 1)->first();
+            //                if (!$rej_dict_user) {
+            //                    DB::commit();
+            //                    continue;
+            //                }
+            //                if ($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score <= 0) {
+            //                    DB::commit();
+            //                    continue;
+            //                }
+            //                $rej_dict_user_address = AsacNode::query()->where('user_id', $rej_dict_user->id)->value('wallet_address') ?? '';
+            //                $free_num = bcmul($num, self::J_RATE, 4);
+            //                $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
+            //                $rej_dict_user->green_score -= $num2;
+            //                $asac_num = bcdiv($num2 * self::GREEN_FREE_RATE, $last_price, self::DE);
+            //                $ticket_num = bcmul($num2, self::SALE_FREE_RATE, self::DE);
+            //                $rej_dict_user->luck_score -= $num2;
+            //                $rej_dict_user->coin_num += $asac_num;
+            //                $rej_dict_user->ticket_num += $ticket_num;
+            //                $rej_dict_user->save();
+            //
+            //                //写释放日志 绿色积分 幸运值 消费卷
+            //                Score::query()->create([
+            //                    'user_id' => $rej_dict_user->id,
+            //                    'flag' => 2,
+            //                    'num' => $num2,
+            //                    'type' => 1,
+            //                    'f_type' => Score::J_DICT_FREE,
+            //                    'amount' => $asac_num,
+            //                ]);
+            //                Score::query()->create([
+            //                    'user_id' => $rej_dict_user->id,
+            //                    'flag' => 2,
+            //                    'num' => $num2,
+            //                    'type' => 3,
+            //                    'f_type' => Score::J_DICT_FREE,
+            //                    'amount' => 0,
+            //                ]);
+            //                Score::query()->create([
+            //                    'user_id' => $rej_dict_user->id,
+            //                    'flag' => 1,
+            //                    'num' => $ticket_num,
+            //                    'type' => 4,
+            //                    'f_type' => Score::FREE_HAVE,
+            //                    'amount' => 0,
+            //                ]);
+            //                //於挖池释放给用户
+            //                AsacTrade::query()->create([
+            //                    'from_address' => $pre_address->wallet_address,
+            //                    'to_address' => $rej_dict_user_address,
+            //                    'num' => $asac_num,
+            //                    'trade_hash' => rand_str_pay(64),
+            //                    'type' => AsacTrade::FREE_USED
+            //                ]);
+            //                $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
+            //                $pre_address->save();
+            DB::commit();
+            Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
+        }
        // }
 
 
