@@ -213,7 +213,7 @@ class freeScoreNew extends Command
         if($re_dict_user){
             $re_dict_user_address = AsacNode::query()->where('user_id',$re_dict_user->id)->value('wallet_address')??'';
         }
-
+        $rej_dict_user = [];
         if($re_dict_user){
             $rej_dict_user = User::query()->where('id',$re_dict_user->master_id)->where('is_ban',1)->first(); //我的减退
         }
