@@ -231,6 +231,7 @@ class freeScoreNew extends Command
                 if($re_dict_user){
                     //直推存在
                     if($re_dict_user->luck_score <= 0 || $re_dict_user->green_score){
+                        continue;
                         Log::info('无直推人释放');
                     }else{
                         echo '123eee1231'.PHP_EOL;
@@ -285,6 +286,7 @@ class freeScoreNew extends Command
                 if($rej_dict_user){
                     if($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score){
                         Log::info('无简推人释放');
+                        continue;
                     }else{
                         echo '12312EE31'.PHP_EOL;
                         $free_num = bcmul($num,self::J_RATE,4);
