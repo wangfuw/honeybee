@@ -211,6 +211,7 @@ class freeScoreNew extends Command
         $user = User::query()->where('id',$current_user_id)->first();
 
         $re_dict_user = User::query()->where('id',$user->master_id)->where('is_ban',1)->first(); //我的直推
+
         if($re_dict_user){
             $re_dict_user_address = AsacNode::query()->where('user_id',$re_dict_user->id)->value('wallet_address')??'';
         }
@@ -226,9 +227,11 @@ class freeScoreNew extends Command
         try{
             if($re_dict_user){
                 //直推存在
+
                 if($re_dict_user->luck_score <= 0 || $re_dict_user->green_score){
                     Log::info('无直推人释放');
                 }else{
+                    echo '123eee1231'.PHP_EOL;
                     $free_num = bcmul($num,self::DICT_RATE,4);
                     $num1 = min($re_dict_user->green_score, $re_dict_user->luck_score, $free_num);
                     $re_dict_user->green_score -= $num1;
@@ -278,8 +281,9 @@ class freeScoreNew extends Command
             }
             if($rej_dict_user){
                 if($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score){
-                    Log::info('无直推人释放');
+                    Log::info('无简推人释放');
                 }else{
+                    echo '12312EE31'.PHP_EOL;
                     $free_num = bcmul($num,self::J_RATE,4);
                     $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
                     $rej_dict_user->green_score -= $num2;
