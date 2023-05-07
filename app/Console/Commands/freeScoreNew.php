@@ -65,7 +65,7 @@ class freeScoreNew extends Command
 
         // 1. 释放所有人的消费积分和绿色积分，并记录绿色积分释放数量
         $green_free_num = $this->sale_and_green($users, $last_price)['green_free_num'];
-        dd($green_free_num);
+        //dd($green_free_num);
         $sale_free_num = $this->sale_and_green($users, $last_price)['sale_free_num'];
         if (count($green_free_num)>0) {
             foreach ($green_free_num as $k => $v) {
@@ -355,7 +355,7 @@ class freeScoreNew extends Command
                 //按小释放
                 $num1 = min($user->green_score, $user->luck_score, $free_num);
                 $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
-                if ($asac_num < self::MIN) {
+                if ($num1 < self::MIN) {
                     continue;
                 }
 
@@ -437,7 +437,7 @@ class freeScoreNew extends Command
                     $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                     $num1 = min($user->green_score, $user->luck_score, $free_num);
                     $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
-                    if ($asac_num < self::MIN) {
+                    if ($num1 < self::MIN) {
                         continue;
                     }
 
@@ -546,7 +546,7 @@ class freeScoreNew extends Command
                     $free_num = min($user->green_score, $user->luck_score, $free_num);
                     $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                     $asac_num = bcdiv($free_num * self::GREEN_FREE_RATE, $last_price, self::DE);
-                    if ($asac_num < self::MIN) {
+                    if ($free_num < self::MIN) {
                         continue;
                     }
                     $user->coin_num = bcadd($asac_num, $user->coin_num, self::DE);
