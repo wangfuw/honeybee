@@ -266,7 +266,6 @@ class freeScoreNew extends Command
                         ]);
                         $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
                         $pre_address->save();
-                        DB::commit();
                     }
 
 //                    $rej_dict_user = User::query()->where('id', $re_dict_user->master_id)->where('is_ban', 1)->first(); //我的减退
@@ -328,10 +327,8 @@ class freeScoreNew extends Command
 //                    } else {
 //                        continue;
 //                    }
-                } else {
-                    continue;
                 }
-
+                DB::commit();
                 Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
             }catch (\Exception $exception){
                 DB::rollBack();
