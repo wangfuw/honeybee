@@ -201,7 +201,7 @@ class freeScoreNew extends Command
     }
 
     protected function  share_free($green_free_num,$last_price){
-
+        dd($green_free_num);
         foreach ($green_free_num as $current_user_id => $num){
             Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
             echo $current_user_id.PHP_EOL;
