@@ -36,7 +36,13 @@ class Score extends Base
     const TEAM_FREE_USED = 12;
     const SORT_FREE_USED = 13;
 
+
     const BUY_USED = 14;
+
+    //分享直推
+    const DICT_FREE = 15;
+    //分享间接
+    const J_DICT_FREE = 16;
     const F_TYPES = [
         self::BACK_ADD => "后台增加",
         self::BACK_SUB => "后台扣除",
@@ -50,8 +56,10 @@ class Score extends Base
         self::FREE_HAVE=>"释放获得",
         self::DICT_FREE_USED=>"上层加速释放",
         self::TEAM_FREE_USED=>"团队加速释放",
-        self::SORT_FREE_USED=>"排序加速释放",
-        self::BUY_USED => '购买消耗'
+        self::SORT_FREE_USED=>"全网公排加速",
+        self::BUY_USED => '购买消耗',
+        self::DICT_FREE => '分享直推',
+        self::J_DICT_FREE => '分享间接',
     ];
 
 
@@ -60,7 +68,7 @@ class Score extends Base
         $used_num = 0;
         switch ($type){
             case 1:
-                $used_num = self::query()->where('user_id',$user_id)->whereIn('f_type',[self::LUCKY_FREE_USED,Score::SORT_FREE_USED,self::FREE_USED,self::DICT_FREE_USED,self::TEAM_FREE_USED])->where('type',1)->sum('num');
+                $used_num = self::query()->where('user_id',$user_id)->whereIn('f_type',[self::LUCKY_FREE_USED,Score::SORT_FREE_USED,self::FREE_USED,self::DICT_FREE_USED,self::TEAM_FREE_USED,self::DICT_FREE,self::J_DICT_FREE])->where('type',1)->sum('num');
                 break;
             case 2:
                 $used_num = self::query()->where('user_id',$user_id)->where('f_type', self::FREE_USED)->where('type',2)->sum('num');
