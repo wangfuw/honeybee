@@ -200,28 +200,28 @@ class freeScoreNew extends Command
         return $green_free_num;
     }
 
-    protected function  share_free($green_free_num,$last_price){
+    protected function  share_free($green_free_num,$last_price)
+    {
         //dd($green_free_num);
-
-        try{
-            DB::beginTransaction();
-            foreach ($green_free_num as $current_user_id => $num){
+        foreach ($green_free_num as $current_user_id => $num) {
+            try {
+                DB::beginTransaction();
                 Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
 
                 $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
 
-                $user = User::query()->where('id',$current_user_id)->first();
+                $user = User::query()->where('id', $current_user_id)->first();
 
-                $re_dict_user = User::query()->where('id',$user->master_id)->where('is_ban',1)->first(); //我的直推
-                if($re_dict_user){
-                    $re_dict_user_address = AsacNode::query()->where('user_id',$re_dict_user->id)->value('wallet_address')??'';
+                $re_dict_user = User::query()->where('id', $user->master_id)->where('is_ban', 1)->first(); //我的直推
+                if ($re_dict_user) {
+                    $re_dict_user_address = AsacNode::query()->where('user_id', $re_dict_user->id)->value('wallet_address') ?? '';
                     //直推存在
-                    if($re_dict_user->luck_score <= 0 || $re_dict_user->green_score <= 0 ){
+                    if ($re_dict_user->luck_score <= 0 || $re_dict_user->green_score <= 0) {
                         Log::info('无直推人释放');
                         continue;
-                    }else{
-                        echo '123eee1231'.PHP_EOL;
-                        $free_num = bcmul($num,self::DICT_RATE,4);
+                    } else {
+                        echo '123eee1231' . PHP_EOL;
+                        $free_num = bcmul($num, self::DICT_RATE, 4);
                         $num1 = min($re_dict_user->green_score, $re_dict_user->luck_score, $free_num);
                         $re_dict_user->green_score -= $num1;
                         $re_dict_user->luck_score -= $num1;
@@ -267,15 +267,15 @@ class freeScoreNew extends Command
                         $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
                         $pre_address->save();
                     }
-                    $rej_dict_user = User::query()->where('id',$re_dict_user->master_id)->where('is_ban',1)->first(); //我的减退
-                    if($rej_dict_user){
-                        $rej_dict_user_address = AsacNode::query()->where('user_id',$rej_dict_user->id)->value('wallet_address')??'';
-                        if($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score <= 0){
+                    $rej_dict_user = User::query()->where('id', $re_dict_user->master_id)->where('is_ban', 1)->first(); //我的减退
+                    if ($rej_dict_user) {
+                        $rej_dict_user_address = AsacNode::query()->where('user_id', $rej_dict_user->id)->value('wallet_address') ?? '';
+                        if ($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score <= 0) {
                             Log::info('无简推人释放');
                             continue;
-                        }else{
-                            echo '12312EE31'.PHP_EOL;
-                            $free_num = bcmul($num,self::J_RATE,4);
+                        } else {
+                            echo '12312EE31' . PHP_EOL;
+                            $free_num = bcmul($num, self::J_RATE, 4);
                             $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
                             $rej_dict_user->green_score -= $num2;
                             $asac_num = bcdiv($num2 * self::GREEN_FREE_RATE, $last_price, self::DE);
@@ -322,18 +322,19 @@ class freeScoreNew extends Command
                             $pre_address->save();
                             continue;
                         }
-                    }else{
+                    } else {
                         continue;
                     }
-                }else{
+                } else {
                     continue;
                 }
+
+                DB::commit();
+                Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
+            }catch (\Exception $exception){
+                DB::rollBack();
+                Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
             }
-            DB::commit();
-            Log::info($current_user_id . ':的分享直推加速态释放完毕：' . $current_user_id);
-        }catch (\Exception $exception){
-            DB::rollBack();
-            Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
         }
 
 
