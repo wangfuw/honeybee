@@ -86,6 +86,8 @@ class AsacController extends BaseController
         'destruction_address','accuracy','number','flux'
         ,'owner_num','trans_num'
         )->first();
+        $list->owner_num = User::query()->sum('coin_num');
+        $list->trans_num = AsacNode::query()->count();
         $list->dest_num = AsacDestory::query()->sum('number');
         return $this->success('success',$list);
     }
