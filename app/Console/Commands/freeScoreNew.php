@@ -201,7 +201,7 @@ class freeScoreNew extends Command
     }
 
     protected function  share_free($green_free_num,$last_price){
-        DB::beginTransaction();
+
         foreach ($green_free_num as $current_user_id => $num){
             Log::info($current_user_id . ':的分享直推加速态释放开始：' . $current_user_id);
             echo $current_user_id.PHP_EOL;
@@ -222,7 +222,7 @@ class freeScoreNew extends Command
                 $rej_dict_user_address = AsacNode::query()->where('user_id',$rej_dict_user->id)->value('wallet_address')??'';
             }
 
-
+            DB::beginTransaction();
             try{
                 if($re_dict_user){
                     //直推存在
@@ -237,6 +237,7 @@ class freeScoreNew extends Command
                         $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
                         $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
                         $re_dict_user->coin_num += $asac_num;
+
                         $re_dict_user->ticket_num += $ticket_num;
                         $re_dict_user->save();
                         //写日志
