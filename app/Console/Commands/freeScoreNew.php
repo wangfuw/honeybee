@@ -78,18 +78,18 @@ class freeScoreNew extends Command
                 }
 
             }
-//            foreach ($green_free_num as $k => $v) {
-//                // 2. 直推加速
-//                $this->get_dict_free($k, $v, $last_price);
-//
-//            }
-//            foreach ($green_free_num as $k => $v) {
-//                $this->get_up_two($k, $v, $last_price);
-//            }
-//
-//            foreach ($green_free_num as $k => $v) {
-//                $this->free_team($k, $v, $last_price);
-//            }
+            foreach ($green_free_num as $k => $v) {
+                // 2. 直推加速
+                $this->get_dict_free($k, $v, $last_price);
+
+            }
+            foreach ($green_free_num as $k => $v) {
+                $this->get_up_two($k, $v, $last_price);
+            }
+
+            foreach ($green_free_num as $k => $v) {
+                $this->free_team($k, $v, $last_price);
+            }
         }
     }
 
@@ -210,8 +210,6 @@ class freeScoreNew extends Command
 
     protected function  share_free($current_user_id,$num,$last_price = 10)
     {
-//        $current_user_id = 36;
-//        $num = 200;
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
 
         $user = User::query()->where('id', $current_user_id)->first();
