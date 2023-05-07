@@ -433,15 +433,14 @@ class freeScoreNew extends Command
             DB::beginTransaction();
             foreach ($up_users as $user) {
                 if ($user->luck_score <= 0 || $user->green_score <= 0) {
-                    continue;
+                    return true;
                 } else {
-
                     $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                     $num1 = min($user->green_score, $user->luck_score, $free_num);
                     $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
                     echo $user->id.PHP_EOL;
                     if ($num1 < self::MIN) {
-                        continue;
+                        return true;
                     }
 
                     $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
