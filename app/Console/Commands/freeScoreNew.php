@@ -80,9 +80,9 @@ class freeScoreNew extends Command
                 $this->free_team($k, $v, $last_price);
             }
 
-            foreach ($green_free_num as $k=>$V)
+            foreach ($green_free_num as  $k => $v)
             {
-                $this->share_free($k,$v,$last_price);
+                $this->share_free($k, $v, $last_price);
             }
         }
     }
@@ -206,12 +206,15 @@ class freeScoreNew extends Command
         Log::info($current_user_id . ':的分享直推加速态释放失败：' . $current_user_id);
         echo $current_user_id.PHP_EOL;
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
+
         $user = User::query()->where('id',$current_user_id)->first();
+
         $re_dict_user = User::query()->where('id',$user->master_id)->where('is_ban',1)->first(); //我的直推
         $re_dict_user_address = AsacNode::query()->where('user_id',$re_dict_user->id)->value('wallet_address')??'';
 
         $rej_dict_user = User::query()->where('id',$re_dict_user->master_id)->where('is_ban',1)->first(); //我的减退
         $rej_dict_user_address = AsacNode::query()->where('user_id',$rej_dict_user->id)->value('wallet_address')??'';
+
         try{
             DB::beginTransaction();
             if($re_dict_user){
