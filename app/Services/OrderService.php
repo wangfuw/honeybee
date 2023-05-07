@@ -583,7 +583,8 @@ class OrderService
 
                 }
                 //幸运值专区给商家发asac
-                $masters->coin_num += bcmul($info->money,$rate,4);
+                $temp =  bcmul($info->money/100,$rate,4);
+                $masters->coin_num += bcdiv($temp,$last_price,4);
                 $masters->save();
 
                 //奖励发放
