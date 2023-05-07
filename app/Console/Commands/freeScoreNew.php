@@ -200,7 +200,7 @@ class freeScoreNew extends Command
         return $green_free_num;
     }
 
-    protected function  share_free()
+    protected function  share_free($last_price = 10)
     {
         $current_user_id = 36;
         $num = 200;
