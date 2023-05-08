@@ -49,6 +49,12 @@ class Score extends Base
     // 平级
     const LEVEL_FREE_USED = 19;
 
+    // 形象店加速
+    const XX_USED = 20;
+
+    // 旗舰店加速
+    const QJ_USED = 21;
+
     const F_TYPES = [
         self::BACK_ADD => "后台增加",
         self::BACK_SUB => "后台扣除",
@@ -69,6 +75,8 @@ class Score extends Base
         self::SALE_DICT_FREE => '消费积分分享直推',
         self::SALE_J_DICT_FREE => '消费积分分享间推',
         self::LEVEL_FREE_USED => '平级加速',
+        self::XX_USED => '形象店加速',
+        self::QJ_USED => '旗舰店加速',
     ];
 
 
