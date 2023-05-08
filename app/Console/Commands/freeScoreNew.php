@@ -446,6 +446,7 @@ class freeScoreNew extends Command
             ->get();
         echo $current_user_id.PHP_EOL;
         var_dump($up_users->toArray());
+        Log::info('asdasd:'.$current_user_id);
         $free_num = bcmul($num, 0.05, self::DE);
         if (!$up_users) {
             Log::info('前面没人:' . date("y-m-d H:i:s"));
