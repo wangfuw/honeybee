@@ -81,7 +81,12 @@ class SpuController extends AdminBaseController
             $condition[] = ["game_zone", "=", $request->game_zone];
         }
         if ($request->score_zone) {
-            $condition[] = ["score_zone", "=", $request->score_zone];
+            if($request->score_zone <= 2){
+                $condition[] = ["score_zone", "=", $request->score_zone];
+            }else{
+                $condition[] = ["score_zone",">=",$request->score_zone];
+            }
+
         }
         if ($request->category) {
             $condition[] = ["category_one", "=", $request->category[0]];
