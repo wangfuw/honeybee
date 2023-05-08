@@ -99,7 +99,7 @@ class AsacController extends BaseController
         $id = $request->id;
         $block = AsacBlock::query()->where('id',$id)->first();
         if(!$block){
-            return $this->success('success',[]);
+            return $this->success('success',['trade_num'=>0,'number'=>0]);
         }
         if(!empty($block)){
             $trades = AsacTrade::query()->where('block_id',$id)->get()->toArray();
@@ -111,7 +111,7 @@ class AsacController extends BaseController
             $data['time'] = $block['created_at'];
             return $this->success('success',$data);
         }else{
-            return $this->success('success',[]);
+            return $this->success('success',['trade_num'=>0,'number'=>0]);
         }
     }
 
