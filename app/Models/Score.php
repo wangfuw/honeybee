@@ -43,6 +43,9 @@ class Score extends Base
     const DICT_FREE = 15;
     //分享间接
     const J_DICT_FREE = 16;
+    const SALE_DICT_FREE = 17;
+    const SALE_J_DICT_FREE = 18;
+
     const F_TYPES = [
         self::BACK_ADD => "后台增加",
         self::BACK_SUB => "后台扣除",
@@ -58,8 +61,10 @@ class Score extends Base
         self::TEAM_FREE_USED=>"团队加速释放",
         self::SORT_FREE_USED=>"全网公排加速",
         self::BUY_USED => '购买消耗',
-        self::DICT_FREE => '分享直推',
-        self::J_DICT_FREE => '分享间推',
+        self::DICT_FREE => '绿色积分分享直推',
+        self::J_DICT_FREE => '绿色积分分享间推',
+        self::SALE_DICT_FREE => '消费积分分享直推',
+        self::SALE_J_DICT_FREE => '消费积分分享间推',
     ];
 
 
