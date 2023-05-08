@@ -251,10 +251,6 @@ class freeScoreNew extends Command
             return true;
         }
 
-
-        if ($re_dict_user->luck_score <= 0 || $re_dict_user->green_score <= 0) {
-
-
         if($re_dict_user->id == 132){
             printf("132:num\n");
         }
@@ -362,7 +358,7 @@ class freeScoreNew extends Command
 
         //我的减退
         $rej_dict_user = User::query()->where('id', $re_dict_user->master_id)->where('is_ban', 1)->first();
-<<<<<<< HEAD
+
         if (!$rej_dict_user) {
             return true;
         }
@@ -372,7 +368,6 @@ class freeScoreNew extends Command
         $rej_dict_user_address = AsacNode::query()->where('user_id', $rej_dict_user->id)->value('wallet_address') ?? '';
         $free_num = bcmul($num, self::J_RATE, 4);
         $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
-=======
         if($current_user_id == 133){
             printf("131没找到,%s\n",$rej_dict_user->id);
         }
@@ -397,7 +392,6 @@ class freeScoreNew extends Command
         if($re_dict_user->id == 131){
             printf("num:%s\n",$num2);
         }
->>>>>>> origin/master
         if($num2 < self::MIN){
             return true;
         }
