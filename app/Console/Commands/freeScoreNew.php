@@ -249,6 +249,9 @@ class freeScoreNew extends Command
         if (!$re_dict_user) {
             return true;
         }
+        if($re_dict_user->id == 132){
+            printf("132:num\n");
+        }
         if ($re_dict_user->luck_score > 0 && $re_dict_user->green_score > 0) {
             $re_dict_user_address = AsacNode::query()->where('user_id', $re_dict_user->id)->value('wallet_address') ?? '';
             $free_num = bcmul($num, self::DICT_RATE, 4);
