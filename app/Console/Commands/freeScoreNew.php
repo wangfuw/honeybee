@@ -523,6 +523,38 @@ class freeScoreNew extends Command
             Log::info($current_user . ':没有团队加速:');
             return true;
         }
+
+//    case 1:
+//                return $num * 0.10;
+//            case 2:
+//                return $num * 0.15;
+//            case 3:
+//                return $num * 0.20;
+//            case 4:
+//                return $num * 0.25;
+//            case 5:
+//                return $num * 0.35;
+//            default:
+//                return 0;
+        $rates = [
+            0 => 0,
+            1 => 0.10,
+            2 => 0.15,
+            3 => 0.2,
+            4 => 0.25,
+            5 => 0.35
+        ];
+
+        $user_rate = 0;
+        $last_grade = 0;
+        $last_rate = 0;
+        $par_ = [
+            1 => false,
+            2 => false,
+            3 => false,
+            4 => false,
+            5 => false
+        ];
         foreach ($up_level_users as $user) {
             if ($user->luck_score <= 0 || $user->green_score <= 0) {
                 continue;
@@ -552,8 +584,32 @@ class freeScoreNew extends Command
                 } else {
                     $grade = $this->grade($user->contribution);
                 }
-                $free_num = $this->get_grade_num($grade, $num);
-                if ($free_num == 0) {
+
+                $f_type = Score::TEAM_FREE_USED;
+                if ($grade > $last_grade) {
+                    $rate = max($rates[$grade] - $user_rate,0);
+                    if($rate <= 0){
+                        break;
+                    }
+                } elseif ($grade < $last_grade) {
+                    $par_[$last_grade] = true;
+                    $rate = 0;
+                } else {
+                    if (!$par_[$grade]) {
+                        $rate = $last_rate * 0.1;
+                        $par_[$grade] = true;
+                        $f_type = Score::LEVEL_FREE_USED;
+                    }else{
+                        $rate = 0;
+                    }
+                }
+
+                $free_num = bcmul($num, $rate, self::DE);
+                $last_rate = $rate;
+                $user_rate += $rate;
+                $last_grade = $grade;
+
+                if ($free_num <= 0) {
                     continue;
                 } else {
                     $free_num = min($user->green_score, $user->luck_score, $free_num);
@@ -575,7 +631,7 @@ class freeScoreNew extends Command
                         'flag' => 2,
                         'num' => $free_num,
                         'type' => 1,
-                        'f_type' => Score::TEAM_FREE_USED,
+                        'f_type' => $f_type,
                         'amount' => $asac_num,
                     ]);
                     Score::query()->create([
@@ -583,7 +639,7 @@ class freeScoreNew extends Command
                         'flag' => 2,
                         'num' => $free_num,
                         'type' => 3,
-                        'f_type' => Score::TEAM_FREE_USED,
+                        'f_type' => $f_type,
                         'amount' => 0,
                     ]);
                     Score::query()->create([
