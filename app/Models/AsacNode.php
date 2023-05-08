@@ -42,7 +42,7 @@ class AsacNode extends Base
                     $temp = bcdiv($item->user->coin_num??0 * 100,$config['number'],2)??0;
                     $item['ratio'] = number_format($temp,2).'%'??0;
                 }
-                unset($temp,$item->user);
+//                unset($temp,$item->user);
                 return $item;
         })->forPage($page,$page_size);
         return collect([])->merge($list)->toArray();
