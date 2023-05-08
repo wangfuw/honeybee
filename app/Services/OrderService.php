@@ -595,9 +595,7 @@ class OrderService
                         'from_id' => 1,
                         'to_id'   => $master_id,
                         'num'          =>  $temp,
-                        'trade_hash'   => rand_str_pay(64),
                         'type'         => MoneyTrade::REWARD,
-                        'game_zone'    => 3,
                     ]);
                 }
 
