@@ -541,6 +541,7 @@ class freeScoreNew extends Command
         $up_level_users = User::query()
             ->whereIn('id', $masters)
             ->select('id', 'green_score', 'luck_score', 'ticket_num', 'contribution', 'green_score_total', 'sale_score_total', 'phone', 'coin_num')
+            ->orderByDesc("id")
             ->get();
         if (!$up_level_users) {
             Log::info($current_user . ':没有团队加速:');
