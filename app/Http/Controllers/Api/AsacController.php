@@ -99,7 +99,7 @@ class AsacController extends BaseController
         $id = $request->id;
         $block = AsacBlock::query()->where('id',$id)->first();
         if(!$block){
-            return $this->fail('暂无数据');
+            return $this->success('success',[]);
         }
         if(!empty($block)){
             $trades = AsacTrade::query()->where('block_id',$id)->get()->toArray();
