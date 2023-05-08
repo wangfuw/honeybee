@@ -34,12 +34,12 @@ class AsacNode extends Base
             ->get()->map(function ($item,$items) use($config){
                 if($item->id <= 4){
                     $item->money = bcmul($item->number,$config['last_price']);
-                    $temp = bcdiv($item->number * 100,$config['number'],2);
+                    $temp = bcdiv($item->number * 100,$config['number'],4);
                     $item ->ratio = number_format($temp,2).'%';
                 }else{
                     $item->number = $item->user->coin_num ?? 0;
                     $item->money = bcmul($item->user->coin_num??0,$config['last_price'])??0;
-                    $temp = bcdiv($item->user->coin_num??0 * 100,$config['number'],2)??0;
+                    $temp = bcdiv($item->user->coin_num??0 * 100,$config['number'],4)??0;
                     $item ->ratio = number_format($temp,2).'%'??0;
                 }
 //                unset($temp,$item->user);
