@@ -111,7 +111,7 @@ class AsacController extends BaseController
             $data['time'] = $block['created_at'];
             return $this->success('success',$data);
         }else{
-            return $this->fail('暂无数据');
+            return $this->success('success',[]);
         }
     }
 
