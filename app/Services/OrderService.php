@@ -586,17 +586,17 @@ class OrderService
                 $num = min($max,$info->money);
                 //幸运值专区给商家发asac
                 $temp =  bcmul($num/100,$rate,4);
-                $masters->coin_num += bcdiv($temp,$last_price,4);
+                $masters->money += $temp;
                 $masters->save();
 
                 //奖励发放
                 if($master_address){
-                    AsacTrade::query()->create([
-                        'from_address' => $to_address,
-                        'to_address'   => $master_address,
-                        'num'          =>  $masters->coin_num,
+                    MoneyTrade::query()->create([
+                        'from_id' => 1,
+                        'to_id'   => $master_id,
+                        'num'          =>  $masters->money,
                         'trade_hash'   => rand_str_pay(64),
-                        'type'         => AsacTrade::REWARD,
+                        'type'         => MoneyTrade::REWARD,
                         'game_zone'    => 3,
                     ]);
                 }
@@ -604,47 +604,47 @@ class OrderService
 
 
                 //给旗舰店/形象店发幸运值
-                $model_store = User::query()->where('identity',1)
-                    ->where('identity_status',1)
-                    ->where('identity_area_code',$user_area)->pluck('id');
-
-                if($model_store){
-                    $num = bcmul($info->give_lucky_score,0.15,2);
-                    foreach ($model_store as $value){
-                        $res = User::query()->where('id',$value)->select('id','lucky_score')->first();
-                        $res->lucky_score += $num;
-                        $res->save();
-                        //日志
-                        Score::query()->create([
-                            'user_id'=>$res->id,
-                            'flag' => 1,
-                            'num' =>$num,
-                            'type'=>3,
-                            'f_type'=>Score::TRADE_REWARD,
-                            'game_zone'    => 3,
-                        ]);
-                    }
-                }
-                $up_store = User::query()->where('identity',1)
-                    ->where('identity_status',1)
-                    ->where('identity_area_code',$up_area)->pluck('id');
-                if($up_store){
-                    $num = bcmul($info->give_lucky_score,0.05,2);
-                    foreach ($up_store as $value){
-                        $res = User::query()->where('id',$value)->select('id','lucky_score')->first();
-                        $res->luck_score += $num;
-                        $res->save();
-                        //日志
-                        Score::query()->create([
-                            'user_id'=>$res->id,
-                            'flag' => 1,
-                            'num' =>$num,
-                            'type'=>3,
-                            'f_type'=>Score::TRADE_REWARD,
-                            'game_zone'    => 3,
-                        ]);
-                    }
-                }
+//                $model_store = User::query()->where('identity',1)
+//                    ->where('identity_status',1)
+//                    ->where('identity_area_code',$user_area)->pluck('id');
+//
+//                if($model_store){
+//                    $num = bcmul($info->give_lucky_score,0.15,2);
+//                    foreach ($model_store as $value){
+//                        $res = User::query()->where('id',$value)->select('id','lucky_score')->first();
+//                        $res->lucky_score += $num;
+//                        $res->save();
+//                        //日志
+//                        Score::query()->create([
+//                            'user_id'=>$res->id,
+//                            'flag' => 1,
+//                            'num' =>$num,
+//                            'type'=>3,
+//                            'f_type'=>Score::TRADE_REWARD,
+//                            'game_zone'    => 3,
+//                        ]);
+//                    }
+//                }
+//                $up_store = User::query()->where('identity',1)
+//                    ->where('identity_status',1)
+//                    ->where('identity_area_code',$up_area)->pluck('id');
+//                if($up_store){
+//                    $num = bcmul($info->give_lucky_score,0.05,2);
+//                    foreach ($up_store as $value){
+//                        $res = User::query()->where('id',$value)->select('id','lucky_score')->first();
+//                        $res->luck_score += $num;
+//                        $res->save();
+//                        //日志
+//                        Score::query()->create([
+//                            'user_id'=>$res->id,
+//                            'flag' => 1,
+//                            'num' =>$num,
+//                            'type'=>3,
+//                            'f_type'=>Score::TRADE_REWARD,
+//                            'game_zone'    => 3,
+//                        ]);
+//                    }
+//                }
                 break;
             case 4:
                 //消费卷减少

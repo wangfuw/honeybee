@@ -20,9 +20,11 @@ class MoneyTrade extends Base
     //消费
     const BUY = 2;
 
+    const REWARD = 3;
     protected $types = [
         self::BUY => '消费',
         self::CHANGE => '转账',
+        self::REWARD => '消费奖励余额',
     ];
     public function fromUser()
     {
