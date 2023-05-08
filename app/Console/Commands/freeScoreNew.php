@@ -265,7 +265,6 @@ class freeScoreNew extends Command
                 $re_dict_user->ticket_num += $ticket_num;
                 $re_dict_user->save();
                 $f_type = $teb?Score::DICT_FREE:Score::SALE_DICT_FREE;
-                $f_j_type = $teb?Score::J_DICT_FREE:Score::SALE_J_DICT_FREE;
                 //写释放日志 绿色积分 幸运值 消费卷
                 Score::query()->create([
                     'user_id' => $re_dict_user->id,
@@ -306,9 +305,6 @@ class freeScoreNew extends Command
 
         //我的减退
         $rej_dict_user = User::query()->where('id', $re_dict_user->master_id)->where('is_ban', 1)->first();
-        if($current_user_id == 133){
-            printf("找到,%s\n",$rej_dict_user->id);
-        }
 
         if (!$rej_dict_user) {
             return true;
@@ -318,17 +314,11 @@ class freeScoreNew extends Command
         }
 
         $rej_dict_user_address = AsacNode::query()->where('user_id', $rej_dict_user->id)->value('wallet_address') ?? '';
-        if($current_user_id == 133){
-            printf("找到地址,%s\n",$rej_dict_user_address);
-        }
+
         $free_num = bcmul($num, self::J_RATE, 4);
-        if($current_user_id == 133){
-            printf("数量,%s\n",$free_num);
-        }
+
         $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
-        if($re_dict_user->id == 131){
-            printf("num:%s\n",$num2);
-        }
+
         if($num2 < self::MIN){
             return true;
         }
@@ -339,6 +329,7 @@ class freeScoreNew extends Command
         $rej_dict_user->coin_num += $asac_num;
         $rej_dict_user->ticket_num += $ticket_num;
         $rej_dict_user->save();
+        $f_j_type = $teb?Score::J_DICT_FREE:Score::SALE_J_DICT_FREE;
 
         //写释放日志 绿色积分 幸运值 消费卷
         Score::query()->create([
