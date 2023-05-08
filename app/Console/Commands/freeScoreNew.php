@@ -309,9 +309,13 @@ class freeScoreNew extends Command
         if ($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score <= 0) {
             return true;
         }
+
         $rej_dict_user_address = AsacNode::query()->where('user_id', $rej_dict_user->id)->value('wallet_address') ?? '';
         $free_num = bcmul($num, self::J_RATE, 4);
         $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
+        if($re_dict_user->id == 133){
+            printf("num:%s\n",$num2);
+        }
         if($num2 < self::MIN){
             return true;
         }
