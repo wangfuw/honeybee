@@ -306,6 +306,10 @@ class freeScoreNew extends Command
 
         //我的减退
         $rej_dict_user = User::query()->where('id', $re_dict_user->master_id)->where('is_ban', 1)->first();
+        if($current_user_id == 133){
+            printf("131没找到,%s\n",$rej_dict_user->id);
+        }
+
         if (!$rej_dict_user) {
             if($current_user_id == 133){
                 printf("131没找到\n");
