@@ -444,9 +444,11 @@ class freeScoreNew extends Command
             ->where('green_score','>',0)
             ->orderBy('id', 'desc')->limit(2)
             ->get();
-        echo $current_user_id.PHP_EOL;
-        var_dump($up_users->toArray());
-        Log::info('asdasd:'.$current_user_id);
+
+        if($current_user_id == 133){
+            var_dump($up_users);
+        }
+
         $free_num = bcmul($num, 0.05, self::DE);
         if (!$up_users) {
             Log::info('前面没人:' . date("y-m-d H:i:s"));
