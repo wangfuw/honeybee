@@ -64,20 +64,33 @@ class freeScoreNew extends Command
         printf("这是新的命令:%s\n",count($users));
 
         // 1. 释放所有人的消费积分和绿色积分，并记录绿色积分释放数量
-        $green_free_num = $this->sale_and_green($users, $last_price)['green_free_num'];
+        $green_free_nums = $this->sale_and_green($users, $last_price);
+        $green_free_num = $green_free_nums['green_free_num'];
+        $sale_free_num = $green_free_nums['sale_free_num'];
         //dd($green_free_num);
         if (count($green_free_num)>0) {
             foreach ($green_free_num as $k => $v) {
-                Log::info($k . ':的分享直推加速态释放开始：' . $k);
+                Log::info($k . ':的绿色分享直推加速态释放开始：' . $k);
                 DB::beginTransaction();
                 try{
-                    $this->share_free($k,$v,$last_price);
+                    $this->share_free($k,$v,$last_price,1);
                     DB::commit();
                 }catch (\Exception $e){
                     DB::rollBack();
                 }
-
             }
+
+            foreach ($sale_free_num as $k => $v) {
+                Log::info($k . ':的消费积分分享直推加速态释放开始：' . $k);
+                DB::beginTransaction();
+                try{
+                    $this->share_free($k,$v,$last_price,0);
+                    DB::commit();
+                }catch (\Exception $e){
+                    DB::rollBack();
+                }
+            }
+
             foreach ($green_free_num as $k => $v) {
                 // 2. 直推加速
                 DB::beginTransaction();
@@ -108,6 +121,7 @@ class freeScoreNew extends Command
                     DB::rollBack();
                 }
             }
+
         }
     }
 
@@ -225,7 +239,7 @@ class freeScoreNew extends Command
         return compact('green_free_num','sale_free_num');
     }
 
-    protected function  share_free($current_user_id,$num,$last_price = 10)
+    protected function  share_free($current_user_id,$num,$last_price = 10,$teb = 0)
     {
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
 
@@ -251,14 +265,15 @@ class freeScoreNew extends Command
         $re_dict_user->coin_num += $asac_num;
         $re_dict_user->ticket_num += $ticket_num;
         $re_dict_user->save();
-
+        $f_type = $teb?Score::DICT_FREE:Score::SALE_DICT_FREE;
+        $f_j_type = $teb?Score::J_DICT_FREE:Score::SALE_J_DICT_FREE;
         //写释放日志 绿色积分 幸运值 消费卷
         Score::query()->create([
             'user_id' => $re_dict_user->id,
             'flag' => 2,
             'num' => $num1,
             'type' => 1,
-            'f_type' => Score::DICT_FREE,
+            'f_type' => $f_type,
             'amount' => $asac_num,
         ]);
         Score::query()->create([
@@ -266,7 +281,7 @@ class freeScoreNew extends Command
             'flag' => 2,
             'num' => $num1,
             'type' => 3,
-            'f_type' => Score::DICT_FREE,
+            'f_type' => $f_type,
             'amount' => 0,
         ]);
         Score::query()->create([
@@ -316,7 +331,7 @@ class freeScoreNew extends Command
             'flag' => 2,
             'num' => $num2,
             'type' => 1,
-            'f_type' => Score::J_DICT_FREE,
+            'f_type' => $f_j_type,
             'amount' => $asac_num,
         ]);
         Score::query()->create([
@@ -324,7 +339,7 @@ class freeScoreNew extends Command
             'flag' => 2,
             'num' => $num2,
             'type' => 3,
-            'f_type' => Score::J_DICT_FREE,
+            'f_type' => $f_j_type,
             'amount' => 0,
         ]);
         Score::query()->create([
