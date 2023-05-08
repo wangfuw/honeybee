@@ -314,6 +314,9 @@ class freeScoreNew extends Command
             return true;
         }
         if ($rej_dict_user->luck_score <= 0 || $rej_dict_user->green_score <= 0) {
+            if($current_user_id == 133){
+                printf("131数量不够\n");
+            }
             return true;
         }
 
