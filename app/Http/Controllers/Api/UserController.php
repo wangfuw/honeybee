@@ -41,7 +41,7 @@ class UserController extends BaseController
         if(User::query()->where('phone',$phone)->value('is_ban') == 2){
             return  $this->fail('该用户被禁用');
         }
-        $token = Auth::attempt($data);
+        $token = Auth::setTTl(60*24*365)->attempt($data);
         if (!$token) {
             return $this->fail('登录失败,账号或密码错误');
         }
