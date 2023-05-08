@@ -161,7 +161,7 @@ class AsacController extends BaseController
         $model = new AsacNode();
         $config = Asaconfig::query()->select('number','last_price')->find(1);
         $list = $model->get_list($request,$config);
-        return $this->success('请求成功',$list);
+        return $this->success('请求成功',["list"=>$list]);
     }
 
     public function get_notices(Request $request)
