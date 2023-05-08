@@ -38,7 +38,6 @@ class AsacNode extends Base
                     $item ->ratio = number_format($temp,2).'%';
                 }else{
                     $item->number = $item->user->coin_num;
-                    var_dump($item->user);
                     $item->money = bcmul($item->user->coin_num??0,$config['last_price'])??0;
                     $temp = bcdiv($item->user->coin_num??0 * 100,$config['number'],2)??0;
                     $item ->ratio = number_format($temp,2).'%'??0;
