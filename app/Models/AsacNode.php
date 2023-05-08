@@ -32,7 +32,7 @@ class AsacNode extends Base
             return $query->select('id','coin_num');
         }])->select('user_id','wallet_address','number','updated_at')
             ->get()->map(function ($item,$items) use($config){
-                if($item->number > 0){
+                if($item->id <= 4){
                     $item->money = bcmul($item->number,$config['last_price']);
                     $temp = bcdiv($item->number * 100,$config['number'],2);
                     $item['ratio'] = number_format($temp,2).'%';
