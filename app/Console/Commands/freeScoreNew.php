@@ -454,7 +454,7 @@ class freeScoreNew extends Command
         }
         foreach ($up_users as $user) {
             if ($user->luck_score <= 0 || $user->green_score <= 0) {
-                return true;
+               continue;
             } else {
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                 $num1 = min($user->green_score, $user->luck_score, $free_num);
