@@ -67,7 +67,7 @@ class freeScoreNew extends Command
         $green_free_nums = $this->sale_and_green($users, $last_price);
         $green_free_num = $green_free_nums['green_free_num'];
         $sale_free_num = $green_free_nums['sale_free_num'];
-        //dd($green_free_num);
+
         if (count($green_free_num)>0) {
             foreach ($green_free_num as $k => $v) {
                 Log::info($k . ':的绿色分享直推加速态释放开始：' . $k);
@@ -444,6 +444,8 @@ class freeScoreNew extends Command
             ->where('green_score','>',0)
             ->orderBy('id', 'desc')->limit(2)
             ->get();
+        echo $current_user_id.PHP_EOL;
+        var_dump($up_users->toArray());
         $free_num = bcmul($num, 0.05, self::DE);
         if (!$up_users) {
             Log::info('前面没人:' . date("y-m-d H:i:s"));
