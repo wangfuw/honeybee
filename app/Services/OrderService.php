@@ -27,8 +27,8 @@ class OrderService
 
     protected $model;
 
-    const GREEN = 3;
-    const SALE  = 6;
+    const GREEN = 4;
+    const SALE  = 8;
     public function __construct(MallSku $model){
         $this->model = $model;
     }
@@ -398,6 +398,7 @@ class OrderService
                 }else{
                     $to_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
                 }
+
                 //写入地址流转
                 AsacTrade::query()->create([
                     'from_address' => $from_address,
