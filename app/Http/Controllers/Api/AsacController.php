@@ -87,7 +87,7 @@ class AsacController extends BaseController
         ,'owner_num','trans_num'
         )->first();
         $list->owner_num = AsacNode::query()->count();
-        $list->owner_num = AsacNode::query()->count();
+        $list->flux += AsacNode::where("type",AsacTrade::FREE_USED)->sum("num");
         $list->trans_num = AsacTrade::query()->count();
         $list->dest_num = AsacDestory::query()->sum('number');
         return $this->success('success',$list);
