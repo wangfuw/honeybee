@@ -292,6 +292,7 @@ class freeScoreNew extends Command
                     'type' => 1,
                     'f_type' => $f_type,
                     'amount' => $asac_num,
+                    'help_phone'=> substr_replace($user->phone,'****',3,4),
                 ]);
                 Score::query()->create([
                     'user_id' => $re_dict_user->id,
@@ -300,6 +301,7 @@ class freeScoreNew extends Command
                     'type' => 3,
                     'f_type' => $f_type,
                     'amount' => 0,
+                    'help_phone'=> substr_replace($user->phone,'****',3,4),
                 ]);
                 Score::query()->create([
                     'user_id' => $re_dict_user->id,
@@ -308,6 +310,7 @@ class freeScoreNew extends Command
                     'type' => 4,
                     'f_type' => Score::FREE_HAVE,
                     'amount' => 0,
+                    'help_phone'=> substr_replace($user->phone,'****',3,4),
                 ]);
                 //於挖池释放给用户
                 AsacTrade::query()->create([
@@ -392,6 +395,7 @@ class freeScoreNew extends Command
     protected function get_dict_free($current_user_id, $num, $last_price)
     {
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
+        $dict_person_phone = User::query()->where('id',$current_user_id)->value('phone');
         $dict_users = User::query()->where('master_id', $current_user_id)
             ->select('id', 'green_score', 'luck_score', 'ticket_num', 'phone', 'coin_num')
             ->get();
@@ -425,6 +429,7 @@ class freeScoreNew extends Command
                     'type' => 1,
                     'f_type' => Score::DICT_FREE_USED,
                     'amount' => $asac_num,
+                    'help_phone'=> substr_replace($dict_person_phone,'****',3,4),
                 ]);
                 Score::query()->create([
                     'user_id' => $user->id,
@@ -433,6 +438,7 @@ class freeScoreNew extends Command
                     'type' => 3,
                     'f_type' => Score::DICT_FREE_USED,
                     'amount' => 0,
+                    'help_phone'=> substr_replace($dict_person_phone,'****',3,4),
                 ]);
                 Score::query()->create([
                     'user_id' => $user->id,
@@ -441,6 +447,7 @@ class freeScoreNew extends Command
                     'type' => 4,
                     'f_type' => Score::FREE_HAVE,
                     'amount' => 0,
+                    'help_phone'=> substr_replace($dict_person_phone,'****',3,4),
                 ]);
                 //於挖池释放给用户
                 AsacTrade::query()->create([
@@ -462,6 +469,7 @@ class freeScoreNew extends Command
     {
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
         //获取上两人
+        $user_phone = User::query()->where('id',$current_user_id)->value('phone');
         $up_users = User::query()
             ->where('id', '<', $current_user_id)
             ->select('id', 'green_score', 'luck_score', 'ticket_num', 'phone', 'coin_num')
@@ -499,6 +507,7 @@ class freeScoreNew extends Command
                     'type' => 1,
                     'f_type' => Score::SORT_FREE_USED,
                     'amount' => $asac_num,
+                    'help_phone'=> substr_replace($user_phone,'****',3,4),
                 ]);
                 Score::query()->create([
                     'user_id' => $user->id,
@@ -507,6 +516,7 @@ class freeScoreNew extends Command
                     'type' => 3,
                     'f_type' => Score::SORT_FREE_USED,
                     'amount' => 0,
+                    'help_phone'=> substr_replace($user_phone,'****',3,4),
                 ]);
                 Score::query()->create([
                     'user_id' => $user->id,
@@ -515,6 +525,7 @@ class freeScoreNew extends Command
                     'type' => 4,
                     'f_type' => Score::FREE_HAVE,
                     'amount' => 0,
+                    'help_phone'=> substr_replace($user_phone,'****',3,4),
                 ]);
                 //於挖池释放给用户
                 AsacTrade::query()->create([
@@ -652,6 +663,7 @@ class freeScoreNew extends Command
                     'type' => 1,
                     'f_type' => $f_type,
                     'amount' => $asac_num,
+                    'help_phone'=> substr_replace($current_user->phone,'****',3,4),
                 ]);
                 Score::query()->create([
                     'user_id' => $user->id,
@@ -660,6 +672,7 @@ class freeScoreNew extends Command
                     'type' => 3,
                     'f_type' => $f_type,
                     'amount' => 0,
+                    'help_phone'=> substr_replace($current_user->phone,'****',3,4),
                 ]);
                 Score::query()->create([
                     'user_id' => $user->id,
@@ -668,6 +681,7 @@ class freeScoreNew extends Command
                     'type' => 4,
                     'f_type' => Score::FREE_HAVE,
                     'amount' => 0,
+                    'help_phone'=> substr_replace($current_user->phone,'****',3,4),
                 ]);
                 //於挖池释放给用户
                 AsacTrade::query()->create([
@@ -733,6 +747,7 @@ class freeScoreNew extends Command
                     'type' => 1,
                     'f_type' => Score::XX_TEAM_USED,
                     'amount' => $asac_num,
+                    'help_phone'=> substr_replace($user_auth->phone,'****',3,4),
                 ]);
                 Score::query()->create([
                     'user_id' => $user->id,
@@ -741,6 +756,7 @@ class freeScoreNew extends Command
                     'type' => 3,
                     'f_type' => Score::XX_TEAM_USED,
                     'amount' => 0,
+                    'help_phone'=> substr_replace($user_auth->phone,'****',3,4),
                 ]);
                 Score::query()->create([
                     'user_id' => $user->id,
@@ -749,6 +765,7 @@ class freeScoreNew extends Command
                     'type' => 4,
                     'f_type' => Score::FREE_HAVE,
                     'amount' => 0,
+                    'help_phone'=> substr_replace($user_auth->phone,'****',3,4),
                 ]);
                 //於挖池释放给用户
                 AsacTrade::query()->create([
@@ -777,6 +794,7 @@ class freeScoreNew extends Command
                 'type' => 1,
                 'f_type' => Score::XX_USED,
                 'amount' => $asac_num,
+                'help_phone'=> substr_replace($user_auth->phone,'****',3,4),
             ]);
             Score::query()->create([
                 'user_id' => $user->id,
@@ -785,6 +803,7 @@ class freeScoreNew extends Command
                 'type' => 3,
                 'f_type' => Score::XX_USED,
                 'amount' => 0,
+                'help_phone'=> substr_replace($user_auth->phone,'****',3,4),
             ]);
             Score::query()->create([
                 'user_id' => $user->id,
@@ -793,6 +812,7 @@ class freeScoreNew extends Command
                 'type' => 4,
                 'f_type' => Score::FREE_HAVE,
                 'amount' => 0,
+                'help_phone'=> substr_replace($user_auth->phone,'****',3,4),
             ]);
             //於挖池释放给用户
             AsacTrade::query()->create([
@@ -896,6 +916,7 @@ class freeScoreNew extends Command
                 'type' => 1,
                 'f_type' => Score::QJ_USED,
                 'amount' => $asac_num,
+                'help_phone'=> substr_replace($user_auth->phone,'****',3,4),
             ]);
             Score::query()->create([
                 'user_id' => $user->id,
@@ -904,6 +925,7 @@ class freeScoreNew extends Command
                 'type' => 3,
                 'f_type' => Score::QJ_USED,
                 'amount' => 0,
+                'help_phone'=> substr_replace($user_auth->phone,'****',3,4),
             ]);
             Score::query()->create([
                 'user_id' => $user->id,
@@ -912,6 +934,7 @@ class freeScoreNew extends Command
                 'type' => 4,
                 'f_type' => Score::FREE_HAVE,
                 'amount' => 0,
+                'help_phone'=> substr_replace($user_auth->phone,'****',3,4),
             ]);
             //於挖池释放给用户
             AsacTrade::query()->create([
