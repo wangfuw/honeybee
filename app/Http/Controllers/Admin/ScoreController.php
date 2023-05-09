@@ -44,6 +44,10 @@ class ScoreController extends AdminBaseController
             $condition[] = ["score.type", "=", $request->type];
         }
 
+        if($request->help_phone){
+            $condition[] = ["score.help_phone","=",$request->help_phone];
+        }
+
         if ($request->filled("create_at")) {
             $start = $request->input("create_at.0");
             $end = $request->input("create_at.1");
