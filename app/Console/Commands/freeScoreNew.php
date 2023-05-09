@@ -710,9 +710,6 @@ class freeScoreNew extends Command
     {
         $user_auth = UserIdentity::where("status", 1)->where('user_id',$current_user_id)->first();
         $user_tt_phone = User::query()->where('id',$current_user_id)->value('phone');
-        if($current_user_id == 36){
-            print_r($user_auth);
-        }
         if (!$user_auth) {
             return;
         }
@@ -734,8 +731,12 @@ class freeScoreNew extends Command
                 continue;
             }
             //形象店团队
+            if($current_user_id == 148){
+                echo $current_user_id.PHP_EOL;
+            }
             if(User::query()->where('id',$current_user_id)->where('master_pos','like','%'.','.$user->id.','.'%')->exists())
             {
+                echo $current_user_id;
                 //该成员属于该旗舰店团队 -享受加速
                 $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                 $user->green_score = bcsub($user->green_score, $num1, self::DE);
