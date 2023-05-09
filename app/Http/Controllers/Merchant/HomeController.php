@@ -82,7 +82,7 @@ class HomeController extends MerchantBaseController
             }
             $store->longitude = $request->longitude;
         }
-        if(!$request->filled("latitude")){
+        if($request->filled("latitude")){
             if(!is_numeric($request->latitude)){
                 return $this->fail("纬度格式错误");
             }
