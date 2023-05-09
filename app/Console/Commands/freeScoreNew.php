@@ -715,6 +715,7 @@ class freeScoreNew extends Command
             //形象店团队
             if(User::query()->where('id',$current_user_id)->where('master_pos','like','%'.','.$user->id.','.'%')->exists())
             {
+               echo '形象店团队'.PHP_EOL;
                 //该成员属于该旗舰店团队 -享受加速
                 $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                 $user->green_score = bcsub($user->green_score, $num1, self::DE);
@@ -758,6 +759,7 @@ class freeScoreNew extends Command
                 $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
                 $user->save();
                 $pre_address->save();
+                echo '形象店团队结束'.PHP_EOL;
             }
             $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
             $user->green_score = bcsub($user->green_score, $num1, self::DE);
@@ -833,6 +835,7 @@ class freeScoreNew extends Command
             }
             //旗舰店团队
             if(User::query()->where('id',$current_user_id)->where('master_pos','like','%'.','.$user->id.','.'%')->exists()){
+                echo '期间店团队'.PHP_EOL;
                 $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                 $user->green_score = bcsub($user->green_score, $num1, self::DE);
                 $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
@@ -875,6 +878,7 @@ class freeScoreNew extends Command
                 $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
                 $user->save();
                 $pre_address->save();
+                echo '期间店团队结束'.PHP_EOL;
             }
             $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
             $user->green_score = bcsub($user->green_score, $num1, self::DE);
