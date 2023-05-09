@@ -238,7 +238,7 @@ class OrderService
             $price_total = bcmul($sku_info->price,$data['number'],2);
 
             //检查商家绿色积分
-            if($spu_info->user_id != 0 && $spu_info->game_zone == 1){
+            if($spu_info->user_id >= 2 && $spu_info->game_zone == 1){
                 //商家绿色积分
                 $boss = User::query()->where('id',$spu_info->user_id)->select('id','green_score','phone')->first();
                 $need_green = $price_total * $spu_info->score_zone;
@@ -461,15 +461,19 @@ class OrderService
                     'game_zone'    => 1,
                 ]);
 
-                Score::query()->create([
-                    'user_id'=>$user_id,
-                    'flag' => 2,
-                    'num' => $info->give_green_score,
-                    'type'=>1,
-                    'f_type'=>Score::TRADE_USED,
-                    'amount' => '+'.$info->coin_num,
-                    'game_zone'    => 1,
-                ]);
+                //非自营扣绿色积分
+                if($user_id >= 2){
+                    Score::query()->create([
+                        'user_id'=>$user_id,
+                        'flag' => 2,
+                        'num' => $info->give_green_score,
+                        'type'=>1,
+                        'f_type'=>Score::TRADE_USED,
+                        'amount' => '+'.$info->coin_num,
+                        'game_zone'    => 1,
+                    ]);
+                }
+
 
                 if($masters){
                     $masters =  explode(',',substr($masters,1,strlen($masters) - 2));
