@@ -723,7 +723,7 @@ class freeScoreNew extends Command
         if(empty($master_poss)){
             return true;
         }
-        $master_poss_arr =  explode(',', substr($master_poss->master_pos, 1, strlen($master_poss->master_pos) - 2));
+        $master_poss_arr =  explode(',', substr($master_poss, 1, strlen($master_poss) - 2));
         $user_tt_phone = User::query()->where('id',$current_user_id)->value('phone');
         $xx_store = User::query()->whereIn('id',$master_poss_arr)
             ->where("identity_status", 1)
