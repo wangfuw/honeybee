@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Store extends Base
 {
@@ -62,13 +63,13 @@ class Store extends Base
         $list = self::query()->where('on_line',2)->when($keyword,function ($query) use($keyword){
             return $query->where('store_name','like','%'.$keyword.'%');
         })->get();
-        print_r($list->toArray());
+        Log::info($list->toArray());
         if(!$list) return [];
+        Log::info($longitude);
+        Log::info($latitude);
         $new = [];
-        echo $longitude.PHP_EOL;
-        echo $latitude.PHP_EOL;
         foreach ($list as $l){
-            echo getdistance($longitude,$latitude,$l->longitude,$l->latitude);
+            Log::info(getdistance($longitude,$latitude,$l->longitude,$l->latitude));
             if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 50000){
                 $distance = getdistance($longitude,$latitude,$l->longitude,$l->latitude);
                 $l->distance = floor($distance*100)/100;
