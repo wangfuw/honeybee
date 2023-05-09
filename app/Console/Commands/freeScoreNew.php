@@ -548,18 +548,6 @@ class freeScoreNew extends Command
             return true;
         }
 
-//    case 1:
-//                return $num * 0.10;
-//            case 2:
-//                return $num * 0.15;
-//            case 3:
-//                return $num * 0.20;
-//            case 4:
-//                return $num * 0.25;
-//            case 5:
-//                return $num * 0.35;
-//            default:
-//                return 0;
         $rates = [
             0 => 0,
             1 => 0.10,
@@ -701,7 +689,7 @@ class freeScoreNew extends Command
             ->where("green_score", ">", 0)
             ->where("luck_score", ">", 0)
             ->where("is_ban", 1)
-            ->all();
+            ->get();
 
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
         $free_num = bcmul($num, 0.08, self::DE);
@@ -773,7 +761,7 @@ class freeScoreNew extends Command
             ->where("green_score", ">", 0)
             ->where("luck_score", ">", 0)
             ->where("is_ban", 1)
-            ->all();
+            ->get();
 
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
         $free_num = bcmul($num, 0.05, self::DE);
