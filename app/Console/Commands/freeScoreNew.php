@@ -706,7 +706,7 @@ class freeScoreNew extends Command
     protected function xingxiang($current_user_id, $num, $last_price)
     {
         $user_auth = UserIdentity::where("status", 1)->where('user_id',$current_user_id)->first();
-        $user_tt_phone = UserIdentity::query()->where('id',$current_user_id)->value('phone');
+        $user_tt_phone = User::query()->where('id',$current_user_id)->value('phone');
         if($current_user_id == 36){
             print_r($user_auth);
         }
@@ -834,7 +834,7 @@ class freeScoreNew extends Command
     protected function qijian($current_user_id, $num, $last_price)
     {
         $user_auth = UserIdentity::where("status", 1)->where('user_id',$current_user_id)->first();
-        $user_tt_phone = UserIdentity::query()->where('id',$current_user_id)->value('phone');
+        $user_tt_phone = User::query()->where('id',$current_user_id)->value('phone');
         if (!$user_auth) {
             return;
         }
