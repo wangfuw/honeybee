@@ -65,7 +65,7 @@ class Store extends Base
         if(!$list) return [];
         $new = [];
         foreach ($list as $l){
-            if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 5000){
+            if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 50000){
                 $distance = getdistance($longitude,$latitude,$l->longitude,$l->latitude);
                 $l->distance = floor($distance*100)/100;
                 $l->area_china = city_name($l->area);
