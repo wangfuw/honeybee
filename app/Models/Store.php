@@ -65,6 +65,8 @@ class Store extends Base
         print_r($list->toArray());
         if(!$list) return [];
         $new = [];
+        echo $longitude.PHP_EOL;
+        echo $latitude.PHP_EOL;
         foreach ($list as $l){
             echo getdistance($longitude,$latitude,$l->longitude,$l->latitude);
             if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 50000){
