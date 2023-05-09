@@ -62,9 +62,11 @@ class Store extends Base
         $list = self::query()->where('on_line',2)->when($keyword,function ($query) use($keyword){
             return $query->where('store_name','like','%'.$keyword.'%');
         })->get();
+        print_r($list->toArray());
         if(!$list) return [];
         $new = [];
         foreach ($list as $l){
+            echo getdistance($longitude,$latitude,$l->longitude,$l->latitude);
             if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 50000){
                 $distance = getdistance($longitude,$latitude,$l->longitude,$l->latitude);
                 $l->distance = floor($distance*100)/100;
