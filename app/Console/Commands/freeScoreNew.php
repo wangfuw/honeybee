@@ -691,7 +691,7 @@ class freeScoreNew extends Command
     // 形象店加速
     protected function xingxiang($current_user_id, $num, $last_price)
     {
-        $user_auth = UserIdentity::where("status", 1)->find($current_user_id);
+        $user_auth = UserIdentity::where("status", 1)->where('user_id',$current_user_id)->first();
         if($current_user_id == 36){
             print_r($user_auth);
         }
@@ -814,7 +814,7 @@ class freeScoreNew extends Command
     // 旗舰店加速
     protected function qijian($current_user_id, $num, $last_price)
     {
-        $user_auth = UserIdentity::where("status", 1)->find($current_user_id);
+        $user_auth = UserIdentity::where("status", 1)->where('user_id',$current_user_id)->first();
         if (!$user_auth) {
             return;
         }
