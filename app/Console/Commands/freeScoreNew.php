@@ -701,7 +701,7 @@ class freeScoreNew extends Command
             ->where("green_score", ">", 0)
             ->where("luck_score", ">", 0)
             ->where("is_ban", 1)
-            ->all();
+            ->get();
 
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
         $free_num = bcmul($num, 0.05, self::DE);
@@ -822,7 +822,7 @@ class freeScoreNew extends Command
             ->where("green_score", ">", 0)
             ->where("luck_score", ">", 0)
             ->where("is_ban", 1)
-            ->all();
+            ->get();
 
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
         $free_num = bcmul($num, 0.03, self::DE);
