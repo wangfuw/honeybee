@@ -128,7 +128,7 @@ if (!function_exists("send_sms_real")) {
             "43" => "IP地址限制",
             "50" => "内容含有敏感词"
         );
-        $sendurl = env('SEND_URL',"http://api.smsbao.com/") . "sms?u=" . env("SEND_USER","wangfuw456") . "&p=" . env("SEND_PASS","36f8554c5e2729405c3cecbe0d174bc6") . "&m=" . $phone . "&c=" . urlencode($content);
+        $sendurl = env('SEND_URL',"http://api.smsbao.com/") . "sms?u=" . env("SEND_USER","Szr180862") . "&p=" . env("SEND_PASS","59fe186b6a63fa80c816a86ed6303c25") . "&m=" . $phone . "&c=" . urlencode($content);
         $result = file_get_contents($sendurl);
         return ['status' => 1, 'info' => $statusStr[$result], 'data' => ''];
     }
