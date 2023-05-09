@@ -146,8 +146,21 @@ class freeScoreNew extends Command
                     DB::rollBack();
                 }
             }
+
+            foreach ($green_free_num as $k => $v) {
+                DB::beginTransaction();
+                try {
+                    $this->fee_store_team($k, $v, $last_price);
+                    DB::commit();
+                } catch (\Exception $e) {
+                    Log::error("旗舰店加速失败：" . $e->getMessage());
+                    DB::rollBack();
+                }
+            }
+
         }
     }
+
 
     protected function sale_and_green($users, $last_price)
     {
@@ -704,7 +717,144 @@ class freeScoreNew extends Command
         }
     }
 
+    protected function fee_store_team($current_user_id, $num, $last_price = 10)
+    {
+        $master_poss = User::query()->where('id',$current_user_id)->value('master_pos');
+        if(empty($master_poss)){
+            return true;
+        }
+        $master_poss_arr =  explode(',', substr($master_poss->master_pos, 1, strlen($master_poss->master_pos) - 2));
+        $user_tt_phone = User::query()->where('id',$current_user_id)->value('phone');
+        $xx_store = User::query()->whereIn('id',$master_poss_arr)
+            ->where("identity_status", 1)
+            ->where("identity", 1)
+            ->where("green_score", ">", 0)
+            ->where("luck_score", ">", 0)
+            ->where("is_ban", 1)
+            ->get();
+        $qj_store =User::query()->whereIn('id',$master_poss_arr)
+            ->where("identity_status", 1)
+            ->where("identity", 2)
+            ->where("green_score", ">", 0)
+            ->where("luck_score", ">", 0)
+            ->where("is_ban", 1)
+            ->get();
+        $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
+        if($xx_store){
+            $free_num = bcmul($num, 0.05, self::DE);
+            foreach ($xx_store as $user) {
+                $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
+                $num1 = min($user->green_score, $user->luck_score, $free_num);
+                $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
+                if ($num1 < self::MIN) {
+                    continue;
+                }
+                $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
+                $user->green_score = bcsub($user->green_score, $num1, self::DE);
+                $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
+                $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
+                $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
 
+                //写释放日志 绿色积分 幸运值 消费卷
+                Score::query()->create([
+                    'user_id' => $user->id,
+                    'flag' => 2,
+                    'num' => $num1,
+                    'type' => 1,
+                    'f_type' => Score::XX_TEAM_USED,
+                    'amount' => $asac_num,
+                    'help_phone'=> $user_tt_phone
+                ]);
+                Score::query()->create([
+                    'user_id' => $user->id,
+                    'flag' => 2,
+                    'num' => $num1,
+                    'type' => 3,
+                    'f_type' => Score::XX_TEAM_USED,
+                    'amount' => 0,
+                    'help_phone'=> $user_tt_phone,
+                ]);
+                Score::query()->create([
+                    'user_id' => $user->id,
+                    'flag' => 1,
+                    'num' => $ticket_num,
+                    'type' => 4,
+                    'f_type' => Score::FREE_HAVE,
+                    'amount' => 0,
+                    'help_phone'=> $user_tt_phone,
+                ]);
+                //於挖池释放给用户
+                AsacTrade::query()->create([
+                    'from_address' => $pre_address->wallet_address,
+                    'to_address' => $user_address,
+                    'num' => $asac_num,
+                    'trade_hash' => rand_str_pay(64),
+                    'type' => AsacTrade::FREE_USED
+                ]);
+                $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
+                $user->save();
+                $pre_address->save();
+            }
+        }
+        if($qj_store){
+            $free_num = bcmul($num, 0.03, self::DE);
+            foreach ($qj_store as $user) {
+                $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
+                $num1 = min($user->green_score, $user->luck_score, $free_num);
+                $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
+                if ($num1 < self::MIN) {
+                    continue;
+                }
+
+                $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
+                $user->green_score = bcsub($user->green_score, $num1, self::DE);
+                $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
+                $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
+                $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
+
+                //写释放日志 绿色积分 幸运值 消费卷
+                Score::query()->create([
+                    'user_id' => $user->id,
+                    'flag' => 2,
+                    'num' => $num1,
+                    'type' => 1,
+                    'f_type' => Score::QJ_TEAM_USED,
+                    'amount' => $asac_num,
+                    'help_phone'=> $user_tt_phone,
+                ]);
+                Score::query()->create([
+                    'user_id' => $user->id,
+                    'flag' => 2,
+                    'num' => $num1,
+                    'type' => 3,
+                    'f_type' => Score::QJ_TEAM_USED,
+                    'amount' => 0,
+                    'help_phone'=> $user_tt_phone,
+                ]);
+                Score::query()->create([
+                    'user_id' => $user->id,
+                    'flag' => 1,
+                    'num' => $ticket_num,
+                    'type' => 4,
+                    'f_type' => Score::FREE_HAVE,
+                    'amount' => 0,
+                    'help_phone'=> $user_tt_phone,
+                ]);
+                //於挖池释放给用户
+                AsacTrade::query()->create([
+                    'from_address' => $pre_address->wallet_address,
+                    'to_address' => $user_address,
+                    'num' => $asac_num,
+                    'trade_hash' => rand_str_pay(64),
+                    'type' => AsacTrade::FREE_USED
+                ]);
+                $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
+                $user->save();
+                $pre_address->save();
+            }
+        }
+
+    }
     // 形象店加速
     protected function xingxiang($current_user_id, $num, $last_price)
     {
@@ -730,61 +880,7 @@ class freeScoreNew extends Command
             if ($num1 < self::MIN) {
                 continue;
             }
-            //形象店团队
-            if($current_user_id == 148){
-                echo $current_user_id.PHP_EOL;
-            }
-            if(User::query()->where('id',$current_user_id)->where('master_pos','like','%'.','.$user->id.','.'%')->exists())
-            {
-                echo $current_user_id;
-                //该成员属于该旗舰店团队 -享受加速
-                $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
-                $user->green_score = bcsub($user->green_score, $num1, self::DE);
-                $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
-                $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
-                $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
 
-                //写释放日志 绿色积分 幸运值 消费卷
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 1,
-                    'f_type' => Score::XX_TEAM_USED,
-                    'amount' => $asac_num,
-                    'help_phone'=> $user_tt_phone,
-                ]);
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 3,
-                    'f_type' => Score::XX_TEAM_USED,
-                    'amount' => 0,
-                    'help_phone'=> $user_tt_phone
-                ]);
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 1,
-                    'num' => $ticket_num,
-                    'type' => 4,
-                    'f_type' => Score::FREE_HAVE,
-                    'amount' => 0,
-                    'help_phone'=> $user_tt_phone
-                ]);
-                //於挖池释放给用户
-                AsacTrade::query()->create([
-                    'from_address' => $pre_address->wallet_address,
-                    'to_address' => $user_address,
-                    'num' => $asac_num,
-                    'trade_hash' => rand_str_pay(64),
-                    'type' => AsacTrade::FREE_USED
-                ]);
-                $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
-                $user->save();
-                $pre_address->save();
-                echo '形象店团队结束'.PHP_EOL;
-            }
             $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
             $user->green_score = bcsub($user->green_score, $num1, self::DE);
             $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
@@ -861,53 +957,7 @@ class freeScoreNew extends Command
             if ($num1 < self::MIN) {
                 continue;
             }
-            //旗舰店团队
-            if(User::query()->where('id',$current_user_id)->where('master_pos','like','%'.','.$user->id.','.'%')->exists()){
-                echo '期间店团队'.PHP_EOL;
-                $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
-                $user->green_score = bcsub($user->green_score, $num1, self::DE);
-                $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
-                $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
-                $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
 
-                //写释放日志 绿色积分 幸运值 消费卷
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 1,
-                    'f_type' => Score::QJ_TEAM_USED,
-                    'amount' => $asac_num,
-                ]);
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 3,
-                    'f_type' => Score::QJ_TEAM_USED,
-                    'amount' => 0,
-                ]);
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 1,
-                    'num' => $ticket_num,
-                    'type' => 4,
-                    'f_type' => Score::FREE_HAVE,
-                    'amount' => 0,
-                ]);
-                //於挖池释放给用户
-                AsacTrade::query()->create([
-                    'from_address' => $pre_address->wallet_address,
-                    'to_address' => $user_address,
-                    'num' => $asac_num,
-                    'trade_hash' => rand_str_pay(64),
-                    'type' => AsacTrade::FREE_USED
-                ]);
-                $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
-                $user->save();
-                $pre_address->save();
-                echo '期间店团队结束'.PHP_EOL;
-            }
             $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
             $user->green_score = bcsub($user->green_score, $num1, self::DE);
             $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
