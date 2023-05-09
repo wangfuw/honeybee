@@ -51,9 +51,10 @@ class Score extends Base
 
     // 形象店加速
     const XX_USED = 20;
-
+    const XX_TEAM_USED = 22;
     // 旗舰店加速
     const QJ_USED = 21;
+    const QJ_TEAM_USED = 23;
 
     const F_TYPES = [
         self::BACK_ADD => "后台增加",
@@ -77,6 +78,8 @@ class Score extends Base
         self::LEVEL_FREE_USED => '平级加速',
         self::XX_USED => '形象店加速',
         self::QJ_USED => '旗舰店加速',
+        self::XX_TEAM_USED => '形象店团队加速',
+        self::QJ_TEAM_USED => '旗舰店团队加速',
     ];
 
 
@@ -85,7 +88,10 @@ class Score extends Base
         $used_num = 0;
         switch ($type){
             case 1:
-                $used_num = self::query()->where('user_id',$user_id)->whereIn('f_type',[self::LUCKY_FREE_USED,Score::SORT_FREE_USED,self::FREE_USED,self::DICT_FREE_USED,self::TEAM_FREE_USED,self::DICT_FREE,self::J_DICT_FREE,self::SALE_DICT_FREE,self::SALE_J_DICT_FREE])->where('type',1)->sum('num');
+                $used_num = self::query()->where('user_id',$user_id)->whereIn('f_type',[self::LUCKY_FREE_USED,Score::SORT_FREE_USED,
+                    self::FREE_USED,self::DICT_FREE_USED,self::TEAM_FREE_USED,
+                    self::DICT_FREE,self::J_DICT_FREE,self::SALE_DICT_FREE,
+                    self::SALE_J_DICT_FREE,self::XX_USED,self::XX_TEAM_USED,self::QJ_TEAM_USED,self::QJ_USED])->where('type',1)->sum('num');
                 break;
             case 2:
                 $used_num = self::query()->where('user_id',$user_id)->where('f_type', self::FREE_USED)->where('type',2)->sum('num');
