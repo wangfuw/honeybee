@@ -71,12 +71,9 @@ class UserController extends BaseController
     }
 
     //修改交易密码
-    public function send_sale_code(Request $request)
+    public function send_sale_code()
     {
-        $phone = Rsa::decodeByPrivateKey($request->phone);
-        if($phone != Auth::user()->phone){
-            return $this->fail('该手机号不是您的注册手机号');
-        }
+        $phone = Auth::user()->phone;
         $code = make_code();
         //        将验证码储在缓冲，设置过期时间为六分钟
         $content = "【源宇通商城】您的验证码是".$code."。如非本人操作，请忽略本短信";
