@@ -72,58 +72,58 @@ class freeScoreNew extends Command
         $sale_free_num = $green_free_nums['sale_free_num'];
 
         if (count($green_free_num) > 0) {
-//            foreach ($green_free_num as $k => $v) {
-//                Log::info($k . ':的绿色分享直推加速态释放开始：' . $k);
-//                DB::beginTransaction();
-//                try {
-//                    $this->share_free($k, $v, $last_price, 1);
-//                    DB::commit();
-//                } catch (\Exception $e) {
-//                    DB::rollBack();
-//                }
-//            }
-//
-//            foreach ($sale_free_num as $k => $v) {
-//                Log::info($k . ':的消费积分分享直推加速态释放开始：' . $k);
-//                DB::beginTransaction();
-//                try {
-//                    $this->share_free($k, $v, $last_price, 0);
-//                    DB::commit();
-//                } catch (\Exception $e) {
-//                    DB::rollBack();
-//                }
-//            }
-//
-//            foreach ($green_free_num as $k => $v) {
-//                // 2. 直推加速
-//                DB::beginTransaction();
-//                try {
-//                    $this->get_dict_free($k, $v, $last_price);
-//                    DB::commit();
-//                } catch (\Exception $e) {
-//                    DB::rollBack();
-//                }
-//
-//            }
-//            foreach ($green_free_num as $k => $v) {
-//                DB::beginTransaction();
-//                try {
-//                    $this->get_up_two($k, $v, $last_price);
-//                    DB::commit();
-//                } catch (\Exception $e) {
-//                    DB::rollBack();
-//                }
-//            }
-//
-//            foreach ($green_free_num as $k => $v) {
-//                DB::beginTransaction();
-//                try {
-//                    $this->free_team($k, $v, $last_price);
-//                    DB::commit();
-//                } catch (\Exception $e) {
-//                    DB::rollBack();
-//                }
-//            }
+            foreach ($green_free_num as $k => $v) {
+                Log::info($k . ':的绿色分享直推加速态释放开始：' . $k);
+                DB::beginTransaction();
+                try {
+                    $this->share_free($k, $v, $last_price, 1);
+                    DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                }
+            }
+
+            foreach ($sale_free_num as $k => $v) {
+                Log::info($k . ':的消费积分分享直推加速态释放开始：' . $k);
+                DB::beginTransaction();
+                try {
+                    $this->share_free($k, $v, $last_price, 0);
+                    DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                }
+            }
+
+            foreach ($green_free_num as $k => $v) {
+                // 2. 直推加速
+                DB::beginTransaction();
+                try {
+                    $this->get_dict_free($k, $v, $last_price);
+                    DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                }
+
+            }
+            foreach ($green_free_num as $k => $v) {
+                DB::beginTransaction();
+                try {
+                    $this->get_up_two($k, $v, $last_price);
+                    DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                }
+            }
+
+            foreach ($green_free_num as $k => $v) {
+                DB::beginTransaction();
+                try {
+                    $this->free_team($k, $v, $last_price);
+                    DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                }
+            }
 
             foreach ($green_free_num as $k => $v) {
                 DB::beginTransaction();
@@ -715,11 +715,9 @@ class freeScoreNew extends Command
             if ($num1 < self::MIN) {
                 continue;
             }
-            echo '形象店团队'.PHP_EOL;
             //形象店团队
             if(User::query()->where('id',$current_user_id)->where('master_pos','like','%'.','.$user->id.','.'%')->exists())
             {
-               echo '形象店团队'.PHP_EOL;
                 //该成员属于该旗舰店团队 -享受加速
                 $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                 $user->green_score = bcsub($user->green_score, $num1, self::DE);
