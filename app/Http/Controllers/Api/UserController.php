@@ -284,9 +284,9 @@ class UserController extends BaseController
         }
         $code = $request->code;
         //短信验证-- todo 打开
-        if($code != Redis::get($phone)){
-            return $this->fail('验证码错误');
-        }
+//        if($code != Redis::get($phone)){
+//            return $this->fail('验证码错误');
+//        }
         try {
             $users->sale_password = Rsa::decodeByPrivateKey($request->sale_password);
             $users->save();
