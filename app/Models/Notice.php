@@ -37,11 +37,12 @@ class Notice extends Base
             'created_at'
         )->where('type',$type)
             ->orderBy('id','desc')
+            ->forPage($page,$page_size)
         ->get()->map(function ($item,$items){
                 $item->text = strip_tags($item->text_line);
                 return $item;
             })
-        ->forPage($page,$page_size);
+       ;
         return collect([])->merge($data);
     }
 

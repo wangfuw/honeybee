@@ -31,6 +31,7 @@ class AsacNode extends Base
         $list = self::query()->with(['user'=>function($query){
             return $query->select('id','coin_num');
         }])->select('id','user_id','wallet_address','number','updated_at')
+            ->forPage($page,$page_size)
             ->get()->map(function ($item,$items) use($config){
                 if($item->id <= 4){
                     $item->money = bcmul($item->number,$config['last_price']);
@@ -44,7 +45,7 @@ class AsacNode extends Base
                 }
                 unset($temp,$item->user);
                 return $item;
-        })->forPage($page,$page_size);
+        });
         return collect([])->merge($list)->toArray();
     }
 }

@@ -41,7 +41,7 @@ class ShopCart extends Base
         },'spu'=>function($query){
             return $query->select('id','name','logo','game_zone','score_zone','special_spec','fee');
         }])->select('id','store_id','sku_id','spu_id','number','order_money')
-            ->where('user_id',$user_id)->get();
+            ->where('user_id',$user_id)->forPage($page,$page_size)->get();
         if(empty($list)) return [];
         return $list->map(function ($item,$items) use($last_price){
             $item->price = $item->sku->price;
@@ -70,7 +70,7 @@ class ShopCart extends Base
             unset($item->sku);
             unset($item->store);
             return $item;
-        })->forPage($page,$page_size);
+        });
         return collect([])->merge($list)->toArray();
     }
 

@@ -108,10 +108,10 @@ class Score extends Base
         $types = self::F_TYPES;
         $list = self::query()->select('id','flag','created_at','num','f_type','amount','game_zone','help_phone')->where('user_id',$user_id)
             ->where('type',$type)
-            ->orderBy('created_at','desc')->get()->map(function ($item,$items) use($types){
+            ->orderBy('created_at','desc')->forPage($page,$page_size)->get()->map(function ($item,$items) use($types){
                 $item->note = $this->get_name($item->game_zone).$types[$item->f_type];
                 return $item;
-            })->forPage($page,$page_size);
+            });
         $data =  collect([])->merge($list);
         return compact('used_num','data');
     }

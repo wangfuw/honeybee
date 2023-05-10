@@ -62,7 +62,7 @@ class Store extends Base
         $latitude  = $data['latitude'];
         $list = self::query()->where('on_line',2)->when($keyword,function ($query) use($keyword){
             return $query->where('store_name','like','%'.$keyword.'%');
-        })->get();
+        })->forPage($page,$page_size)->get();
         if(!$list) return [];
         $new = [];
         foreach ($list as $l){
@@ -77,7 +77,7 @@ class Store extends Base
                 continue;
             }
         }
-        return collect([])->merge($new)->forPage($page,$page_size)->toArray();
+        return collect([])->merge($new)->toArray();
     }
 
 }

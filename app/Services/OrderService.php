@@ -66,6 +66,7 @@ class OrderService
                     ->where('user_id',$user->id)
                     ->where('is_return',0)
                     ->orderBy('created_at','desc')
+                    ->forPage($page,$page_size)
                     ->get();
                 if(empty($list)) return [];
                 break;
@@ -81,6 +82,7 @@ class OrderService
                     ->where('user_id',$user->id)
                     ->where('is_return',0)
                     ->orderBy('created_at','desc')
+                    ->forPage($page,$page_size)
                     ->get();
                 if(empty($list)) return [];
                 break;
@@ -96,6 +98,7 @@ class OrderService
                     ->where('user_id',$user->id)
                     ->where('is_return',0)
                     ->orderBy('created_at','desc')
+                    ->forPage($page,$page_size)
                     ->get();
                 if(empty($list)) return [];
                 break;
@@ -111,6 +114,7 @@ class OrderService
                     ->where('user_id',$user->id)
                     ->where('is_return',0)
                     ->orderBy('created_at','desc')
+                    ->forPage($page,$page_size)
                     ->get();
                 if(empty($list)) return [];
                 break;
@@ -123,6 +127,7 @@ class OrderService
                     ->where('user_id',$user->id)
                     ->where('is_return',0)
                     ->orderBy('created_at','desc')
+                    ->forPage($page,$page_size)
                     ->get();
                 if(empty($list)) return [];
         }
@@ -149,7 +154,7 @@ class OrderService
             $item->name = $item->spu->name;
             unset($item->sku,$item->spu,$index_special,$special,$indexes);
             return $item;
-        })->forPage($page,$page_size);
+        });
         return collect([])->merge($list)->toArray();
     }
 
@@ -862,6 +867,7 @@ class OrderService
         }])->select('*')
             ->where('user_id',$user->id)
             ->where('is_return',1)
+            ->forPage($page,$page_size)
             ->get();
         if(empty($list)) return [];
         $list = $list->map(function ($item,$items){
@@ -886,7 +892,7 @@ class OrderService
             $item->name = $item->spu->name;
             unset($item->sku,$item->spu);
             return $item;
-        })->forPage($page,$page_size);
+        });
         return collect([])->merge($list)->toArray();
     }
 

@@ -70,12 +70,12 @@ class MallSpu extends Base
             $handler->where('score_zone','>',0);
         }
 
-       $list = $handler->where('game_zone', 1)->get()->map(function ($item, $items) use ($coin_price) {
+       $list = $handler->where('game_zone', 1)->forPage($page, $page_size)->get()->map(function ($item, $items) use ($coin_price) {
                 $item->prcie = $item->skp->price;
                 $item->coin_num = bcdiv($item->skp->price, $coin_price, 2);
                 unset($item->skp);
                 return $item;
-            })->forPage($page, $page_size);
+            });
         return collect([])->merge($list);
     }
 
@@ -101,13 +101,13 @@ class MallSpu extends Base
         }else{
             $handler->where('score_zone','>',0);
         }
-       $list = $handler->where('game_zone', 2)
+       $list = $handler->where('game_zone', 2)->forPage($page, $page_size)
         ->get()->map(function ($item, $items) use ($coin_price) {
             $item->prcie = $item->skp->price;
             $item->coin_num = bcdiv($item->skp->price, $coin_price, 2);
             unset($item->skp);
             return $item;
-        })->forPage($page, $page_size);
+        });
         return collect([])->merge($list);
     }
 
@@ -125,12 +125,12 @@ class MallSpu extends Base
             })
             ->where('saleable', 1)
             ->where('user_id', 0)
-            ->where('game_zone', 3)->get()->map(function ($item, $items) use ($coin_price) {
+            ->where('game_zone', 3)->forPage($page, $page_size)->get()->map(function ($item, $items) use ($coin_price) {
                 $item->prcie = $item->skp->price;
                 $item->coin_num = bcdiv($item->skp->prcie, $coin_price, 2);
                 unset($item->skp);
                 return $item;
-            })->forPage($page, $page_size);
+            });
         return collect([])->merge($list);
     }
 
@@ -148,12 +148,12 @@ class MallSpu extends Base
             })
             ->where('saleable', 1)
             ->where('user_id', 0)
-            ->where('game_zone', 4)->get()->map(function ($item, $items) use ($coin_price) {
+            ->where('game_zone', 4)->forPage($page, $page_size)->get()->map(function ($item, $items) use ($coin_price) {
                 $item->prcie = $item->skp->price;
                 $item->coin_num = bcdiv($item->skp->price, $coin_price, 2);
                 unset($item->skp);
                 return $item;
-            })->forPage($page, $page_size);
+            });
         return collect([])->merge($list);
     }
 
@@ -178,13 +178,13 @@ class MallSpu extends Base
                 return $query->where('category_one', $category_id);
             })->when($store_id, function ($query) use ($store_id) {
                 return $query->where('user_id', $store_id);
-            })->where('saleable', 1)
+            })->where('saleable', 1)->forPage($page, $page_size)
             ->get()->map(function ($item, $items) use ($coin_price) {
                 $item->price = $item->skp->price;
                 $item->coin_num = bcdiv($item->skp->price, $coin_price, 2);
                 unset($item->skp);
                 return $item;
-            })->forPage($page, $page_size);
+            });
         return collect([])->merge($list)->toArray();
     }
 
