@@ -36,6 +36,11 @@ class SpuController extends AdminBaseController
         }else{
             $score_zone = $params["score_zone"] ?? 1;
         }
+
+        if(empty($params["special_spec"])){
+            return $this->fail("规格参数不能为空");
+        }
+
         DB::beginTransaction();
         try {
             $spu = MallSpu::create([
@@ -167,6 +172,11 @@ class SpuController extends AdminBaseController
         }else{
             $score_zone = $params["score_zone"] ?? 1;
         }
+
+        if(empty($params["special_spec"])){
+            return $this->fail("规格参数不能为空");
+        }
+
         DB::beginTransaction();
         try {
             MallSpu::where("id", $params["id"])->update([
