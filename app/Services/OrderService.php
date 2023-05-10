@@ -479,11 +479,10 @@ class OrderService
                     $masters =  explode(',',substr($masters,1,strlen($masters) - 2));
                     $temp = bcdiv($info->give_green_score,self::GREEN,2);
                     foreach ($masters as $master){
-                        $user = User::query()->where('id',$master)->select('id','contribution')->first();
-                        var_dump($user->toArray());
+                        $user1 = User::query()->where('id',$master)->select('id','contribution')->first();
                         if($master){
-                            $user->contribution += $temp;
-                            $user->save();
+                            $user1->contribution += $temp;
+                            $user1->save();
                         }else{
                             continue;
                         }
