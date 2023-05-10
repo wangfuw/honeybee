@@ -220,6 +220,7 @@ class AsacController extends BaseController
                 }
                 return $item;
             })->forPage($page,$page_size);
+        dd($list);
         $data = collect([])->merge($list)->toArray();
         return $this->success('请求成功',$data);
     }
