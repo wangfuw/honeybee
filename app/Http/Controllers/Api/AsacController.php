@@ -223,6 +223,7 @@ class AsacController extends BaseController
                 ->orderBy('id','desc')
                 ->get();
             var_dump($list);
+            return $this->success('请求成功',$list);
 //                ->map(function ($item,$items) use($address){
 //                    if($address == $item->from_address){
 //                        $item->type_name = AsacTrade::typeData[$item->type];
