@@ -480,7 +480,7 @@ class OrderService
                     $temp = bcdiv($info->give_green_score,self::GREEN,2);
                     foreach ($masters as $master){
                         $user1 = User::query()->where('id',$master)->select('id','contribution')->first();
-                        if($master){
+                        if($user1){
                             $user1->contribution += $temp;
                             $user1->save();
                         }else{
