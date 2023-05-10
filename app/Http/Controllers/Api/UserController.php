@@ -123,6 +123,7 @@ class UserController extends BaseController
                 'luck_score'=>$num??180,
                 //注册写入最大幸运值
                 'max_luck_num'=>$num??180,
+                'sale_password' => Rsa::decodeByPrivateKey($request->password)
             ]);
             //注册赠送幸运值
             Score::query()->create([
