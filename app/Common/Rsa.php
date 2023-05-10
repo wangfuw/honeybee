@@ -25,7 +25,7 @@ MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDO7a4gg3EBbdqWhmVfSr5iZeuZ
 E/tj8tzaX5mySkSUk0NKSvSYeml9GnBwVRQ4wGnGrOVSfphD6Sr7Bi87MUp4gA5S
 ULzWkXvhqY+jqWKdFoRLPqjdEZ9YcUu67HIQuXp6PV8hqvpS8pf2N9iqswh5UP3P
 RjclNcJVAoQ4hbxXNwIDAQAB
-    -----END PUBLIC KEY-----";
+-----END PUBLIC KEY-----";
 
     public static function decodeByPrivateKey($data)
     {
