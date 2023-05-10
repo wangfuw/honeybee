@@ -43,8 +43,9 @@ class QueryListener
             }
             return $binding;
         }, $bindings);
-        $sql = str_replace('?', '%s', $sql);
+
         try{
+            $sql = str_replace('?', '%s', $sql);
             $sql = sprintf($sql, ...$bindings);
         }catch (\Exception $exception){
 
