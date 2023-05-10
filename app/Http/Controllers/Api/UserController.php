@@ -425,7 +425,7 @@ class UserController extends BaseController
     //通知路由
     public function asac_url()
     {
-        return $this->success('请求成功',['url'=>env('ASACURL',"http://asac.yuyuantong,shop")]);
+        return $this->success('请求成功',['url'=>env('ASACURL',"http://asac.yuyuantong.shop")]);
     }
 
     public function get_bold_coin()
