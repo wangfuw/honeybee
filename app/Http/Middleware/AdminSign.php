@@ -24,7 +24,7 @@ class AdminSign
             return $this->baseReturn();
         }
 
-        if(time() - (int)$infos[1] > 10){
+        if(time() - (int)$infos[1] > 20){
             return $this->baseReturn();
         }
         return $next($request);
