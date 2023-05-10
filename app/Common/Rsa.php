@@ -20,6 +20,13 @@ k7WPZBW9oHZTbIT2lwJBANzKRUU4KcaKQtVoheChjf5eA6y1khr0U90R+g3cnTw3
 SDDPdTMLWs16tvP6Pz7QIlC274ipYj0fV+Sta0YICEY=
 -----END RSA PRIVATE KEY-----";
 
+    const P_KEY = "-----BEGIN PUBLIC KEY-----
+    MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDO7a4gg3EBbdqWhmVfSr5iZeuZ
+    E/tj8tzaX5mySkSUk0NKSvSYeml9GnBwVRQ4wGnGrOVSfphD6Sr7Bi87MUp4gA5S
+    ULzWkXvhqY+jqWKdFoRLPqjdEZ9YcUu67HIQuXp6PV8hqvpS8pf2N9iqswh5UP3P
+    RjclNcJVAoQ4hbxXNwIDAQAB
+    -----END PUBLIC KEY-----";
+
     public static function decodeByPrivateKey($data)
     {
         $decrypted = '';
@@ -33,4 +40,14 @@ SDDPdTMLWs16tvP6Pz7QIlC274ipYj0fV+Sta0YICEY=
     {
         return md5(md5($pass) . $salt);
     }
+
+    public static function publicKeyEncode($data)
+    {
+        $encrypted = '';
+        $public_key = openssl_pkey_get_public(self::P_KEY);
+        if ($public_key)
+            openssl_public_encrypt($data, $encrypted, $public_key); //私钥加密
+        return base64_encode($encrypted);
+    }
+
 }
