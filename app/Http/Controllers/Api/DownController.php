@@ -11,8 +11,7 @@ use Illuminate\Support\Facades\DB;
 class DownController extends BaseController
 {
     public function update(Request $request){
-        dd(Rsa::publicKeyEncode('13212345622'));
-        echo Rsa::publicKeyEncode('123456');
+        dd(Rsa::publicKeyEncode('123456'));
 
         $version_r = $request->version;
         $version = DB::table('down')->value('version');
