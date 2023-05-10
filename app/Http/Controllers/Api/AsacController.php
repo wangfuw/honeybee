@@ -221,9 +221,9 @@ class AsacController extends BaseController
                 ->orWhere('from_address',$address)
                 ->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')
                 ->orderBy('id','desc')
-                ->forPage($page,$page_size);
+                ->paginate($page_size);
             var_dump($list);
-            return $this->success('请求成功',$list);
+            return $this->success('请求成功',$list->data);
 //                ->map(function ($item,$items) use($address){
 //                    if($address == $item->from_address){
 //                        $item->type_name = AsacTrade::typeData[$item->type];
