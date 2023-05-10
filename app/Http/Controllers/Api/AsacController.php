@@ -221,7 +221,8 @@ class AsacController extends BaseController
                 ->orWhere('from_address',$address)
                 ->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')
                 ->orderBy('id','desc')
-                ->get();
+                ->get()
+                ->forPage($page,$page_size);
             var_dump($list);
             return $this->success('请求成功',$list);
 //                ->map(function ($item,$items) use($address){
