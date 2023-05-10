@@ -223,6 +223,7 @@ class AsacController extends BaseController
                 ->orderBy('id','desc')
                 ->get()
                 ->forPage($page,$page_size);
+            var_dump($list);
 //                ->map(function ($item,$items) use($address){
 //                    if($address == $item->from_address){
 //                        $item->type_name = AsacTrade::typeData[$item->type];
