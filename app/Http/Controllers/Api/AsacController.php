@@ -202,7 +202,7 @@ class AsacController extends BaseController
         $page = $request->page??1;
         $page_size = $request->page_size??6;
         $handler = AsacTrade::query();
-
+        dd($handler);
         $handler->where(function ($query) use ($address){
             return $query->where('to_address',$address)->orWhere('from_address',$address);
         });
@@ -220,7 +220,7 @@ class AsacController extends BaseController
                 }
                 return $item;
             })->forPage($page,$page_size);
-        dd($list);
+
         $data = collect([])->merge($list)->toArray();
         return $this->success('请求成功',$data);
     }
