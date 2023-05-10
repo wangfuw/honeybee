@@ -104,16 +104,16 @@ class UserMoneyController extends BaseController
         switch ($type){
             case 1:
                 $list = UserMoney::query()->where('user_id',$user_id)->where('status',1)->select('id','money as num','created_at')
-                    ->orderBy('created_at','desc')->get()->map(function ($item,$items){
+                    ->orderBy('created_at','desc')->forPage($page,$page_size)->get()->map(function ($item,$items){
                         $item->type_name = "充值";
                         $item->num = "+".$item->num;
                         return $item;
-                    })->forPage($page,$page_size);
+                    });
                 break;
             case 2:
                 $list = MoneyTrade::query()->where(function ($query) use($user_id){
                     return $query->orWhere('from_id',$user_id)->orWhere('to_id',$user_id);
-                })->where('type',1)->orderBy('created_at','desc')->get()->map(function ($item,$items) use($user_id){
+                })->where('type',1)->orderBy('created_at','desc')->forPage($page,$page_size)->get()->map(function ($item,$items) use($user_id){
                     if($item->from_id == $user_id){
                         $item->num = '-'.$item->num;
                         $item->type_name = '转出';
@@ -125,12 +125,12 @@ class UserMoneyController extends BaseController
                     }
 
                     return $item;
-                })->forPage($page,$page_size);
+                });
                 break;
             case 3:
                 $list = MoneyTrade::query()->where(function ($query) use($user_id){
                     return $query->orWhere('from_id',$user_id)->orWhere('to_id',$user_id);
-                })->whereIn('type',[MoneyTrade::BUY,MoneyTrade::REWARD])->orderBy('created_at','desc')->get()->map(function ($item,$items) use($user_id){
+                })->whereIn('type',[MoneyTrade::BUY,MoneyTrade::REWARD])->orderBy('created_at','desc')->forPage($page,$page_size)->get()->map(function ($item,$items) use($user_id){
                     if($item->type = 2){
                         if($item->from_id == $user_id){
                             $item->num = '-'.$item->num;
@@ -148,14 +148,16 @@ class UserMoneyController extends BaseController
                     }
 
                     return $item;
-                })->forPage($page,$page_size);
+                });
                 break;
             case 4:
-                $list = Score::query()->where('type',5)->select('id','num','created_at','f_type')->where('user_id',$user_id)->orderBy('created_at','desc')->get()->map(function ($item,$items){
+                $list = Score::query()->where('type',5)->select('id','num','created_at','f_type')->where('user_id',$user_id)->orderBy('created_at','desc')
+                    ->forPage($page,$page_size)
+                    ->get()->map(function ($item,$items){
                     $item->type_name = Score::F_TYPES[$item->f_type];
                     $item->num = '+'.$item->num;
                     return $item;
-                })->forPage($page,$page_size);
+                });
         }
         $data = collect([])->merge($list)->toArray();
         return $this->success('请求成功',$data);

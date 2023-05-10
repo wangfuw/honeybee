@@ -168,11 +168,11 @@ class AsacController extends BaseController
     {
         $page = $request->page??1;
         $page_size = $request->page_size??3;
-        $data = Notice::query()->where('type',5)->get();
+        $data = Notice::query()->where('type',5)->forPage($page,$page_size)->get();
         if(!$data){
             return $this->success('请求成功，暂无数据',[]);
         }
-        $data->forPage($page,$page_size);
+
         $list = collect([])->merge($data)->toArray();
         return $this->success('请求成功',$list);
     }
@@ -181,7 +181,7 @@ class AsacController extends BaseController
     {
         $page = $request->page??1;
         $page_size = $request->page_size??3;
-        $list = AsacDestory::query()->select('id','dest_address','number','created_at')->get()->forPage($page,$page_size);
+        $list = AsacDestory::query()->select('id','dest_address','number','created_at')->forPage($page,$page_size)->get();
         $sum = AsacDestory::query()->sum('number');
         $count = AsacDestory::query()->count();
         $data = collect([])->merge($list)->toArray();
