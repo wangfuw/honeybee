@@ -192,34 +192,45 @@ class AsacController extends BaseController
     public function get_flue(Request $request)
     {
         $type = $request->post('type'); //1 流动池子 2 预挖池
+        $page = $request->page??1;
+        $page_size = $request->page_size??6;
         if($type == 1){
             //流动池地址
             $address = AsacNode::query()->where('id',1)->value('wallet_address');
+            $list = AsacTrade::query()->where(function ($query) use ($address){
+                return $query->where('to_address',$address)->orWhere('from_address',$address);
+            })->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->orderBy('id','desc')->get()
+                ->map(function ($item,$items) use($address){
+                    if($address == $item->from_address){
+                        $item->type_name = AsacTrade::typeData[$item->type];
+                        $item->num = '-'.$item->num;
+                        $item->address = $item->to_address;
+                    }else{
+                        $item->type_name = AsacTrade::typeData[$item->type];
+                        $item->num = '+'.$item->num;
+                        $item->address = $item->from_address;
+                    }
+                    return $item;
+                })->forPage($page,$page_size);
         }else{
             //於挖池地址
             $address = AsacNode::query()->where('id',2)->value('wallet_address');
+            $list = AsacTrade::query()->where(function ($query) use ($address){
+                return $query->where('to_address',$address)->orWhere('from_address',$address);
+            })->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->orderBy('id','desc')->get()
+                ->map(function ($item,$items) use($address){
+                    if($address == $item->from_address){
+                        $item->type_name = AsacTrade::typeData[$item->type];
+                        $item->num = '-'.$item->num;
+                        $item->address = $item->to_address;
+                    }else{
+                        $item->type_name = AsacTrade::typeData[$item->type];
+                        $item->num = '+'.$item->num;
+                        $item->address = $item->from_address;
+                    }
+                    return $item;
+                })->forPage($page,$page_size);
         }
-        $page = $request->page??1;
-        $page_size = $request->page_size??6;
-        $handler = AsacTrade::query();
-
-        $handler->where(function ($query) use ($address){
-            return $query->where('to_address',$address)->orWhere('from_address',$address);
-        });
-        dd($handler);
-        $list = $handler->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->orderBy('id','desc')->get()
-            ->map(function ($item,$items) use($address){
-                if($address == $item->from_address){
-                    $item->type_name = AsacTrade::typeData[$item->type];
-                    $item->num = '-'.$item->num;
-                    $item->address = $item->to_address;
-                }else{
-                    $item->type_name = AsacTrade::typeData[$item->type];
-                    $item->num = '+'.$item->num;
-                    $item->address = $item->from_address;
-                }
-                return $item;
-            })->forPage($page,$page_size);
 
         $data = collect([])->merge($list)->toArray();
         return $this->success('请求成功',$data);
