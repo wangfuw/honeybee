@@ -202,11 +202,11 @@ class AsacController extends BaseController
         $page = $request->page??1;
         $page_size = $request->page_size??6;
         $handler = AsacTrade::query();
-        dd($handler);
+
         $handler->where(function ($query) use ($address){
             return $query->where('to_address',$address)->orWhere('from_address',$address);
         });
-
+        dd($handler);
         $list = $handler->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->orderBy('id','desc')->get()
             ->map(function ($item,$items) use($address){
                 if($address == $item->from_address){
