@@ -212,7 +212,8 @@ class AsacController extends BaseController
                     }
                     return $item;
                 })->forPage($page,$page_size);
-        }else{
+        }
+        if($type == 2){
             //於挖池地址
             $address = AsacNode::query()->where('id',2)->value('wallet_address');
             $list = AsacTrade::query()->where(function ($query) use ($address){
