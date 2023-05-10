@@ -721,7 +721,7 @@ class OrderService
 
                 //给全网六级的用户发奖 2%
                 $six_team_ids = User::query()->where('contribution',60000000)->pluck('id');
-                if(!isEmpty($six_team_ids)){
+                if($six_team_ids){
                     $six_team = [];
                     foreach ($six_team_ids as $six_team_id){
                         $down_user = User::query()->where('master_id',$six_team_id)->select('green_score','sale_score','contribution')->get();
