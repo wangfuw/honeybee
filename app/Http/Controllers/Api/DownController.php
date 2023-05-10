@@ -25,4 +25,10 @@ class DownController extends BaseController
         $down = DB::table("down")->first();
         return $this->success("请求成功",$down);
     }
+
+    public function url_asac()
+    {
+        $url = env('INVITE_RUL',"http://register.yuyuantong.shop");
+        return $this->success("请求成功",compact('url'));
+    }
 }
