@@ -47,7 +47,7 @@ class OrderController extends BaseController
         }
         //检验实名
         if(!UserIdentity::query()->where('user_id',$this->user->id)->where('status',1)->exists()){
-            return  $this->fail('未实名认证');
+            return  $this->fail('未实名认证',[],[],1006);
         }
         $orders = $this->service->add_order($data,$this->user);
         return $this->success('下单成功',$orders);
