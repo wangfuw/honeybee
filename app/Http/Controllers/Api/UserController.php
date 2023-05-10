@@ -405,7 +405,7 @@ class UserController extends BaseController
     {
         //邀请好友 返回 邀请码 和 注册接口
         $user = auth()->user();
-        $url =  env('INVITE_RUL','http://beeregister.hitoo.xyz').'/#/?'.'invite_code='.$user->invite_code;
+        $url =  env('INVITE_RUL','http://register.yuanyutong.shop').'/#/?'.'invite_code='.$user->invite_code;
         $img =  QrCode::format('png')->size(200)->generate($url);
         return  $data = 'data:image/png;base64,' . base64_encode($img );
     }
