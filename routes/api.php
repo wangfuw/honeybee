@@ -134,6 +134,8 @@ Route::controller(UserController::class)->group(function () {
 
         Route::get('update', [DownController::class, 'update']);
         Route::post('download', [DownController::class, 'download']);
+        Route::post('url_asac', [DownController::class, 'url_asac']);
+
     });
     //order
     Route::group(['middleware' => 'auth'], function () {
