@@ -802,8 +802,13 @@ class OrderService
                    $temp = bcdiv($info->give_sale_score,self::SALE,2);
                    foreach ($masters as $master){
                        $user = User::query()->where('id',$master)->select('id','contribution')->first();
-                       $user->contribution += $temp;
-                       $user->save();
+                       if($user){
+                           $user->contribution += $temp;
+                           $user->save();
+                       }else{
+                           continue;
+                       }
+
                    }
                }
            }
