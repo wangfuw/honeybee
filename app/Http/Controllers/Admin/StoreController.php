@@ -129,7 +129,7 @@ class StoreController extends AdminBaseController
                     DB::commit();
                     // 发送短信提醒，店铺通过，附带登录链接
                     $url = config("app.merchant");
-                    $content = "【商城】您的开店申请已通过，请前往 $url 管理您的店铺，登录的账号为您的手机号，密码与APP端的密码一致";
+                    $content = "【源宇通】您的开店申请已通过，请前往 $url 管理您的店铺，登录的账号为您的手机号，密码与APP端的密码一致";
                     send_sms($user->phone, $content);
                     return $this->executeSuccess("操作");
                 } catch (\Exception $exception) {
