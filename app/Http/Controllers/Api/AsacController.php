@@ -216,22 +216,25 @@ class AsacController extends BaseController
         if($type == 2){
             //於挖池地址
             $address = AsacNode::query()->where('id',2)->value('wallet_address');
-            dd($address);
-            $list = AsacTrade::query()->where(function ($query) use ($address){
-                return $query->where('to_address',$address)->orWhere('from_address',$address);
-            })->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')->orderBy('id','desc')->get()
-                ->map(function ($item,$items) use($address){
-                    if($address == $item->from_address){
-                        $item->type_name = AsacTrade::typeData[$item->type];
-                        $item->num = '-'.$item->num;
-                        $item->address = $item->to_address;
-                    }else{
-                        $item->type_name = AsacTrade::typeData[$item->type];
-                        $item->num = '+'.$item->num;
-                        $item->address = $item->from_address;
-                    }
-                    return $item;
-                })->forPage($page,$page_size);
+
+            $list = AsacTrade::where('to_address',$address)
+                ->orWhere('from_address',$address)
+                ->select('id','from_address','to_address','num','trade_hash','block_id','created_at','type')
+                ->orderBy('id','desc')
+                ->get()
+                ->forPage($page,$page_size);
+//                ->map(function ($item,$items) use($address){
+//                    if($address == $item->from_address){
+//                        $item->type_name = AsacTrade::typeData[$item->type];
+//                        $item->num = '-'.$item->num;
+//                        $item->address = $item->to_address;
+//                    }else{
+//                        $item->type_name = AsacTrade::typeData[$item->type];
+//                        $item->num = '+'.$item->num;
+//                        $item->address = $item->from_address;
+//                    }
+//                    return $item;
+//                })->forPage($page,$page_size);
         }
 
         $data = collect([])->merge($list)->toArray();
