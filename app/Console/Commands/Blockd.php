@@ -55,7 +55,7 @@ class Blockd extends Command
                     'number'   => 0,
                 ]);
                 foreach ($list as $item){
-                    AsacTrade::query()->whereIn('id',$item)->update(['block_id'=>$res->id]);
+                    AsacTrade::query()->where('id',$item)->update(['block_id'=>$res->id]);
                 }
                 DB::commit();
                 Log::info('打包结束'.date('Y-m-d H:i:s'));
