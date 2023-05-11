@@ -46,7 +46,7 @@ class Blockd extends Command
     {
         Log::info('开始执行，几点打包,当前时间：'.date('Y-m-d H:i:s'));
         $list = AsacTrade::query()->where('block_id',0)->pluck('id');
-        if(!$list){
+        if(!empty($list)){
             Log::info("执行打包结束".date('Y-m-d H:i:s'));
             return false;
         }else{
