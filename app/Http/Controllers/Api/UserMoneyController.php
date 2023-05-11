@@ -103,7 +103,7 @@ class UserMoneyController extends BaseController
         $type = $request->type??0;  //1充值 2 转账 3 交易 4释放
         switch ($type){
             case 1:
-                $list = UserMoney::query()->where('user_id',$user_id)->select('id','money as num','created_at','note')
+                $list = UserMoney::query()->where('user_id',$user_id)->where('status',1)->select('id','money as num','created_at')
                     ->orderBy('created_at','desc')->forPage($page,$page_size)->get()->map(function ($item,$items){
                         $item->type_name = "充值";
                         $item->num = "+".$item->num;
