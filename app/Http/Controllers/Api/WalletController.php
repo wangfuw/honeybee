@@ -166,7 +166,7 @@ class WalletController extends BaseController
                 break;
             default:
                 $wallet_address = AsacNode::query()->where('user_id',$user_id)->value('wallet_address');
-                $list = UserMoney::query()->where('user_id',$user_id)->select('id','money','created_at','coin_id','num','note')
+                $list = UserMoney::query()->where('user_id',$user_id)->select('id','money','created_at','coin_id','num','note','status')
                     ->orderBy('created_at','desc')->forPage($page,$page_size)->get()->map(function ($item,$items) use($wallet_address){
                         if($item->status == 1){
                             $item->type_name = "充值成功";
