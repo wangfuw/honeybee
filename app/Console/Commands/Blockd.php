@@ -56,6 +56,7 @@ class Blockd extends Command
                     'trade_num'=> count($list),
                     'number'   => 0,
                 ]);
+                echo $res->id.PHP_EOL;
                 foreach ($list as $item){
                     AsacTrade::query()->where('id',$item)->update(['block_id'=>$res->id]);
                 }
