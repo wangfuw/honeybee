@@ -267,14 +267,15 @@ class UserController extends BaseController
     }
     public function change_sale_password(Request $request)
     {
-        $data = $request->only(['phone','sale_password','re_sale_password','code']);
+        $data = $request->only(['sale_password','re_sale_password','code']);
         if(!$this->validate->scene('change_sale')->check($data)){
             return $this->fail($this->validate->getError());
         }
-        $phone = Rsa::decodeByPrivateKey($request->phone);
-        if(check_phone($phone) == false){
-            return $this->fail('请正确输入手机号');
-        }
+//        $phone = Rsa::decodeByPrivateKey($request->phone);
+//        if(check_phone($phone) == false){
+//            return $this->fail('请正确输入手机号');
+//        }
+        $phone = Auth::user()->phone;
         $users = User::query()->where('phone',$phone)->first();
         if(!$users->id){
             return $this->fail('该用户不存在');

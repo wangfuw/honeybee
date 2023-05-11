@@ -507,6 +507,7 @@ class OrderService
                     'type'         => AsacTrade::BUY,
                     'game_zone'    => 2,
                 ]);
+
                 switch ($score_zone){
                     case 1:
                         //商家让利

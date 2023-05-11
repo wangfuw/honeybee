@@ -42,7 +42,7 @@ class UserValidate extends BaseValidate {
         'login'   =>"phone,password",
         'change'  =>"old_password,password,re_password",
         'forget'  =>"phone,code,password,re_password",
-        'change_sale' =>"phone,code,sale_password,re_sale_password",
+        'change_sale' =>"code,sale_password,re_sale_password",
         'team'    => "page,page_size",
         'auto'    => "id,phone,pay_type"
     ];
