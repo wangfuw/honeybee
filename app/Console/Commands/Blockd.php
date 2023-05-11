@@ -45,21 +45,18 @@ class Blockd extends Command
     public function handle()
     {
         Log::info('开始执行，几点打包,当前时间：'.date('Y-m-d H:i:s'));
-        $list = AsacTrade::query()->where('block_id',0)->pluck('id');
-        dd($list);
+        $list = AsacTrade::query()->where('block_id',0)->limit(10)->pluck('id');
         if(!empty($list)){
             Log::info("执行打包结束".date('Y-m-d H:i:s'));
             return false;
         }else{
-
             try {
                 DB::beginTransaction();
                 $res = AsacBlock::query()->create([
                     'trade_num'=> count($list),
                     'number'   => 0,
                 ]);
-                Log::info('1231231:');
-                AsacTrade::query()->whereIn('id',$list->toArray())->update(['block_id'=>$res->id]);
+                AsacTrade::query()->whereIn('id',array_values($list))->update(['block_id'=>$res->id]);
                 DB::commit();
                 Log::info('打包结束'.date('Y-m-d H:i:s'));
                 return false;
