@@ -35,6 +35,9 @@ class Store extends Base
             $list = self::query()->select('id', 'store_name', 'business_type', 'mobile', 'store_image','note', 'master', 'images', 'area', 'address', 'on_line', 'type')->where('user_id', $user_id)->first();
             $list->area_china = city_name((string)$list->area);
             $list->business = MallCategory::query()->where('id',$list->business_type)->value('name')??'';
+            if($list->type == 1){
+                $list->url = config("app.merchant","http://merchant.yuanyutong.shop");
+            }
             return $list->toArray();
         }
     }
