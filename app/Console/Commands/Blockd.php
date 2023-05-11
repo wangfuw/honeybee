@@ -50,13 +50,14 @@ class Blockd extends Command
             Log::info("执行打包结束".date('Y-m-d H:i:s'));
             return false;
         }else{
+            var_dump($list->toArray());
             try {
                 DB::beginTransaction();
                 $res = AsacBlock::query()->create([
                     'trade_num'=> count($list),
                     'number'   => 0,
                 ]);
-                Log::info($list->toArray());
+                Log::info('1231231:');
                 AsacTrade::query()->whereIn('id',$list->toArray())->update(['block_id'=>$res->id]);
                 DB::commit();
                 Log::info('打包结束'.date('Y-m-d H:i:s'));
