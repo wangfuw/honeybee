@@ -3,12 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\AsacBlock;
-use App\Models\AsacNode;
 use App\Models\AsacTrade;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use function PHPUnit\Framework\isEmpty;
 
 
 class Blockd extends Command
@@ -56,11 +54,9 @@ class Blockd extends Command
                     'trade_num'=> count($list),
                     'number'   => 0,
                 ]);
-                echo $res->id.PHP_EOL;
                 foreach ($list as $item){
-                    AsacTrade::query()->where('id',$item)->update(['block_id'=>$res->id]);
+                    AsacTrade::query()->whereIn('id',$item)->update(['block_id'=>$res->id]);
                 }
-
                 DB::commit();
                 Log::info('打包结束'.date('Y-m-d H:i:s'));
                 return false;
