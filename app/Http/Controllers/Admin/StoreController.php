@@ -130,7 +130,7 @@ class StoreController extends AdminBaseController
                     // 发送短信提醒，店铺通过，附带登录链接
                     $url = config("app.merchant","http://merchant.yuanyutong.shop");
 //                    var_dump($url);
-                    $content = "【源宇通】您的开店申请已通过，请前往 $url 管理您的店铺，登录的账号为您的手机号，密码与APP端的密码一致";
+                    $content = "【源宇通】您的开店申请已通过，请前往 '$url' 管理您的店铺，登录的账号为您的手机号，密码与APP端的密码一致";
                     $res = send_sms($user->phone, $content);
 //                    var_dump($res);
                     return $this->executeSuccess("操作");
