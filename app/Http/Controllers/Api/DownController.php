@@ -28,7 +28,6 @@ class DownController extends BaseController
 
     public function url_asac()
     {
-        dd(env("INVITE_RUL"));
         $url = env('INVITE_RUL',"http://register.yuyuantong.shop");
         return $this->success("请求成功",compact('url'));
     }
