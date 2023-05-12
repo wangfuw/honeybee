@@ -42,7 +42,7 @@ class UserMoneyController extends BaseController
             return $this->fail('该币种充值方式错误');
         }
         $rate = Coin::query()->where('id',$data['id'])->value('money');
-        if($data['id'] == 1 && User::query()->where('user_id',Auth::user()->id)->whereIn('type',[self::NO,self::YES])->exists()){
+        if($data['id'] == 1 && UserMoney::query()->where('user_id',Auth::user()->id)->whereIn('type',[self::NO,self::YES])->exists()){
             return $this->fail('有充值未审核或已充值过GTK');
         }
         $res = UserMoney::query()->create([
