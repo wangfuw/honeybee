@@ -24,7 +24,7 @@ class UserController extends BaseController
     public function __construct(UserValidate $validate)
     {
         $this->validate = $validate;
-        $this->middleware('auth:api', ['except' => ['register', 'login','forget_password','send_message']]);
+        $this->middleware('auth:api', ['except' => ['register', 'login','forget_password','send_message','seed_message_forget']]);
     }
 
     /**
