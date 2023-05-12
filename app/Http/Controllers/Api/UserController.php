@@ -55,7 +55,6 @@ class UserController extends BaseController
     public function send_message(Request $request)
     {
         $phone = Rsa::decodeByPrivateKey($request->phone);
-        $phone = $request->phone;
         if(check_phone($phone) == false){
             return $this->fail('请正确输入手机号');
         }
@@ -73,7 +72,6 @@ class UserController extends BaseController
     public function seed_message_forget(Request $request)
     {
         $phone = Rsa::decodeByPrivateKey($request->phone);
-        $phone = $request->phone;
         if(check_phone($phone) == false){
             return $this->fail('请正确输入手机号');
         }
