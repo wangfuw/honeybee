@@ -628,7 +628,7 @@ class OrderService
                     $masters->money += $temp;
                     $masters->save();
                 }
-                //奖励发放
+                //奖励发放 -- 赞顶平台发放
                 if($master_address && $temp > 0){
                     MoneyTrade::query()->create([
                         'from_id' => 1,
