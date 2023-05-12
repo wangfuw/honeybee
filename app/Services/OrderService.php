@@ -592,16 +592,6 @@ class OrderService
                 $admin->money = bcadd($admin->money,$info->money,4);
                 $admin->save();
 
-                //管理员加余额
-                Score::query()->create([
-                    'user_id'=>1,
-                    'flag' => 1,
-                    'num' =>$info->money,
-                    'type'=>5,
-                    'f_type'=>Score::TRADE_HAVE,
-                    'game_zone'    => 3,
-                    'amount' => '-'.$info->money,
-                ]);
 
                 //获取幸运值日志
                 Score::query()->create([
@@ -634,9 +624,10 @@ class OrderService
                 $num = min($max,$info->money);
                 //幸运值专区给商家发asac
                 $temp =  bcmul($num/100,$rate,4);
-                $masters->money += $temp;
-                $masters->save();
-
+                if($temp>0){
+                    $masters->money += $temp;
+                    $masters->save();
+                }
                 //奖励发放
                 if($master_address){
                     MoneyTrade::query()->create([
