@@ -588,9 +588,9 @@ class OrderService
                 $user->save();
 
                 //管理员加余额
-//                $admin = User::query()->where('id',1)->first();
-//                $admin->money = bcadd($admin->money,$info->money,4);
-//                $admin->save();
+                $admin = User::query()->where('id',1)->first();
+                $admin->money = bcadd($admin->money,$info->money,4);
+                $admin->save();
 
                 //管理员加余额
                 Score::query()->create([
@@ -620,7 +620,7 @@ class OrderService
                 $master_address = AsacNode::query()->where('user_id',$master_id)->value('wallet_address');
                 $max = $masters->max_luck_num;
                 switch ($max){
-                    case $max > 1 && $max < 2000:
+                    case $max >= 0 && $max < 2000:
                         $rate = Config::lucky_base_reward_coin();
                         break;
                     case $max >= 2000 && $max < 10000;
