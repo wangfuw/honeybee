@@ -124,7 +124,7 @@ class WalletController extends BaseController
                     $item->num = '-'.$item->num;
                     $item->address = $item->from_address;
                 }else{
-                    $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[$item->type];
+                    $item->type_name = $this->get_game($item->game_zone).AsacTrade::typeData[AsacTrade::SELL];
                     $item->num = '+'.$item->num;
                     $item->address = $item->to_address;
                 }

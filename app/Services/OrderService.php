@@ -628,13 +628,13 @@ class OrderService
                     $masters->money += $temp;
                     $masters->save();
                 }
-                //奖励发放 -- 赞顶平台发放
+                //奖励发放 -- 赞顶平台发放  实际不扣 1号的余额
                 if($master_address && $temp > 0){
                     MoneyTrade::query()->create([
                         'from_id' => 1,
                         'to_id'   => $master_id,
-                        'num'          =>  $temp,
-                        'type'         => MoneyTrade::REWARD,
+                        'num'     =>  $temp,
+                        'type'    => MoneyTrade::REWARD,
                     ]);
                 }
 
