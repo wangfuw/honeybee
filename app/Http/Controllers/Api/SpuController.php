@@ -64,7 +64,7 @@ class SpuController extends BaseController
         $info['store_info'] = [];
         if($info['store_id'] != 0){
             $info['store_info'] = Store::query()->where('user_id',$info['store_id'])->select('id','store_image','store_name','user_id as store_id')->first()->toArray();
-            $info['store_info']['number'] = MallSpu::query()->where('user_id',$info['store_id'])->count();
+            $info['store_info']['number'] = MallSpu::query()->where('user_id',$info['store_id'])->where('saleable',1)->count();
         }
         $sales = Order::query()->where('spu_id',$request->id)->select(DB::raw('sum(sku_num) as sale_num'))->first();
         $info['sale_num'] = $sales->sale_num??0;
