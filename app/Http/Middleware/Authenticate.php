@@ -31,6 +31,9 @@ class Authenticate extends Middleware
             $request->headers->set('Authorization',"{$token}");
 
             $user = JWTAuth::parseToken()->touser();
+            if(!$user){
+                return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
+            }
         } catch (JWTException $e) {
             if($e->getMessage() == 'Wrong number of segments') {
                 return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
