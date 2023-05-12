@@ -70,6 +70,24 @@ class UserController extends BaseController
         return $this->success('发送成功',[]);
     }
 
+    public function seed_message_forget(Request $request)
+    {
+        $phone = Rsa::decodeByPrivateKey($request->phone);
+        $phone = $request->phone;
+        if(check_phone($phone) == false){
+            return $this->fail('请正确输入手机号');
+        }
+        if(!User::query()->where('phone',$phone)->exists()){
+            return $this->fail('该电话号码未注册');
+        }
+        $code = make_code();
+        //        将验证码储在缓冲，设置过期时间为六分钟
+        $content = "【源宇通商城】您的验证码是".$code."。如非本人操作，请忽略本短信";
+        Redis::setex($phone,600,$code);
+        send_sms($phone,$content);
+        return $this->success('发送成功',[]);
+    }
+
     //修改交易密码
     public function send_sale_code()
     {
@@ -248,12 +266,16 @@ class UserController extends BaseController
         }
         $users = User::query()->where('phone',$phone)->first();
 
-        if(!$users->id){
+        if(!$users){
             return $this->fail('该用户不存在');
         }
         if(Rsa::decodeByPrivateKey($request->password) != Rsa::decodeByPrivateKey($request->re_password))
         {
             return $this->fail('两次密码不一致');
+        }
+        $code = $request->code;
+        if($code !== Redis::get($phone)){
+            return $this->fail('验证码错误');
         }
         try {
             $users->password = Hash::make(Rsa::decodeByPrivateKey($request->password));

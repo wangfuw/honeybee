@@ -40,6 +40,7 @@ Route::controller(UserController::class)->group(function () {
     Route::post('invite', 'invite');
     //发送登录验证码
     Route::post('send_message', 'send_message');
+    Route::post('seed_message_forget', 'seed_message_forget');
     Route::group(['middleware' => 'auth'], function () {
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
