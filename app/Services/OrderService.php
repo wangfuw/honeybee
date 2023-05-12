@@ -273,7 +273,7 @@ class OrderService
                     break;
                 case 3:
                     //幸运专区获取幸运值
-                    $add_data['money'] =$price_total;
+                    $add_data['money'] = $price_total;
                     switch ($price_total){
                        case $price_total > 1 && $price_total<2000:
                             $add_data['give_lucky_score'] = $price_total * 4;
@@ -456,9 +456,9 @@ class OrderService
 
                 //销售获得 asac
                 if($user_id == 1 || $user_id == 0){
-                    $node_admin = AsacNode::query()->where('user_id',$user_id)->first();
-                    $node_admin->number = bcadd($node_admin->number,$info->coin_num,2);
-                    $node_admin->save();
+                    $admin_user = User::query()->where('id',1)->first();
+                    $admin_user->coin_num = bcadd($admin_user->coin_num,$info->coin_num,4);
+                    $admin_user->save();
                 }
 
 
@@ -559,9 +559,9 @@ class OrderService
                 //平台减少
                 //销售获得 asac
                 if($user_id == 1 || $user_id == 0){
-                    $node_admin = AsacNode::query()->where('user_id',$user_id)->first();
-                    $node_admin->number = bcadd($node_admin->number,$info->coin_num,2);
-                    $node_admin->save();
+                    $admin_user = User::query()->where('id',1)->first();
+                    $admin_user->coin_num = bcadd($admin_user->coin_num,$info->coin_num,4);
+                    $admin_user->save();
                 }
 
                 break;
