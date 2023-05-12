@@ -588,9 +588,9 @@ class OrderService
                 $user->save();
 
                 //管理员加余额
-                $admin = User::query()->where('id',1)->first();
-                $admin->money = bcadd($admin->money,$info->money,4);
-                $admin->save();
+//                $admin = User::query()->where('id',1)->first();
+//                $admin->money = bcadd($admin->money,$info->money,4);
+//                $admin->save();
 
                 //管理员加余额
                 Score::query()->create([
