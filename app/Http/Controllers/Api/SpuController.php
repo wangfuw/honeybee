@@ -63,7 +63,7 @@ class SpuController extends BaseController
         //获取用户默认地址
         $info['store_info'] = [];
         if($info['store_id'] != 0){
-            $info['store_info'] = Store::query()->where('user_id',$info['store_id'])->select('id','store_image','store_name')->first()->toArray();
+            $info['store_info'] = Store::query()->where('user_id',$info['store_id'])->select('id','store_image','store_name','user_id as store_id')->first()->toArray();
             $info['store_info']['number'] = MallSpu::query()->where('user_id',$info['store_id'])->count();
         }
         $sales = Order::query()->where('spu_id',$request->id)->select(DB::raw('sum(sku_num) as sale_num'))->first();
