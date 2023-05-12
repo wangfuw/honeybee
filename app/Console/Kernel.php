@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('free_score_new')
-            ->dailyAt('00:10')
+            ->dailyAt('00:15')
             ->withoutOverlapping() //防止重复执行
             ->onOneServer() //在单台服务器上跑
             ->runInBackground() //任务后台运行
@@ -40,7 +40,7 @@ class Kernel extends ConsoleKernel
             ->sendOutputTo('log_path'); //日志输出，默认覆盖先前日志;
         //释放冻结余额
         $schedule->command('free_money')
-            ->dailyAt('00:10') //防止重复执行
+            ->dailyAt('00:05') //防止重复执行
             ->onOneServer() //在单台服务器上跑
             ->runInBackground() //任务后台运行
             //->appendOutputTo('log_path')//日志输出，默认追加
