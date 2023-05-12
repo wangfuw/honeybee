@@ -570,6 +570,22 @@ class OrderService
                 $user->max_luck_num = max($max_luck_num,$price);
                 $user->save();
 
+                //管理员加余额
+                $admin = User::query()->where('id',1)->first();
+                $admin->money = bcadd($admin->money,$info->money,4);
+                $user->save();
+
+                //管理员加余额
+                Score::query()->create([
+                    'user_id'=>1,
+                    'flag' => 1,
+                    'num' =>$info->money,
+                    'type'=>5,
+                    'f_type'=>Score::TRADE_HAVE,
+                    'game_zone'    => 3,
+                    'amount' => '-'.$info->money,
+                ]);
+
                 //获取幸运值日志
                 Score::query()->create([
                     'user_id'=>$user->id,
@@ -613,6 +629,7 @@ class OrderService
                         'type'         => MoneyTrade::REWARD,
                     ]);
                 }
+
 
 
 

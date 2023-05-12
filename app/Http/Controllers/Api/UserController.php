@@ -216,6 +216,9 @@ class UserController extends BaseController
             $user->identity_note = $status->note;
         }
         $user->freeze_money = $user->new_freeze;
+        if($user->id == 1){
+            $user->coin_num = AsacNode::query()->where('user_id',$user->id)->value('number');
+        }
         return $this->success('success',['user' => $user]);
 
     }
