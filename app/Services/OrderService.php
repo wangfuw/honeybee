@@ -453,6 +453,15 @@ class OrderService
                 $user->green_score_total = bcadd($info->give_green_score,$user->green_score_total,2);
                 $user->coin_num = bcsub($user->coin_num,$info->coin_num,2);
                 $user->save();
+
+                //销售获得 asac
+                if($user_id == 1 || $user_id == 0){
+                    $node_admin = AsacNode::query()->where('user_id',$user_id)->first();
+                    $node_admin->number = bcadd($node_admin->number,$info->coin_num,2);
+                    $node_admin->save();
+                }
+
+
                 //增加团队贡献值
                 $masters = $user->master_pos;
                 //绿色积分日志
@@ -547,6 +556,14 @@ class OrderService
                 //用户减少余额
                 $user->coin_num = bcsub($user->coin_num,$info->coin_num,2);
                 $user->save();
+                //平台减少
+                //销售获得 asac
+                if($user_id == 1 || $user_id == 0){
+                    $node_admin = AsacNode::query()->where('user_id',$user_id)->first();
+                    $node_admin->number = bcadd($node_admin->number,$info->coin_num,2);
+                    $node_admin->save();
+                }
+
                 break;
             case 3:
                 //幸运值专区

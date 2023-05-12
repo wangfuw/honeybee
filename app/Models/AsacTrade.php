@@ -30,6 +30,7 @@ class AsacTrade extends Base
     const CHANG_OUT = 9;
     //商家让利
     const STORE = 10;
+    const FEE = 11;
     protected $table = 'asac_trade';
 
     const typeData = [
@@ -43,6 +44,7 @@ class AsacTrade extends Base
         self::CHANG_IN  => '转入',
         self::CHANG_OUT => '转出',
         self::STORE => '商品利润质押',
+        self::FEE => '提现手续费',
     ];
     protected $fillable = [
         'id','from_address','to_address','num','trade_hash','block_id','created_at','updated_at','type','game_zone'

@@ -264,6 +264,8 @@ class AsacController extends BaseController
         $num = $request->num;
         $fee_rate = Config::get_fee();
         $fee = bcmul($num/100,$fee_rate);
+        $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
+        $admin_address = AsacNode::query()->where('user_id',1)->value('wallet_address');
         try{
             DB::beginTransaction();
             $res = Withdraw::query()->create([
@@ -276,6 +278,14 @@ class AsacController extends BaseController
             ]);
             $user->coin_num = bcsub($user->coin_num,$num,4);
             $user->save();
+            //提现手续费写入余额
+            AsacTrade::query()->create([
+               'from_address'=> $user_address,
+                'to_address' => $admin_address,
+                'num' => $fee,
+                'trade_hash' => rand_str_pay(64),
+                'type'=>AsacTrade::FEE,
+            ]);
             DB::commit();
             return $this->success('提现申请成功',$res);
         }catch (ApiException $e){
