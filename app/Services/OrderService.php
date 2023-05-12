@@ -624,12 +624,12 @@ class OrderService
                 $num = min($max,$info->money);
                 //幸运值专区给商家发asac
                 $temp =  bcmul($num/100,$rate,4);
-                if($temp>0){
+                if($temp > 0.0001){
                     $masters->money += $temp;
                     $masters->save();
                 }
                 //奖励发放
-                if($master_address){
+                if($master_address && $temp > 0){
                     MoneyTrade::query()->create([
                         'from_id' => 1,
                         'to_id'   => $master_id,
