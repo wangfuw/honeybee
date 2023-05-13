@@ -376,10 +376,12 @@ class UserController extends BaseController
         }
         $user = auth()->user();
         //直推人数
-        $directs = User::query()->select('id','phone','master_pos','created_at','contribution')
+        $handler = User::query()->select('id','phone','master_pos','created_at','contribution')
             ->where('master_id',$user->id)
             ->forPage($request->page,$request->page_size)
-            ->get()->map(function ($item,$items){
+            ->get();
+        $direct_num = $handler->count();
+        $directs = $handler->map(function ($item,$items){
                 $item->phone = make_phone($item->phone);
                 if($item->contribution > 60000000){
                     $six_team_ids = User::query()->where('master_id',$item->id)->select('green_score','sale_score','contribution')->get();
@@ -405,7 +407,6 @@ class UserController extends BaseController
                 return $item;
         });
         $list = collect([])->merge($directs);
-        $direct_num = $directs->count();
         //我的团队人数
         $ids   = User::query()->where('master_pos','like','%'.','.$user->id.','.'%')->pluck('id');
         $team_num = count($ids);
