@@ -143,19 +143,21 @@ class UserController extends AdminBaseController
             DB::beginTransaction();
             try {
                 $user->save();
-                if ($request->type <= 5 || $request->type >= 7) {
-                    if($request->type <= 5){
-                        $type = $request->type;
-                    }else{
-                        $type = $request->type-1;
+                if($num > 0){
+                    if ($request->type <= 5 || $request->type >= 7) {
+                        if($request->type <= 5){
+                            $type = $request->type;
+                        }else{
+                            $type = $request->type-1;
+                        }
+                        Score::create([
+                            "user_id" => $user->id,
+                            "flag" => $request->flag,
+                            "num" => $num,
+                            "type" => $type,
+                            "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
+                        ]);
                     }
-                    Score::create([
-                        "user_id" => $user->id,
-                        "flag" => $request->flag,
-                        "num" => $num,
-                        "type" => $type,
-                        "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
-                    ]);
                 }
                 DB::commit();
                 return $this->executeSuccess("操作");
