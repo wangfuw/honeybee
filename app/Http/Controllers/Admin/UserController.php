@@ -60,6 +60,8 @@ class UserController extends AdminBaseController
             $ui = UserIdentity::where('user_id',$v["id"])->first();
             if(!$ui || $ui["status"] != 1){
                 $v["auth"] = 1;
+                $v["name"] = "";
+                $v["card"] = "";
             }else{
                 $v["auth"] = 2;
                 $v["name"] = $ui["username"];
