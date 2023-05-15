@@ -46,7 +46,7 @@ class UserController extends BaseController
         }
         $token = Auth::setTTl(60*24*365)->attempt($data);
         if(Redis::get('Login'.$phone)){
-            \Tymon\JWTAuth\JWT::setToken(Redis::get('Login'.$phone))->invalidate();
+           JWT::setToken(Redis::get('Login'.$phone))->invalidate();
         }else{
             Redis::set('Login'.$phone,$token);
         }
