@@ -47,7 +47,7 @@ class UserController extends BaseController
         $token = Auth::setTTl(60*24*365)->attempt($data);
         if (Redis::get('Login'.$phone)) {
             try{
-                \JWTAuth::setToken(Redis::get('Login'.$phone))->invalidate();
+                JWTAuth::setToken(Redis::get('Login'.$phone))->invalidate();
             }catch (TokenExpiredException $e){
 
             }
