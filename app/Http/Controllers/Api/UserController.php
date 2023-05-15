@@ -48,13 +48,12 @@ class UserController extends BaseController
 
         if (Redis::get('Login'.$phone)) {
             try{
-                \JWTAuth::setToken(Redis::get('Login'.$phone))->invalidate();
+                Auth::setToken(Redis::get('Login'.$phone))->invalidate();
             }catch (TokenExpiredException $e){
 
             }
         }
         Redis::set('Login'.$phone,$token);
-        dd(Redis::get('Login'.$phone));
         $user = Auth::user();
         return $this->success('登录成功',[
             'user'=>$user,
