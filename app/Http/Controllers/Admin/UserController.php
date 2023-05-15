@@ -31,20 +31,20 @@ class UserController extends AdminBaseController
         if ($request->filled("master_id")) {
             $condition[] = ["master_id", "=", $request->master_id];
         }
-        if($request->filled("master_phone")){
-            $user = User::where("phone",$request->phone)->first();
-            if(!$user){
-                $condition[] = ["master_id","=",$user->id];
+        if ($request->filled("master_phone")) {
+            $user = User::where("phone", $request->phone)->first();
+            if (!$user) {
+                $condition[] = ["master_id", "=", $user->id];
             }
         }
-        if($request->filled("leader_id")){
-            $condition[] = ["master_pos","like","%,$request->leader_id,%"];
+        if ($request->filled("leader_id")) {
+            $condition[] = ["master_pos", "like", "%,$request->leader_id,%"];
         }
 
-        if($request->filled("leader_phone")){
-            $user = User::where("phone",$request->leader_phone)->first();
-            if(!$user){
-                $condition[] = ["master_pos","like","%,$user->id,%"];
+        if ($request->filled("leader_phone")) {
+            $user = User::where("phone", $request->leader_phone)->first();
+            if (!$user) {
+                $condition[] = ["master_pos", "like", "%,$user->id,%"];
             }
         }
 
@@ -55,7 +55,19 @@ class UserController extends AdminBaseController
             $condition[] = ["created_at", "<", strtotime($end)];
         }
 
-        $data = User::where($condition)->orderByDesc("id")->paginate($size);
+        $data = User::where($condition)->orderByDesc("id")->paginate($size)->toArray();
+        foreach ($data["data"] as $k=>&$v){
+            $ui = UserIdentity::where('user_id',$v["id"])->first();
+            if(!$ui || $ui["status"] != 1){
+                $v["auth"] = 1;
+                $v["name"] = "";
+                $v["card"] = "";
+            }else{
+                $v["auth"] = 2;
+                $v["name"] = $ui["username"];
+                $v["card"] = $ui["id_card"];
+            }
+        }
         return $this->executeSuccess("请求", $data);
     }
 
@@ -107,13 +119,17 @@ class UserController extends AdminBaseController
             } else if ($request->type == 4) {
                 $num = min($user->ticket_num, $request->num);
                 $user->ticket_num = $user->ticket_num - $num;
-            } else if($request->type == 5){
-                $num = min($user->money,$request->num);
-                $user->money = $user->money-$num;
+            } else if ($request->type == 5) {
+                $num = min($user->money, $request->num);
+                $user->money = $user->money - $num;
 
-            }else{
+            } else if ($request->type == 6) {
                 $num = min($user->coin_num, $request->num);
                 $user->coin_num = $user->coin_num - $num;
+            } else {
+                $num = min($user->new_freeze, $request->num);
+                $user->freeze_money = $user->freeze_money - $num;
+                $user->new_freeze = $user->new_freeze - $num;
             }
         } else {
             $num = $request->num;
@@ -125,25 +141,35 @@ class UserController extends AdminBaseController
                 $user->luck_score = $user->luck_score + $num;
             } else if ($request->type == 4) {
                 $user->ticket_num = $user->ticket_num + $num;
-            } else if($request->type == 5){
+            } else if ($request->type == 5) {
                 $user->money += $num;
 
-            }else{
+            } else if ($request->type == 6) {
                 $user->coin_num += $num;
+            } else {
+                $user->freeze_money += $num;
+                $user->new_freeze += $num;
             }
         }
         if ($num > 0) {
             DB::beginTransaction();
             try {
                 $user->save();
-                if ($request->type <= 5) {
-                    Score::create([
-                        "user_id" => $user->id,
-                        "flag" => $request->flag,
-                        "num" => $num,
-                        "type" => $request->type,
-                        "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
-                    ]);
+                if($num > 0){
+                    if ($request->type <= 5 || $request->type >= 7) {
+                        if($request->type <= 5){
+                            $type = $request->type;
+                        }else{
+                            $type = $request->type-1;
+                        }
+                        Score::create([
+                            "user_id" => $user->id,
+                            "flag" => $request->flag,
+                            "num" => $num,
+                            "type" => $type,
+                            "f_type" => $request->flag == 1 ? Score::BACK_ADD : Score::BACK_SUB,
+                        ]);
+                    }
                 }
                 DB::commit();
                 return $this->executeSuccess("操作");
@@ -271,7 +297,7 @@ class UserController extends AdminBaseController
         if ($request->filled("phone")) {
             $user = User::where("phone", $request->phone)->first();
             if ($user) {
-                $condition["user_id"] = $request->id;
+                $condition["user_id"] = $user->id;
             } else {
                 $condition["user_id"] = -1;
             }
