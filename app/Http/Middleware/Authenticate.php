@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Traits\ApiResponse;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 class Authenticate extends Middleware
@@ -33,6 +34,9 @@ class Authenticate extends Middleware
             $user = JWTAuth::parseToken()->touser();
             if(!$user){
                 return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
+            }
+            if(!Redis::get("Login".$user->phone)){
+                return $this->fail('请重新登录',[],'',1005);
             }
         } catch (JWTException $e) {
             if($e->getMessage() == 'Wrong number of segments') {
