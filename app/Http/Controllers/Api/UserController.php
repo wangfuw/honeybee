@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\JWT;
 
 class UserController extends BaseController
 {
@@ -38,12 +40,18 @@ class UserController extends BaseController
         if(!$this->validate->scene('login')->check(['phone'=>$phone,'password'=>$password])){
             return $this->fail($this->validate->getError());
         }
+
         if(User::query()->where('phone',$phone)->value('is_ban') == 2){
             return  $this->fail('该用户被禁用');
         }
         $token = Auth::setTTl(60*24*365)->attempt($data);
+        if(Redis::get('Login'.$phone)){
+            JWT::setToken(Redis::get('Login'.$phone))->invalidate();
+        }
         if (!$token) {
             return $this->fail('登录失败,账号或密码错误');
+        }else{
+            Redis::set('Login'.$phone,$token);
         }
         $user = Auth::user();
         return $this->success('登录成功',[
