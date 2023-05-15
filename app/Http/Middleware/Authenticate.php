@@ -23,19 +23,19 @@ class Authenticate extends Middleware
 //        }
         //检测会员是否已登录
         $token = $request->token = $request->header('Authorization');
-        dd($token);
+
         if (!$token) {
             return $this->fail('请求token缺失',[],'',1005);
         }
         try {
-            //重新设置请求头把token修改成
+            //重新设置请求头把token修改成j
             $request->headers->set('Authorization',"{$token}");
 
             $user = JWTAuth::parseToken()->touser();
             if(!$user){
                 return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
             }
-            if(!Redis::get("Login".$user->phone)){
+            if(!Redis::get("Login".$user->phone) || "bearer ".Redis::get("Login".$user->phone) != $token){
                 return $this->fail('请重新登录',[],'',1005);
             }
         } catch (JWTException $e) {
