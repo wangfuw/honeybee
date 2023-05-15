@@ -29,8 +29,16 @@ class OrderService
 
     const GREEN = 4;
     const SALE  = 8;
-    public function __construct(MallSku $model){
+
+    protected $base;
+    protected $middle;
+    protected $last;
+    public function __construct(MallSku $model, Config $config){
         $this->model = $model;
+        $this->base = $config::lucky_base();
+        $this->middle = $config::lucky_middle();
+        $this->base = $config::lucky_last();
+
     }
     protected  function getOrderId()
     {
@@ -276,13 +284,13 @@ class OrderService
                     $add_data['money'] = $price_total;
                     switch ($price_total){
                        case $price_total > 1 && $price_total<2000:
-                            $add_data['give_lucky_score'] = $price_total * 4;
+                            $add_data['give_lucky_score'] = $price_total * $this->base;
                             break;
                        case $price_total>=2000 && $price_total<10000:
-                            $add_data['give_lucky_score'] = $price_total * 4.5;
+                            $add_data['give_lucky_score'] = $price_total * $this->middle;
                             break;
                        case $price_total>=10000;
-                            $add_data['give_lucky_score'] = $price_total * 6;
+                            $add_data['give_lucky_score'] = $price_total * $this->last;
                             break;
                     }
                    break;
