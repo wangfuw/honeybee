@@ -35,7 +35,7 @@ class Authenticate extends Middleware
             if(!$user){
                 return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
             }
-            if(!Redis::get("Login".$user->phone) || Redis::get("Login".$user->phone) != $token){
+            if(!Redis::get("Login".$user->phone)){
                 return $this->fail('请重新登录',[],'',1005);
             }
         } catch (JWTException $e) {
