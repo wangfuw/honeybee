@@ -45,11 +45,14 @@ class UserController extends BaseController
             return  $this->fail('该用户被禁用');
         }
         $token = Auth::setTTl(60*24*365)->attempt($data);
-        if(Redis::get('Login'.$phone)){
-           JWT::setToken(Redis::get('Login'.$phone))->invalidate();
-        }else{
-            Redis::set('Login'.$phone,$token);
+        if (Redis::get('Login'.$phone)) {
+            try{
+                \JWTAuth::setToken(Redis::get('Login'.$phone))->invalidate();
+            }catch (TokenExpiredException $e){
+
+            }
         }
+        Redis::set('Login'.$phone,$token);
         $user = Auth::user();
         return $this->success('登录成功',[
             'user'=>$user,
