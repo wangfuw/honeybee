@@ -55,7 +55,17 @@ class UserController extends AdminBaseController
             $condition[] = ["created_at", "<", strtotime($end)];
         }
 
-        $data = User::where($condition)->orderByDesc("id")->paginate($size);
+        $data = User::where($condition)->orderByDesc("id")->paginate($size)->toArray();
+        foreach ($data["data"] as $k=>&$v){
+            $ui = UserIdentity::where('user_id',$v["id"])->first();
+            if(!$ui || $ui["status"] != 1){
+                $v["auth"] = 1;
+            }else{
+                $v["auth"] = 2;
+                $v["name"] = $ui["username"];
+                $v["card"] = $ui["id_card"];
+            }
+        }
         return $this->executeSuccess("请求", $data);
     }
 
