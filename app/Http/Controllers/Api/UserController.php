@@ -46,10 +46,7 @@ class UserController extends BaseController
         }
         $token = Auth::setTTl(60*24*365)->attempt($data);
         if(Redis::get('Login'.$phone)){
-            JWT::setToken(Redis::get('Login'.$phone))->invalidate();
-        }
-        if (!$token) {
-            return $this->fail('登录失败,账号或密码错误');
+            \Tymon\JWTAuth\JWT::setToken(Redis::get('Login'.$phone))->invalidate();
         }else{
             Redis::set('Login'.$phone,$token);
         }
