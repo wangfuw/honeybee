@@ -35,9 +35,11 @@ class Authenticate extends Middleware
             if(!$user){
                 return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
             }
-            if(!Redis::get("Login".$user->phone) || "bearer ".Redis::get("Login".$user->phone) != $token){
-                return $this->fail('请重新登录',[],'',1005);
-            }
+//            if(!Redis::get("Login".$user->phone) || "bearer ".Redis::get("Login".$user->phone) != $token){
+//                return $this->fail('请重新登录',[],'',1005);
+//            }
+            $temp = explode(' ',$token);
+            Redis::set("Login".$user->phone,$temp[1]);
         } catch (JWTException $e) {
             if($e->getMessage() == 'Wrong number of segments') {
                 return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
