@@ -285,7 +285,7 @@ class UserController extends AdminBaseController
         if ($request->filled("phone")) {
             $user = User::where("phone", $request->phone)->first();
             if ($user) {
-                $condition["user_id"] = $request->id;
+                $condition["user_id"] = $user->id;
             } else {
                 $condition["user_id"] = -1;
             }
