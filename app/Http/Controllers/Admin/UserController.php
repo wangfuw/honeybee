@@ -60,13 +60,13 @@ class UserController extends AdminBaseController
 
         $data = User::where($condition)->orderByDesc("id")->paginate($size)->toArray();
         foreach ($data["data"] as $k=>&$v){
-            if($v['identity'] == 1){
-                $v['identity'] = '形象店';
-            }else if($v['identity'] == 2){
-                $v['identity'] = '旗舰店';
-            }else{
-                $v['identity'] = '--';
-            }
+//            if($v['identity'] == 1){
+//                $v['identity'] = '形象店';
+//            }else if($v['identity'] == 2){
+//                $v['identity'] = '旗舰店';
+//            }else{
+//                $v['identity'] = '--';
+//            }
             $ui = UserIdentity::where('user_id',$v["id"])->first();
             if(!$ui || $ui["status"] != 1){
                 $v["auth"] = 1;
