@@ -137,18 +137,18 @@ class UserMoneyController extends BaseController
             case 3:
                 $list = MoneyTrade::query()->where(function ($query) use($user_id){
                     return $query->orWhere('from_id',$user_id)->orWhere('to_id',$user_id);
-                })->whereIn('type',[MoneyTrade::BUY,MoneyTrade::REWARD])->orderBy('created_at','desc')->forPage($page,$page_size)->get()->map(function ($item,$items) use($user_id){
-                    if($item->type == 2){
-                        if($item->from_id == $user_id){
-                            $item->num = '-'.$item->num;
-                            $item->type_name = '交易支出';
-                            $item->address = AsacNode::query()->where('user_id',$item->to_id)->value('wallet_address')??'';
-                        }else{
-                            $item->num = '+'.$item->num;
-                            $item->type_name = '交易收入';
-                            $item->address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
-                        }
-                    }else{
+                })->where('type',MoneyTrade::REWARD)->orderBy('created_at','desc')->forPage($page,$page_size)->get()->map(function ($item,$items) use($user_id){
+//                    if($item->type == 2){
+//                        if($item->from_id == $user_id){
+//                            $item->num = '-'.$item->num;
+//                            $item->type_name = '交易支出';
+//                            $item->address = AsacNode::query()->where('user_id',$item->to_id)->value('wallet_address')??'';
+//                        }else{
+//                            $item->num = '+'.$item->num;
+//                            $item->type_name = '交易收入';
+//                            $item->address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
+//                        }
+//                    }else{
                         if($item->from_id == $user_id){
                             $item->num = '-'.$item->num;
                             $item->type_name = '幸运值专区发放推荐奖';
@@ -159,7 +159,7 @@ class UserMoneyController extends BaseController
                             $item->address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
                         }
 
-                    }
+//                    }
 
                     return $item;
                 });
