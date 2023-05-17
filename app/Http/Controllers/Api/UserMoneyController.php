@@ -149,9 +149,16 @@ class UserMoneyController extends BaseController
                             $item->address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
                         }
                     }else{
-                        $item->num = '+'.$item->num;
-                        $item->type_name = '幸运值专区购买推荐奖';
-                        $item->address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
+                        if($item->from_id == $user_id){
+                            $item->num = '-'.$item->num;
+                            $item->type_name = '幸运值专区发放推荐奖';
+                            $item->address = AsacNode::query()->where('user_id',$item->to_id)->value('wallet_address')??'';
+                        }else{
+                            $item->num = '+'.$item->num;
+                            $item->type_name = '幸运值专区获得推荐奖';
+                            $item->address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
+                        }
+
                     }
 
                     return $item;
