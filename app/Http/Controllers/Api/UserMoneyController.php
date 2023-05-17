@@ -138,14 +138,14 @@ class UserMoneyController extends BaseController
                 $list = MoneyTrade::query()->where(function ($query) use($user_id){
                     return $query->orWhere('from_id',$user_id)->orWhere('to_id',$user_id);
                 })->whereIn('type',[MoneyTrade::BUY,MoneyTrade::REWARD])->orderBy('created_at','desc')->forPage($page,$page_size)->get()->map(function ($item,$items) use($user_id){
-                    if($item->type = 2){
+                    if($item->type == 2){
                         if($item->from_id == $user_id){
                             $item->num = '-'.$item->num;
-                            $item->type_name = '交易转出';
+                            $item->type_name = '交易支出';
                             $item->address = AsacNode::query()->where('user_id',$item->to_id)->value('wallet_address')??'';
                         }else{
                             $item->num = '+'.$item->num;
-                            $item->type_name = '交易转入';
+                            $item->type_name = '交易收入';
                             $item->address = AsacNode::query()->where('user_id',$item->from_id)->value('wallet_address')??'';
                         }
                     }else{
