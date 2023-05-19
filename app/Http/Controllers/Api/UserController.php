@@ -45,7 +45,9 @@ class UserController extends BaseController
             return  $this->fail('该用户被禁用');
         }
         $token = Auth::setTTl(60*24*365)->attempt($data);
-
+        if(empty($token)){
+            return $this->fail('用户名或密码错误');
+        }
         if (Redis::get('Login'.$phone)) {
             try{
                 Auth::setToken(Redis::get('Login'.$phone))->invalidate();
