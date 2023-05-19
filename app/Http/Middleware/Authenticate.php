@@ -33,7 +33,7 @@ class Authenticate extends Middleware
 
             $user = JWTAuth::parseToken()->touser();
             if(!$user){
-                return $this->fail('签名令牌不合法11,请重新登录',[],'',1005);
+                return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
             }
             if(!Redis::get("Login".$user->phone) || "bearer ".Redis::get("Login".$user->phone) != $token){
                 return $this->fail('请重新登录',[],'',1005);
@@ -43,7 +43,7 @@ class Authenticate extends Middleware
             }
         } catch (JWTException $e) {
             if($e->getMessage() == 'Wrong number of segments') {
-                return $this->fail('签名令牌不合法12,请重新登录',[],'',1005);
+                return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
             }
             if($e->getMessage() == 'Token has expired') {
                 return $this->fail('令牌已过期,请重新登录',[],'',1005);
