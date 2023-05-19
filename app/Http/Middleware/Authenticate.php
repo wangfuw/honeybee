@@ -35,9 +35,9 @@ class Authenticate extends Middleware
             if(!$user){
                 return $this->fail('签名令牌不合法,请重新登录',[],'',1005);
             }
-            if(!Redis::get("Login".$user->phone) || "bearer ".Redis::get("Login".$user->phone) != $token){
-                return $this->fail('请重新登录',[],'',1005);
-            }
+//            if(!Redis::get("Login".$user->phone) || "bearer ".Redis::get("Login".$user->phone) != $token){
+//                return $this->fail('请重新登录',[],'',1005);
+//            }
             if($user->is_ban == 2){
                 return $this->fail('用户已被禁用',[],1005);
             }
