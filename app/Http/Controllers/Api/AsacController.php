@@ -278,14 +278,14 @@ class AsacController extends BaseController
             ]);
             $user->coin_num = bcsub($user->coin_num,$num,4);
             $user->save();
-            //提现手续费写入余额
-            AsacTrade::query()->create([
-               'from_address'=> $user_address,
-                'to_address' => $admin_address,
-                'num' => $fee,
-                'trade_hash' => rand_str_pay(64),
-                'type'=>AsacTrade::FEE,
-            ]);
+            //提现手续费写入余额 -- 提现需要审核
+//            AsacTrade::query()->create([
+//               'from_address'=> $user_address,
+//                'to_address' => $admin_address,
+//                'num' => $fee,
+//                'trade_hash' => rand_str_pay(64),
+//                'type'=>AsacTrade::FEE,
+//            ]);
             DB::commit();
             return $this->success('提现申请成功',$res);
         }catch (ApiException $e){
