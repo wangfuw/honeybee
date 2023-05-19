@@ -96,11 +96,11 @@ class WalletController extends BaseController
         })->whereIn('type',[AsacTrade::CHANG_IN,AsacTrade::CHANG_OUT,AsacTrade::FREE_USED,AsacTrade::FREE_HAVED,AsacTrade::FEE])->select('num','from_address','to_address','created_at')->orderBy('created_at','desc')
             ->forPage($page,$page_size)->get()->map(function ($item,$items) use($wallet_address){
                 if($item->from_address == $wallet_address){
-                    $item->type_name = '转出';
+                    $item->type_name = AsacTrade::typeData[$item->type];
                     $item->num = '-'.$item->num;
                     $item->address = $item->to_address;
                 }else{
-                    $item->type_name = '转入';
+                    $item->type_name = AsacTrade::typeData[$item->type];
                     $item->num = '+'.$item->num;
                     $item->address = $item->from_address;
                 }
