@@ -37,7 +37,7 @@ class OrderService
         $this->model = $model;
         $this->base = $config::lucky_base();
         $this->middle = $config::lucky_middle();
-        $this->base = $config::lucky_last();
+        $this->last = $config::lucky_last();
 
     }
     protected  function getOrderId()
