@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Area;
+use App\Models\AsacNode;
+use App\Models\AsacTrade;
 use App\Models\Notice;
 use App\Models\Score;
 use App\Models\User;
@@ -163,8 +165,30 @@ class UserController extends AdminBaseController
         }
         if ($num > 0) {
             DB::beginTransaction();
+            $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
+            $admin_address = AsacNode::query()->where('user_id',1)->value('wallet_address');
             try {
                 $user->save();
+                //记录日志 增加扣除 币种
+                if($request->type == 6){
+                    if($request->flag == 2){
+                        AsacTrade::query()->create([
+                            'from_address' => $user_address,
+                            'to_address'   => $admin_address,
+                            'num'          => $num,
+                            'hash'         => rand_str_pay(64),
+                            'type'         => AsacTrade::BUS
+                        ]);
+                    }else{
+                        AsacTrade::query()->create([
+                            'from_address' => $user_address,
+                            'to_address'   => $admin_address,
+                            'num'          => $num,
+                            'hash'         => rand_str_pay(64),
+                            'type'         => AsacTrade::ADD
+                        ]);
+                    }
+                }
                 if($num > 0){
                     if ($request->type <= 5 || $request->type >= 7) {
                         if($request->type <= 5){
