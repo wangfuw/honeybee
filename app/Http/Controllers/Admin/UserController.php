@@ -167,6 +167,7 @@ class UserController extends AdminBaseController
             DB::beginTransaction();
             $user_address = AsacNode::query()->where('user_id',$request->id)->value('wallet_address');
             $admin_address = AsacNode::query()->where('user_id',1)->value('wallet_address');
+            $admin_user = User::query()->where('id',1)->first();
             try {
                 $user->save();
                 //记录日志 增加扣除 币种
@@ -179,6 +180,8 @@ class UserController extends AdminBaseController
                             'trade_hash'   => rand_str_pay(64),
                             'type'         => AsacTrade::BUS
                         ]);
+                        $admin_user->coin_num += $num;
+                        $admin_user->save();
                     }else{
                         AsacTrade::query()->create([
                             'from_address' => $admin_address,
