@@ -170,25 +170,25 @@ class UserController extends AdminBaseController
             try {
                 $user->save();
                 //记录日志 增加扣除 币种
-                if($request->type == 6){
-                    if($request->flag == 2){
-                        AsacTrade::query()->create([
-                            'from_address' => $user_address,
-                            'to_address'   => $admin_address,
-                            'num'          => $num,
-                            'hash'         => rand_str_pay(64),
-                            'type'         => AsacTrade::BUS
-                        ]);
-                    }else{
-                        AsacTrade::query()->create([
-                            'from_address' => $user_address,
-                            'to_address'   => $admin_address,
-                            'num'          => $num,
-                            'hash'         => rand_str_pay(64),
-                            'type'         => AsacTrade::ADD
-                        ]);
-                    }
-                }
+//                if($request->type == 6){
+//                    if($request->flag == 2){
+//                        AsacTrade::query()->create([
+//                            'from_address' => $user_address,
+//                            'to_address'   => $admin_address,
+//                            'num'          => $num,
+//                            'hash'         => rand_str_pay(64),
+//                            'type'         => AsacTrade::BUS
+//                        ]);
+//                    }else{
+//                        AsacTrade::query()->create([
+//                            'from_address' => $user_address,
+//                            'to_address'   => $admin_address,
+//                            'num'          => $num,
+//                            'hash'         => rand_str_pay(64),
+//                            'type'         => AsacTrade::ADD
+//                        ]);
+//                    }
+//                }
                 if($num > 0){
                     if ($request->type <= 5 || $request->type >= 7) {
                         if($request->type <= 5){
