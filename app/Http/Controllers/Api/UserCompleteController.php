@@ -29,24 +29,45 @@ class UserCompleteController extends BaseController
      */
     public function identity(Request $request)
     {
-        $params = $request->only(['username','id_card','address_code','front_image','back_image']);
-        if(!$this->validate->scene('identity')->check($params)){
-            return $this->fail($this->validate->getError());
+        if(UserIdentity::query()->where('user_id',Auth::user()->id)->exists()){
+            //修改
+            $info = UserIdentity::query()->where('user_id',Auth::user()->id)->where('status',2)->first();
+            if(!$info){
+                return $this->success('未申请实名认证');
+            }
+            if(UserIdentity::query()->where('id_card',$request->id_card)->where('user_id','<>',Auth::user()->id)->exists()){
+                return $this->fail('该身份证已被使用');
+            }
+            $info->username = $request->username;
+            $info->id_card  = $request->id_card;
+            $info->address_code = $request->address_code;
+            $info->front_image  = $request->front_image;
+            $info->back_image   = $request->back_image;
+            $info->status       = 0;
+            $info->note         = '';
+            $info->save();
+            return $this->success('重新提交实名认证成功',[]);
+        }else{
+            $params = $request->only(['username','id_card','address_code','front_image','back_image']);
+            if(!$this->validate->scene('identity')->check($params)){
+                return $this->fail($this->validate->getError());
+            }
+            if(UserIdentity::query()->where('id_card',$request->id_card)->exists()){
+                return $this->fail('该身份证已被使用');
+            }
+            if(checkIdentityCard($params['id_card']) == false){
+                return $this->fail('身份证不合法');
+            }
+            $user = auth()->user();
+            $params['user_id'] = $user->id;
+            try {
+                $info = UserIdentity::create($params);
+                return $this->success('提交成功',$info);
+            }catch (\Exception $e){
+                return $this->fail($e->getMessage());
+            }
         }
-        if(UserIdentity::query()->where('id_card',$request->id_card)->exists()){
-            return $this->fail('该身份证已被使用');
-        }
-        if(checkIdentityCard($params['id_card']) == false){
-            return $this->fail('身份证不合法');
-        }
-        $user = auth()->user();
-        $params['user_id'] = $user->id;
-        try {
-            $info = UserIdentity::create($params);
-            return $this->success('提交成功',$info);
-        }catch (\Exception $e){
-            return $this->fail($e->getMessage());
-        }
+
     }
 
     //我的实名认证详情
