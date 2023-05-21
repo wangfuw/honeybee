@@ -84,7 +84,12 @@ class ScoreController extends AdminBaseController
             $wallet_address = AsacNode::query()->where('user_id', $request->user_id)->value('wallet_address');
         }
         if ($request->address) {
-            $wallet_address = $request->address;
+            if(count($request->address) < 12){
+                $user_id = User::query()->where('phone',$request->address)->value('id');
+                $wallet_address = AsacNode::query()->where('user_id', $user_id)->value('wallet_address');
+            }else{
+                $wallet_address = $request->address;
+            }
         }
 
         $condition = [];
