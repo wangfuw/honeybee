@@ -49,7 +49,7 @@ class AsacTrade extends Base
         self::STORE => '商品利润质押',
         self::FEE => '提现手续费',
         self::ADD => '后台增加',
-        self::FEE => '后台扣除',
+        self::BUS => '后台扣除',
     ];
     protected $fillable = [
         'id','from_address','to_address','num','trade_hash','block_id','created_at','updated_at','type','game_zone'
