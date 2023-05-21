@@ -176,13 +176,13 @@ class UserController extends AdminBaseController
                             'from_address' => $user_address,
                             'to_address'   => $admin_address,
                             'num'          => $num,
-                            'trade_hash'         => rand_str_pay(64),
+                            'trade_hash'   => rand_str_pay(64),
                             'type'         => AsacTrade::BUS
                         ]);
                     }else{
                         AsacTrade::query()->create([
-                            'from_address' => $user_address,
-                            'to_address'   => $admin_address,
+                            'from_address' => $admin_address,
+                            'to_address'   => $user_address,
                             'num'          => $num,
                             'trade_hash'         => rand_str_pay(64),
                             'type'         => AsacTrade::ADD
