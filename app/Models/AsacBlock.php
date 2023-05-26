@@ -33,7 +33,7 @@ class AsacBlock extends Base
         }])->select( 'id',
             'trade_num',
             'created_at'
-        ) ->orderBy('id','desc')
+        ) ->orderBy('id','desc')->forPage($page,$page_size)
             ->get()->map(function ($item,$items){
                 $temp = 0;
                 foreach ($item->trade as $value){
@@ -43,8 +43,7 @@ class AsacBlock extends Base
                 $item->trade_num = $temp;
                 unset($item->trade);
                 return $item;
-            })
-            ->forPage($page,$page_size);
+            });
         return collect([])->merge($data);
     }
 }
