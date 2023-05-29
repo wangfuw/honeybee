@@ -12,6 +12,7 @@ class AdminResponse
     {
         $response = $next($request);
         if ($request->rule_type == 2 && $response->original["status"] == 1) {
+            $ip = $request->header('X-Real-IP');
             $uri = $request->path();
             $admin = auth("admin")->user();
             $rule = AdminRule::where("uri", "/" . $uri)->first();
@@ -22,7 +23,7 @@ class AdminResponse
                 "admin_id" => $admin->id,
                 "rule_id" => $rule->id,
                 "param" => json_encode($param),
-                "ip" => $request->ip(),
+                "ip" => $ip,
                 "created_at" => date("Y-m-d H:i:s", time())
             ]);
         }
