@@ -104,7 +104,6 @@ class OrderService
                     ->where('status',2)
                     ->where('express_status',1)
                     ->where('user_id',$user->id)
-                    ->where('is_return',0)
                     ->orderBy('created_at','desc')
                     ->forPage($page,$page_size)
                     ->get();
