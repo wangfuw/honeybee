@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\WalletController;
 use App\Http\Controllers\Api\DownController;
 use App\Http\Controllers\Api\UserMoneyController;
+use App\Http\Controllers\Api\PayController;
 
 /*
 |--------------------------------------------------------------------------
@@ -211,6 +212,10 @@ Route::controller(UserController::class)->group(function () {
         Route::post('money_trades', [UserMoneyController::class, 'money_trades']);
 
         Route::post('coins', [UserMoneyController::class, 'get_coins']);
+    });
+
+    Route::group([],function(){
+        Route::get('to_pay',[PayController::class,'to_pey']);
     });
 });
 
