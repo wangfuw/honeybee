@@ -23,7 +23,10 @@ use Illuminate\Support\Facades\DB;
 
 class AsacController extends BaseController
 {
-
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['excharge','withdraw']]);
+    }
     public function coin_info()
     {
         $config = Asaconfig::query()->select('last_price','old_price','name')->find(1);
@@ -230,6 +233,10 @@ class AsacController extends BaseController
         $from_address = $request->from_address;
         //接受地址
         $to_address = $request->to_address;
+        $user_id = AsacNode::query()->where('wallet_address',$to_address)->value('user_id');
+        if(!$user_id){
+            return $this->fail('地址充值地址错误');
+        }
         //数量
         $num = $request->num;
         $hash = rand_str_pay(64);
@@ -242,7 +249,6 @@ class AsacController extends BaseController
                 'type'       => AsacTrade::RECHARGE,
                 'trade_hash'      => $hash,
             ]);
-            $user_id = AsacNode::query()->where('wallet_address',$to_address)->value('user_id');
             $user = User::query()->where('id',$user_id)->first();
             $user->coin_num += $num;
             $user->save();

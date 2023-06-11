@@ -242,3 +242,27 @@ if(!function_exists('get_up_area')){
         return Area::query()->where('code',$code)->value('pcode');
     }
 }
+
+/**
+ * Curl 提币
+ */
+
+if(!function_exists('post_url')){
+    function post_url($post_data = [], $timeout = 5){//curl
+        $url = "http://4619p19v09.qicp.vip/app/token/transferAccounts";
+        $ch = curl_init();
+        curl_setopt ($ch, CURLOPT_URL, $url);
+        curl_setopt ($ch, CURLOPT_POST, 1);
+        if(!empty($post_data)){
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        }
+        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, True);
+        curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        $file_contents = curl_exec($ch);
+        curl_close($ch);
+        return $file_contents;
+    }
+}
