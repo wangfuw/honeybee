@@ -120,8 +120,10 @@ class ScoreController extends AdminBaseController
             foreach ($data as &$value){
                 $user_id_from = AsacNode::query()->where('wallet_address',$value['from_address'])->value('user_id');
                 $user_id_to = AsacNode::query()->where('wallet_address',$value['to_address'])->value('user_id');
-                $value['from_phone'] = User::query()->where('id',$user_id_from)->value('phone')??'--';
-                $value['to_phone'] = User::query()->where('id',$user_id_to)->value('phone')??'--';
+                $temp = $value['order_nu']?'交易所':'平台';
+                $value['from_phone'] = User::query()->where('id',$user_id_from)->value('phone')??$temp;
+                $value['to_phone'] = User::query()->where('id',$user_id_to)->value('phone')??$temp;
+                $value['order_nu'] = $value['order_nu']??'--';
             }
         }
         return $this->executeSuccess("request", $data);
