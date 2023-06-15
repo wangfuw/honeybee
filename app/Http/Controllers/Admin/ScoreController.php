@@ -116,6 +116,14 @@ class ScoreController extends AdminBaseController
                 ->orderByDesc("id")
                 ->paginate($size);
         }
+        if(!empty($data)){
+            foreach ($data as &$value){
+                $user_id_from = AsacNode::query()->where('wallet_address',$value['from_address'])->value('user_id');
+                $user_id_to = AsacNode::query()->where('wallet_address',$value['to_address'])->value('user_id');
+                $value['from_phone'] = User::query()->where('id',$user_id_from)->value('phone');
+                $value['to_phone'] = User::query()->where('id',$user_id_to)->value('phone');
+            }
+        }
         return $this->executeSuccess("request", $data);
     }
 }
