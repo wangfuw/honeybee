@@ -34,7 +34,7 @@ class CreateStoreSupply extends Migration
             $table->string('bank_account_no')->nullable()->comment('银行卡号');
             $table->string('bank_channel')->nullable()->comment('联行号 对公账户必填');
             $table->tinyInteger('status')->default(0)->comment('0-待入住 1-入住成功 2入住失败');
-            $table->string('msg')->comment('入住返回信息');
+            $table->string('msg')->nullable()->comment('入住返回信息');
             $table->integer('created_at')->comment('插入时间');
             $table->integer('updated_at')->comment('修改时间');
         });
