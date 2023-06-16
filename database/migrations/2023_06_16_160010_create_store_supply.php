@@ -21,7 +21,6 @@ class CreateStoreSupply extends Migration
             $table->string('contact_name')->nullable()->comment('业务联系人姓名');
             $table->string('contact_mobile_no')->nullable()->comment('业务联系人电话');
             $table->string('phone_no')->nullable()->comment('法人电话');
-            $table->string('contact_mobile_no')->nullable()->comment('业务联系人电话');
             $table->string('scope')->nullable()->comment('营业范围');
             $table->string('addr')->nullable()->comment('营业地址');
             $table->string('legal_person')->nullable()->comment('法人姓名');
