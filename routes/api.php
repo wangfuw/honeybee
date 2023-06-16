@@ -215,7 +215,7 @@ Route::controller(UserController::class)->group(function () {
     });
 
     Route::group([],function(){
-        Route::get('to_pay',[PayController::class,'to_pey']);
+        Route::post('to_pay',[PayController::class,'to_pey']);
     });
 });
 

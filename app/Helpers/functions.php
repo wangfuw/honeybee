@@ -246,23 +246,173 @@ if(!function_exists('get_up_area')){
 /**
  * Curl 提币
  */
+//
 
 if(!function_exists('post_url')){
-    function post_url($post_data = [], $timeout = 5){//curl
-        $url = "http://4619p19v09.qicp.vip/app/token/transferAccounts";
-        $ch = curl_init();
-        curl_setopt ($ch, CURLOPT_URL, $url);
-        curl_setopt ($ch, CURLOPT_POST, 1);
-        if(!empty($post_data)){
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+    /**
+     * PHP发送Json对象数据
+     * @param $url 请求url
+     * @param $data 发送的json字符串/数组
+     * @return array
+     */
+    function post_url($url, $data = NULL)
+    {
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        if(!$data){
+            return 'data is null';
         }
-        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, True);
-        curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        $file_contents = curl_exec($ch);
-        curl_close($ch);
-        return $file_contents;
+        if(is_array($data))
+        {
+            $data = json_encode($data);
+        }
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_HTTPHEADER,array(
+            'Content-Type: application/json; charset=utf-8',
+            'Content-Length:' . strlen($data),
+            'Cache-Control: no-cache',
+            'Pragma: no-cache'
+        ));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $res = curl_exec($curl);
+        $errorno = curl_errno($curl);
+        if ($errorno) {
+            return $errorno;
+        }
+        curl_close($curl);
+        return $res;
     }
 }
+
+if(!function_exists('curl_get')){
+    function curl_get($appid,$secret,$code,$type = "authorization_code",$method){
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid =".$appid."&secret=".$secret."&code=".$code.'&grant_type='.$type;
+        $ch = curl_init();//1.初始化
+        curl_setopt($ch, CURLOPT_URL, $url);//2.请求地址
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);//3.请求方式
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $tmpInfo = curl_Exec($ch);
+
+        if (curl_errno($ch)) {
+            return curl_errno($ch);
+        }
+        curl_close($ch);//关闭
+
+        return  $data = json_decode($tmpInfo);
+    }
+}
+
+//排序
+function formatBizQueryParaMap($paraMap, $urlencode)
+{
+    $buff = "";
+    ksort($paraMap);
+    foreach ($paraMap as $k => $v)
+    {
+        if($urlencode)
+        {
+            $v = urlencode($v);
+        }
+        $buff .= $k . "=" . $v . "&";
+    }
+    $reqPar = '';
+    if (strlen($buff) > 0)
+    {
+        $reqPar = substr($buff, 0, strlen($buff)-1);
+    }
+    return $reqPar;
+}
+
+function formatBizQueryParaMapVal($paraMap,$urlencode){
+    $buff = "";
+    foreach ($paraMap as $k=>$v){
+        if($urlencode){
+            $v = urlencode($v);
+        }
+        $buff .= $v;
+    }
+    return $buff;
+}
+
+/**
+ * RSA签名
+ * @param $data 待签名数据
+ * @param $private_key 私钥字符串
+ * return 签名结果
+ */
+function rsaSign($data, $private_key) {
+
+    $search = [
+        "-----BEGIN RSA PRIVATE KEY-----",
+        "-----END RSA PRIVATE KEY-----",
+        "\n",
+        "\r",
+        "\r\n"
+    ];
+    $private_key = str_replace($search,"",$private_key);
+    $private_key = $search[0] . PHP_EOL . wordwrap($private_key, 64, "\n", true) . PHP_EOL . $search[1];
+    $private_key_resource_id=openssl_get_privatekey($private_key);
+    if($private_key_resource_id)
+    {
+        openssl_sign($data, $sign,$private_key_resource_id,OPENSSL_ALGO_MD5);
+        openssl_free_key($private_key_resource_id);
+    }else {
+        exit("私钥格式有误");
+    }
+    $sign = base64_encode($sign);
+    return $sign;
+}
+
+function generateOrderNumber($length=4){
+    //14位的日期（年月日时分秒）
+    $date=date('Ymdhis ',time());
+    //初始化变量为0
+    $connt = 0;
+    //建一个新数组
+    $temp = array();
+    while($connt < $length){
+        //在一定范围内随机生成一个数放入数组中
+        $temp[] = mt_rand(0, 9);
+        //$data = array_unique($temp);
+//去除数组中的重复值用了“翻翻法”，就是用array_flip()把数组的key和value交换两次。这种做法比用 array_unique() 快得多。
+        $data = array_flip(array_flip($temp));
+        //将数组的数量存入变量count中
+        $connt = count($data);
+    }
+    //为数组赋予新的键名
+    shuffle($data);
+    //数组转字符串
+    $str=implode(",", $data);
+    //替换掉逗号
+    $number=str_replace(',', '', $str);
+    return str_replace(' ','',$date.$number);
+}
+
+/**
+ * 生成签名
+ * @param $params
+ * @param $key
+ * @param string $encryptType
+ * @return string
+ */
+function hmacRequest($params="dasdas", $key, $encryptType = "1")
+{
+    if ("1" == $encryptType) {
+        return md5(implode("", $params) . $key);
+    } else {
+        $private_key = openssl_pkey_get_private($key);
+        $params = implode("", $params);
+        openssl_sign($params, $sign, $private_key, OPENSSL_ALGO_MD5);
+        openssl_free_key($private_key);
+        $sign = base64_encode($sign);
+        return $sign;
+    }
+
+}
+
+
