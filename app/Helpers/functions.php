@@ -267,7 +267,7 @@ if(!function_exists('post_url')){
         }
         if(is_array($data))
         {
-            $data = json_encode($data);
+            $data = json_encode($data,JSON_UNESCAPED_UNICODE);
         }
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
