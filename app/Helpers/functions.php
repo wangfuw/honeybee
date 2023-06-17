@@ -417,6 +417,7 @@ function hmacRequest($params="dasdas", $key, $encryptType = "1")
 function sign_ru_zhu($params = '',$key)
 {
     $string = $params.'&key='.$key;
+    dd($string);
     return md5($string);
 }
 
