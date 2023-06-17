@@ -65,13 +65,11 @@ class SupplyController extends AdminBaseController
         $store = StoreSupply::query()->where('id',$request->id)->first();
         $apply_data = $this->apply_data($store);
         $apply = $this->make_data($apply_data);
-
         $to_sign = formatBizQueryParaMap($apply,false);
-        dd($to_sign);
-        $apply['sign'] = sign_ru_zhu($to_sign,self::M_SECRET);
-
+        $t_post = $this->make_apply($apply_data);
+        $t_post['sign'] = sign_ru_zhu($to_sign,self::M_SECRET);
         $url = "https://www.joinpay.com/allocFunds";
-        $ret = post_url($url,$apply);
+        $ret = post_url($url,$t_post);
         return  $ret;
         if($result["resp_code"] == "A1000"){
             //入住成功 --
@@ -94,6 +92,19 @@ class SupplyController extends AdminBaseController
             'method'=>self::FUNCTION,
             'version'=>self::VERSION,
             'data'=>json_encode($apply_data,JSON_UNESCAPED_UNICODE),
+            'rand_str'=>rand_str_pay(32),
+            'sign_type'=>self::MD5,
+            'mch_no'=>self::MERCHANTNO,
+        ];
+        return $data;
+    }
+
+    protected function make_apply($apply_data=[])
+    {
+        $data = [
+            'method'=>self::FUNCTION,
+            'version'=>self::VERSION,
+            'data'=>$apply_data,
             'rand_str'=>rand_str_pay(32),
             'sign_type'=>self::MD5,
             'mch_no'=>self::MERCHANTNO,
