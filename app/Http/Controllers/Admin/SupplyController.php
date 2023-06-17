@@ -66,6 +66,7 @@ class SupplyController extends AdminBaseController
         $apply_data = $this->apply_data($store);
         $apply = $this->make_data($apply_data);
         $to_sign = formatBizQueryParaMap($apply,false);
+        dd($to_sign);
         $apply['sign'] = sign_ru_zhu($to_sign,self::M_SECRET);
         $url = "https://www.joinpay.com/allocFunds";
         $ret = post_url($url,$apply);
@@ -91,7 +92,7 @@ class SupplyController extends AdminBaseController
         $data = [
             'method'=>self::FUNCTION,
             'version'=>self::VERSION,
-            'data'=>json_encode($apply_data,true),
+            'data'=>json_encode($apply_data,JSON_UNESCAPED_UNICODE),
             'rand_str'=>rand_str_pay(32),
             'sign_type'=>self::MD5,
             'mch_no'=>self::MERCHANTNO,
