@@ -134,7 +134,7 @@ class SupplyController extends AdminBaseController
             "bank_account_name"=>$store->bank_account_name,
             "bank_account_no"=>$store->bank_account_no,
             "bank_channel_no"=>$store->bank_channel,
-            "notify_url"=>"",
+           // "notify_url"=>"",
         ];
         return $data;
     }
