@@ -14,7 +14,7 @@ class SupplyController extends AdminBaseController
     //平台伤号
     const MERCHANTNO = '888120600004799';
     //版本号
-    const VERSION = '2.2';
+    const VERSION = '1.1';
     //入网方法
     const FUNCTION = "altmch.create";
 
@@ -68,7 +68,6 @@ class SupplyController extends AdminBaseController
         $apply = $this->make_data($apply_data);
         $to_sign = formatBizQueryParaMap($apply,false);
         $apply['sign'] = sign_ru_zhu($to_sign,self::M_SECRET);
-        dd($apply);
         $url = "https://www.joinpay.com/allocFunds";
         $ret = post_url($url,$apply);
         //发送请求入住
