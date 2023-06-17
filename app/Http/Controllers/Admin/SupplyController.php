@@ -66,12 +66,12 @@ class SupplyController extends AdminBaseController
         $store = StoreSupply::query()->where('id',$request->id)->first();
         $apply_data = $this->apply_data($store);
         $apply = $this->make_data($apply_data);
-        dd(formatBizQueryParaMap($apply,1));
-        $apply['sign'] = hmacRequest(formatBizQueryParaMap($apply,false),self::M_SECRET,"1");
+        $to_sign = formatBizQueryParaMap($apply,false);
+        $apply['sign'] = hmacRequest($to_sign,self::M_SECRET);
         $url = "https://www.joinpay.com/allocFunds";
         $ret = post_url($url,$apply);
         //发送请求入住
-
+        dd($ret);
         return $this->executeSuccess("操作");
     }
 
