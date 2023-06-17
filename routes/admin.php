@@ -109,7 +109,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("addAmount", [StoreController::class, "addAmount"])->middleware(["admin.response"]);
 
             Route::post("applyList", [SupplyController::class, "supplyList"])->middleware(["admin.response"]);
-            Route::post("addAmount", [SupplyController::class, "apply"])->middleware(["admin.response"]);
+            Route::post("apply", [SupplyController::class, "apply"])->middleware(["admin.response"]);
 
             Route::get("orderList", [OrderController::class, "orderList"]);
             Route::get("shopOrderList", [OrderController::class, "shopOrderList"]);
