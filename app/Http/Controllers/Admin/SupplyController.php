@@ -66,8 +66,7 @@ class SupplyController extends AdminBaseController
         $store = StoreSupply::query()->where('id',$request->id)->first();
         $apply_data = $this->apply_data($store);
         $apply = $this->make_data($apply_data);
-        dd(formatBizQueryParaMap($apply_data,false));
-        $apply['sign'] = hmacRequest(formatBizQueryParaMap($apply_data,false),self::M_SECRET,"1");
+        $apply['sign'] = hmacRequest(formatBizQueryParaMap($apply,false),self::M_SECRET,"1");
         dd($apply);
         $url = "https://www.joinpay.com/allocFunds";
         $ret = post_url($url,$apply);
