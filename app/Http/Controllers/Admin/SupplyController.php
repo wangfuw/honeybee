@@ -65,9 +65,10 @@ class SupplyController extends AdminBaseController
         $store = StoreSupply::query()->where('id',$request->id)->first();
         $apply_data = $this->apply_data($store);
         $apply = $this->make_data($apply_data);
+        dd($apply);
         $to_sign = formatBizQueryParaMap($apply,false);
         $apply['sign'] = sign_ru_zhu($to_sign,self::M_SECRET);
-        dd($apply);
+
         $url = "https://www.joinpay.com/allocFunds";
         $ret = post_url($url,$apply);
         return  $ret;
