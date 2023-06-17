@@ -68,8 +68,9 @@ class SupplyController extends AdminBaseController
         $to_sign = formatBizQueryParaMap($apply,false);
         $apply['sign'] = sign_ru_zhu($to_sign,self::M_SECRET);
         $url = "https://www.joinpay.com/allocFunds";
+        dd($apply);
         $ret = post_url($url,$apply);
-        return $ret;
+
         $result = json_decode($ret);
         if($result["resp_code"] == "A1000"){
             //入住成功 --
