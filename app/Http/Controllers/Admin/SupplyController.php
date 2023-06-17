@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class SupplyController extends AdminBaseController
 {
-
     //平台伤号
     const MERCHANTNO = '888120600004799';
     //版本号
@@ -67,15 +66,28 @@ class SupplyController extends AdminBaseController
         $apply_data = $this->apply_data($store);
         $apply = $this->make_data($apply_data);
         $to_sign = formatBizQueryParaMap($apply,false);
+        return $to_sign;
         $apply['sign'] = sign_ru_zhu($to_sign,self::M_SECRET);
-        return json_encode($apply,true);
+
         $url = "https://www.joinpay.com/allocFunds";
         $ret = post_url($url,$apply);
-        //发送请求入住
-        dd($ret);
-        return $this->executeSuccess("操作");
+        $result = json_decode($ret);
+        if($result["resp_code"] == "A1000"){
+            //入住成功 --
+            $mch_no = $result['data']['alt_mch_no'];
+
+            return $this->executeSuccess($result["data"]["biz_msg"]);
+        }else{
+            return $this->executeFail($result["data"]["biz_msg"]);
+        }
+
     }
 
+    //入住成功异步通知
+    public function notify_url(Request $request){
+        $data  = $request->all();
+        return $this->success('异步返回成功',$data);
+    }
     protected function make_data($apply_data = [])
     {
         $data = [
