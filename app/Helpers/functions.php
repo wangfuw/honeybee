@@ -412,7 +412,11 @@ function hmacRequest($params="dasdas", $key, $encryptType = "1")
         $sign = base64_encode($sign);
         return $sign;
     }
-
 }
 
+function sign_ru_zhu($params = '',$key)
+{
+    $string = $params.'&key='.$key;
+    return md5($string);
+}
 
