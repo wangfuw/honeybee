@@ -10,7 +10,7 @@ class ApplyController extends MerchantBaseController
     public function applyInfo()
     {
         $user = auth("merchant")->user();
-        $info = StoreSupply::query()->where('user_id',$user->user_id)->first();
+        $info = StoreSupply::query()->where('user_id',$user->id)->first();
         return $this->executeSuccess("请求", $info);
     }
 
