@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 class RechargeController extends AdminBaseController
 {
 
-    const APPID = 123;
+    const APPID = "1120122425175191552";
     const PUBLIC_KEY ="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5GnfqIyYaaat8MLYofU49fjghLR2X5j4Dy/FQMu+IAWVKtum/yUOFwTWI1lFD6qGLTFAPdFwaVhpLeZqnpIyuwcgnTGfEONKYUg+NSUMwMe2QhE/KqoyexL1xmB3O5V99xGxUPrGqFKU092AjLzYiWhvWNuUOFvSyVvmXduGgHQIDAQAB";
     const PRIVATE_KEY =
         <<<EOF

@@ -152,11 +152,9 @@ EOF;
     {
         Log::info('开始执行，读取充值数据：'.date('Y-m-d H:i:s'));
         $data = [
-            "address"=> "0x27ab00bc660838f8e0256dbb85bff453f1a2bc7a",
-            "appId"=>"123",
+            "address"=> "0xf897ec4fc2b6775a84bca810d3df9308fd2112ee",
+            "appId"=>"1120122425175191552",
             "timestamp"=>time(),
-//            "startTime"=>"2023-06-12",
-//            "endTime"=>"2023-06-14",
             "publicKey"=> $this->publicKeyString,
         ];
         $res = $this->formatBizQueryParaMap($data,false);
