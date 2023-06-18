@@ -161,7 +161,7 @@ EOF;
         $sign = $this->rsaSign($res,$this->privateKeyString);
         $data["sign"] = $sign;
         $data['endTime'] = date("Y-m-d H:i:s");
-        $data['startTime'] = date('Y-m-d H:i:s',strtotime("-5 minute"));
+        $data['startTime'] = date('Y-m-d H:i:s',strtotime("-2 minute"));
         $result = $this->post_url($this->url,$data);
         $ret = json_decode($result,true);
         if(!isset($ret['code']) || $ret['code'] != 200){
