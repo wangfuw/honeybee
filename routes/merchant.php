@@ -6,6 +6,7 @@ use App\Http\Controllers\Merchant\SpuController;
 use App\Http\Controllers\Merchant\OrderController;
 use App\Http\Controllers\Merchant\HomeController;
 use App\Http\Controllers\Merchant\AsacController;
+use App\Http\Controllers\Merchant\ApplyController;
 
 Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -30,5 +31,9 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
         Route::get("config", [AsacController::class, "config"]);
         Route::post("burn", [AsacController::class, "burn"]);
         Route::get("burnLog", [AsacController::class, "burnLog"]);
+        //支付申请详情
+        Route::get('applyInfo',[ApplyController::class,"applyInfo"]);
+        //提交支付申请
+        Route::post('apply',[ApplyController::class,"apply"]);
     });
 });
