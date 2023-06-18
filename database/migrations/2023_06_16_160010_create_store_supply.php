@@ -36,6 +36,12 @@ class CreateStoreSupply extends Migration
             $table->tinyInteger('status')->default(0)->comment('0-待入住 1-入住成功 2入住失败');
             $table->string('msg')->nullable()->comment('入住返回信息');
             $table->string('alt_mch_no')->nullable()->comment('分账编号');
+            $table->string('sign_url')->nullable()->comment('签约链接');
+            $table->dateTime('sign_time')->nullable()->comment('签约时间');
+            $table->string('sign_trx_no')->nullable()->comment('签约流水号');
+            $table->string('aes_key')->nullable()->comment('加密密钥');
+            $table->tinyInteger('sign_status')->default(0)->nullable()->comment("0 未签约 1 签约成功 2 签约失败");
+            $table->tinyInteger('is_upload')->default(0)->nullable()->comment("0 未上传材料 1 已上传材料");
             $table->integer('created_at')->comment('插入时间');
             $table->integer('updated_at')->comment('修改时间');
         });
