@@ -108,8 +108,21 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("editReview", [StoreController::class, "editReview"])->middleware(["admin.response"]);
             Route::post("addAmount", [StoreController::class, "addAmount"])->middleware(["admin.response"]);
 
+            //支付入住申请
             Route::post("applyList", [SupplyController::class, "supplyList"])->middleware(["admin.response"]);
+            //注册
             Route::post("apply", [SupplyController::class, "apply"])->middleware(["admin.response"]);
+            //异步通知
+            Route::post("notify_url", [SupplyController::class, "notify_url"])->middleware(["admin.response"]);
+            //签约
+            Route::post("agreement", [SupplyController::class, "content_agreement"])->middleware(["admin.response"]);
+            //签约回调
+            Route::post("agree_back", [SupplyController::class, "agree_back"])->middleware(["admin.response"]);
+            //上传材料
+            Route::post("upload_to_pay", [SupplyController::class, "upload_to_pay"])->middleware(["admin.response"]);
+            //材料审核异常
+            Route::post("upload_back", [SupplyController::class, "upload_back"])->middleware(["admin.response"]);
+
 
             Route::get("orderList", [OrderController::class, "orderList"]);
             Route::get("shopOrderList", [OrderController::class, "shopOrderList"]);

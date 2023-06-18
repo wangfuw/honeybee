@@ -255,35 +255,26 @@ if(!function_exists('post_url')){
      * @param $data 发送的json字符串/数组
      * @return array
      */
-    function post_url($url, $data = NULL)
+    function post_url($url, $data )
     {
-
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        if(!$data){
-            return 'data is null';
-        }
-        if(is_array($data))
-        {
+        if(is_array($data)){
             $data = json_encode($data,JSON_UNESCAPED_UNICODE);
         }
-        dd($data);
+
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_HTTPHEADER,array(
-            'Content-Type: application/json; charset=utf-8',
-            'Content-Length:' . strlen($data),
-            'Cache-Control: no-cache',
-            'Pragma: no-cache'
+            'Content-Type: application/json; charset=utf-8'
         ));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         $res = curl_exec($curl);
         $errorno = curl_errno($curl);
         if ($errorno) {
-            return $errorno;
+            throw  new \App\Exceptions\ApiException('208',$errorno);
         }
         curl_close($curl);
         return $res;
@@ -326,6 +317,7 @@ function formatBizQueryParaMap($paraMap, $urlencode)
     {
         $reqPar = substr($buff, 0, strlen($buff)-1);
     }
+
     return $reqPar;
 }
 
@@ -415,9 +407,4 @@ function hmacRequest($params="dasdas", $key, $encryptType = "1")
     }
 }
 
-function sign_ru_zhu($params = '',$key)
-{
-    $string = $params.'&key='.$key;
-    return md5($string);
-}
 
