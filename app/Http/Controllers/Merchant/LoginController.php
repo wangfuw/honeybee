@@ -90,6 +90,12 @@ class LoginController extends MerchantBaseController
                         "title" => "燃烧记录",
                         "icon" => "Notebook",
                         "path" => "/burnLog"
+                    ],
+                    [
+                        "id" => 9,
+                        "title"=>"支付申请",
+                        "icon"=>"Apple",
+                        "path"=>"/apply"
                     ]
                 ],
             ],
