@@ -24,6 +24,13 @@ use  App\Http\Controllers\Admin\SupplyController;
 
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
+    //材料审核异常
+    Route::post("upload_back", [SupplyController::class, "upload_back"]);
+    //异步通知
+    Route::post("notify_url", [SupplyController::class, "notify_url"]);
+    //签约回调
+    Route::post("agree_back", [SupplyController::class, "agree_back"]);
+
     Route::middleware(['admin.token'])->group(function () {
         Route::get("menuList", [LoginController::class, "menuList"]);
         Route::post("changePwd", [LoginController::class, "changePassword"]);
@@ -112,16 +119,10 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::post("applyList", [SupplyController::class, "supplyList"])->middleware(["admin.response"]);
             //注册
             Route::post("apply", [SupplyController::class, "apply"])->middleware(["admin.response"]);
-            //异步通知
-            Route::post("notify_url", [SupplyController::class, "notify_url"])->middleware(["admin.response"]);
             //签约
             Route::post("agreement", [SupplyController::class, "content_agreement"])->middleware(["admin.response"]);
-            //签约回调
-            Route::post("agree_back", [SupplyController::class, "agree_back"])->middleware(["admin.response"]);
             //上传材料
             Route::post("uploadToPay", [SupplyController::class, "upload_to_pay"])->middleware(["admin.response"]);
-            //材料审核异常
-            Route::post("upload_back", [SupplyController::class, "upload_back"])->middleware(["admin.response"]);
 
 
             Route::get("orderList", [OrderController::class, "orderList"]);

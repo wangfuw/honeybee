@@ -37,6 +37,12 @@ class SupplyController extends AdminBaseController
     const RSA = 2;
     //入网地址
     const url = "https://www.joinpay.com/allocFunds";
+
+    public function __construct()
+    {
+        $this->middleware('admin.sign', ['except' => ['agree_back', 'upload_back','notify_url']]);
+    }
+
     //申请列表
     public function supplyList(Request $request)
     {
