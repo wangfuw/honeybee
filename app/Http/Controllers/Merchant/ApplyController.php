@@ -27,6 +27,7 @@ class ApplyController extends MerchantBaseController
             'bank_account_no','bank_account_type','bank_channel',
             'contact_mobile_no','contact_name','id_card_no','legal_person','license_no',
             'mch_name','merchant_type','phone_no','risk_day','scope','sett_date_type','sett_mode']);
+
         if(!$this->validate->scene('apply')->check($data)){
             return $this->executeFail($this->validate->getError());
         }
@@ -39,11 +40,12 @@ class ApplyController extends MerchantBaseController
         if($data['risk_day'] > 28){
             return $this->executeFail('结算周期1-28');
         }
+        $user = auth("merchant")->user();
+        $data['user_id'] = $user->id;
         if(!$data['id']){
             StoreSupply::query()->create($data);
             return $this->executeSuccess("提交");
         }else{
-            $user = auth("merchant")->user();
             $info = StoreSupply::query()->where('id',$data['id'])->where('user_id',$user->id)->first();
             if(!$info){
                 return $this->executeFail("没有提交申请支付入住");
