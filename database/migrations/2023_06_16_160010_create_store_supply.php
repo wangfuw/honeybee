@@ -33,7 +33,7 @@ class CreateStoreSupply extends Migration
             $table->string('bank_account_name')->nullable()->comment('银行账户名称 对公是企业名称 个人姓名');
             $table->string('bank_account_no')->nullable()->comment('银行卡号');
             $table->string('bank_channel')->nullable()->comment('联行号 对公账户必填');
-            $table->tinyInteger('status')->default(0)->comment('0-待入住 1-入住成功 2入住失败');
+            $table->tinyInteger('status')->default(1)->comment('1-待审核 1-申请成功 2申请失败');
             $table->string('msg')->nullable()->comment('入住返回信息');
             $table->string('alt_mch_no')->nullable()->comment('分账编号');
             $table->string('sign_url')->nullable()->comment('签约链接');
