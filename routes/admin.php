@@ -25,11 +25,11 @@ use  App\Http\Controllers\Admin\SupplyController;
 Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
     //材料审核异常
-    Route::post("upload_back", [SupplyController::class, "upload_back"]);
+    Route::post("upload_back", [SupplyController::class, "upload_back"])->withoutMiddleware(["admin.sign"]);
     //异步通知
-    Route::post("notify_url", [SupplyController::class, "notify_url"]);
+    Route::post("notify_url", [SupplyController::class, "notify_url"])->withoutMiddleware(["admin.sign"]);
     //签约回调
-    Route::post("agree_back", [SupplyController::class, "agree_back"]);
+    Route::post("agree_back", [SupplyController::class, "agree_back"])->withoutMiddleware(["admin.sign"]);
 
     Route::middleware(['admin.token'])->group(function () {
         Route::get("menuList", [LoginController::class, "menuList"]);
