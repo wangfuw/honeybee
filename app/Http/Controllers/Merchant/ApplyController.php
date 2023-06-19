@@ -23,7 +23,7 @@ class ApplyController extends MerchantBaseController
 
     public function apply(Request $request)
     {
-        $data = $request->only(['id','alt_mch_no','bank_account_name',
+        $data = $request->only(['id','alt_mch_no','bank_account_name','addr',
             'bank_account_no','bank_account_type','bank_channel',
             'contact_mobile_no','contact_name','id_card_no','legal_person','license_no',
             'mch_name','merchant_type','phone_no','risk_day','scope','sett_date_type','sett_mode']);
@@ -58,6 +58,7 @@ class ApplyController extends MerchantBaseController
             $info->contact_name = $data['contact_name'];
             $info->id_card_no = $data['id_card_no'];
             $info->legal_person = $data['legal_person'];
+            $info->addr = $data['addr'];
             $info->license_no = $data['license_no'];
             $info->mch_name = $data['mch_name'];
             $info->merchant_type = $data['merchant_type'];
@@ -66,6 +67,8 @@ class ApplyController extends MerchantBaseController
             $info->scope = $data['scope'];
             $info->sett_date_type = $data['sett_date_type'];
             $info->sett_mode = $data['sett_mode'];
+            $info->msg = "";
+            $info->status = 1;
             $info->save();
             return $this->executeSuccess("修改");
         }

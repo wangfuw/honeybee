@@ -119,7 +119,7 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             //签约回调
             Route::post("agree_back", [SupplyController::class, "agree_back"])->middleware(["admin.response"]);
             //上传材料
-            Route::post("upload_to_pay", [SupplyController::class, "upload_to_pay"])->middleware(["admin.response"]);
+            Route::post("uploadToPay", [SupplyController::class, "upload_to_pay"])->middleware(["admin.response"]);
             //材料审核异常
             Route::post("upload_back", [SupplyController::class, "upload_back"])->middleware(["admin.response"]);
 

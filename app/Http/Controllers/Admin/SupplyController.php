@@ -83,17 +83,16 @@ class SupplyController extends AdminBaseController
             unset($data['key']);
             $ret = post_url(self::url,$data);
             $result = json_decode($ret,true);
-           // dd($result);
             if($result['resp_code'] == "A1000")
             {
                 $store->msg = $result['resp_msg'];
                 $store->alt_mch_no = $result['data']['alt_mch_no'];
-                $store->status = 4;
+                $store->status = 2;
                 $store->save();
                 return  $this->executeSuccess($result['resp_msg']);
             }else{
                 $store->msg = $result['resp_msg'];
-                $store->status = 5;
+                $store->status = 3;
                 $store->save();
                 return  $this->executeSuccess($result['resp_msg']);
             }
