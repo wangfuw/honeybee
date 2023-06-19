@@ -65,6 +65,9 @@ class SupplyController extends AdminBaseController
         if($request->status){
             $condition[] = ['status','=',$request->status];
         }
+        if($request->sign_status){
+            $condition[] = ['sign_status','=',$request->sign_status];
+        }
 
         $data = StoreSupply::join("users", "users.id", "=", "store_supply.user_id")
             ->where($condition)
