@@ -68,6 +68,7 @@ class SupplyController extends AdminBaseController
         return $this->executeSuccess("请求", $data);
     }
 
+
     //提交入住申请
     public function apply(Request $request)
     {
