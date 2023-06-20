@@ -247,7 +247,7 @@ class SupplyController extends AdminBaseController
         $data = [
             'data'=>[
                 'alt_mch_no'=>$store->alt_mch_no,
-                'callback_url'=>env("CALL_BACK","http://beeapi.hitoo.xyz").'/hack/agree_back',
+                'callback_url'=>env("CALL_BACK","http://api.yuanyutong.shop").'/hack/agree_back',
             ],
             'mch_no'=>self::MERCHANTNO,
             'method'=>self::CONTENT_F,
@@ -268,7 +268,7 @@ class SupplyController extends AdminBaseController
                 'card_negative'=>get_file_base64($image->back_image),
                 'trade_licence'=>isset($image->images['business_license'])?$this->get_file_base64($image->images['business_license']):"",
                 'open_account_licence'=>isset($image->images['business_license'])?$this->get_file_base64($image->images['business_license']):"",
-                'callback_url'=>env("CALL_BACK","http://beeapi.hitoo.xyz").'/hack/upload_back',
+                'callback_url'=>env("CALL_BACK","http://api.yuanyutong.shop").'/hack/upload_back',
             ],
             'mch_no'=>self::MERCHANTNO,
             'method'=>self::UPLOAD_F,
