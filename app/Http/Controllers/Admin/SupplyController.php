@@ -138,8 +138,10 @@ class SupplyController extends AdminBaseController
     //上传汇聚材料
     public function upload_to_pay(Request $request)
     {
-        $id = $request->id;
-        $store_s = StoreSupply::query()->where('id',$id)->first();
+        if (!$request->id) {
+            return $this->error("ID");
+        }
+        $store_s = StoreSupply::query()->where('id',$request->id)->first();
         $store_info = Store::query()->select('id','front_image','back_image','images')->where('user_id',$store_s->user_id)->first();
         [$data,$sign] = $this->upload_data($store_s->alt_mch_no,$store_info);
         $data['sign'] = $sign;
