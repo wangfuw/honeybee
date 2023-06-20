@@ -164,6 +164,8 @@ EOF;
                     'type'       => AsacTrade::WITHDRAW,
                     'trade_hash' => rand_str_pay(64),
                 ]);
+                $withdraw->status = 1;
+                $withdraw->save();
                 return $this->executeSuccess("提现");
             }else{
                 return $this->executeFail($ret['message']);
