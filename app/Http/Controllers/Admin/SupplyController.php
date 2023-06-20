@@ -284,7 +284,7 @@ class SupplyController extends AdminBaseController
 
     protected function get_file_base64($file='')
     {
-        $file =  $s = substr_replace($file,'/app/public',8,0);
+        $file = './'.$file;
         $image_info             = getimagesize($file);
         $base64_image_content   = "data:{$image_info['mime']};base64," . base64_encode(file_get_contents($file));
         return $base64_image_content;
