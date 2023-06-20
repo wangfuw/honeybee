@@ -120,7 +120,6 @@ class SupplyController extends AdminBaseController
         $store = StoreSupply::query()->where('id',$request->id)->first();
         [$data,$sign] = $this->agreement_data($store);
         $data['sign'] = $sign;
-        dd($data);
         unset($data['key']);
         try {
             $ret = post_url(self::url,$data);
