@@ -18,18 +18,18 @@ class AdminToken
      */
     public function handle($request, Closure $next)
     {
-//        //检测会员是否已登录
-//        $token = $request->header('Authorization');
-//
-//        if (!$token) {
-//            return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌缺失,请重新登录');
-//        }
-//
-//        try {
-//            auth("admin")->authenticate($token);
-//        } catch (\Exception $e) {
-//            return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌失效,请重新登录');
-//        }
+        //检测会员是否已登录
+        $token = $request->header('Authorization');
+
+        if (!$token) {
+            return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌缺失,请重新登录');
+        }
+
+        try {
+            auth("admin")->authenticate($token);
+        } catch (\Exception $e) {
+            return $this->jsonResponse(ResponseEnum::TOKEN_EXPIRED, '登录令牌失效,请重新登录');
+        }
 
         return $next($request);
     }
