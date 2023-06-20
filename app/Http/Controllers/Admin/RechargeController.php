@@ -72,7 +72,7 @@ EOF;
             ->paginate($size)->toArray();
         foreach ($data["data"] as $k => &$v) {
             $an = AsacNode::where("wallet_address", $v["to_address"])->first();
-            $user = User::find($an->user_id);
+            $user = User::where('id',$an->user_id)->first();
             $v["user"] = $user->toArray();
         }
         return $this->executeSuccess("请求", $data);
