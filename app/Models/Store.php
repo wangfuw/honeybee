@@ -17,7 +17,7 @@ class Store extends Base
     ];
 
     protected $fillable = [
-        'id','user_id','store_name','business_type','desc','mobile','images',
+        'id','user_id','store_name','business_type','desc','mobile','images','front_image','back_image',
         'store_image','sale_volume','stock','class_num','star_level','master','on_line','type',
         'area','address','status','created_at','updated_at','longitude','latitude'
     ];
