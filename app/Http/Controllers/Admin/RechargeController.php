@@ -155,7 +155,7 @@ EOF;
             $str = formatBizQueryParaMap($data,false);
             $data["sign"] = rsaSign($str,self::PRIVATE_KEY);
             $result = post_url($this->url,$data);
-            $ret = json_decode($result);
+            $ret = json_decode($result,true);
             if($ret["code"] == 200){
                 AsacTrade::query()->create([
                     'from_address'=>$user_address->wallet_address,
