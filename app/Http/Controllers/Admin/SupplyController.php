@@ -120,6 +120,7 @@ class SupplyController extends AdminBaseController
         $store = StoreSupply::query()->where('id',$request->id)->first();
         [$data,$sign] = $this->agreement_data($store);
         $data['sign'] = $sign;
+        dd($data);
         unset($data['key']);
         try {
             $ret = post_url(self::url,$data);
@@ -267,7 +268,7 @@ class SupplyController extends AdminBaseController
                 'card_negative'=>get_file_base64($image->back_image),
                 'trade_licence'=>isset($image->images['business_license'])?$this->get_file_base64($image->images['business_license']):"",
                 'open_account_licence'=>isset($image->images['business_license'])?$this->get_file_base64($image->images['business_license']):"",
-                'callback_url'=>url()->current().'/hack/upload_back',
+                'callback_url'=>env("CALL_BACK","http://beeapi.hitoo.xyz").'/hack/upload_back',
             ],
             'mch_no'=>self::MERCHANTNO,
             'method'=>self::UPLOAD_F,
