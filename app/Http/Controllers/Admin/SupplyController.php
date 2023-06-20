@@ -264,8 +264,8 @@ class SupplyController extends AdminBaseController
         $data = [
             'data'=>[
                 'alt_mch_no'=>$alt_mch_no,
-                'card_positive'=>get_file_base64($image->front_image),
-                'card_negative'=>get_file_base64($image->back_image),
+                'card_positive'=>$this->get_file_base64($image->front_image),
+                'card_negative'=>$this->get_file_base64($image->back_image),
                 'trade_licence'=>isset($image->images['business_license'])?$this->get_file_base64($image->images['business_license']):"",
                 'open_account_licence'=>isset($image->images['business_license'])?$this->get_file_base64($image->images['business_license']):"",
                 'callback_url'=>env("CALL_BACK","http://api.yuanyutong.shop").'/hack/upload_back',
