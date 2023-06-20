@@ -165,8 +165,7 @@ EOF;
         $sign = $this->rsaSign($res,$this->privateKeyString);
         $data["sign"] = $sign;
         $data['endTime'] = date("Y-m-d H:i:s");
-        $data['startTime'] = date('Y-m-d H:i:s',strtotime("-30 minute"));
-
+        $data['startTime'] = date('Y-m-d H:i:s',strtotime("-160 minute"));
         $result = $this->post_url($this->url,$data);
         $ret = json_decode($result,true);
         if(!isset($ret['code']) || $ret['code'] != 200){
@@ -174,8 +173,8 @@ EOF;
         }
         if(empty($ret['data'])){
             Log::info("暂无充值".date('Y-m-d H:i:s'));
-            return false;
         }
+
         DB::beginTransaction();
         try {
             $this->in($ret['data']);
