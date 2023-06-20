@@ -274,7 +274,7 @@ if(!function_exists('post_url')){
         $res = curl_exec($curl);
         $errorno = curl_errno($curl);
         if ($errorno) {
-            throw  new \App\Exceptions\ApiException('208',$errorno);
+            return $errorno;
         }
         curl_close($curl);
         return $res;
