@@ -100,7 +100,7 @@ class SupplyController extends AdminBaseController
                 $store->save();
                 return  $this->executeSuccess($result['resp_msg']);
             }else{
-                $store->msg = $result['resp_msg'];
+                $store->msg = $result['data']['biz_msg'];
                 $store->status = 3;
                 $store->save();
                 return  $this->executeSuccess($result['resp_msg']);
