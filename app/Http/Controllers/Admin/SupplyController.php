@@ -170,7 +170,7 @@ class SupplyController extends AdminBaseController
             $store->sign_trx_no = $data['data']['sign_trx_no'];
             $store->save();
         }
-        return $this->executeFail('',['resp_code'=>$data['resp_code'],'resp_msg'=>'success']);
+        return $this->executeSuccess('',['resp_code'=>$data['resp_code'],'resp_msg'=>'success']);
     }
 
     //文件抽查回调 -- 发送消息给商家联系人
