@@ -11,7 +11,7 @@ class AdminResponse
     public function handle($request, Closure $next)
     {
         $response = $next($request);
-        if ($request->rule_type == 2 && $response->original["status"] == 1) {
+        if ($request->rule_type == 2) {
             $ip = $request->header('X-Real-IP');
             $uri = $request->path();
             $admin = auth("admin")->user();
