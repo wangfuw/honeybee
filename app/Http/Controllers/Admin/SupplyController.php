@@ -246,7 +246,7 @@ class SupplyController extends AdminBaseController
         $data = [
             'data'=>[
                 'alt_mch_no'=>$store->alt_mch_no,
-                'callback_url'=>url()->previous().'/hack/agree_back',
+                'callback_url'=>env("CALL_BACK","http://beeapi.hitoo.xyz").'/hack/agree_back',
             ],
             'mch_no'=>self::MERCHANTNO,
             'method'=>self::CONTENT_F,
