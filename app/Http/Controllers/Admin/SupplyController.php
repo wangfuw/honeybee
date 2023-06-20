@@ -69,10 +69,10 @@ class SupplyController extends AdminBaseController
             $condition[] = ['sign_status','=',$request->sign_status];
         }
 
-        $data = StoreSupply::join("users", "users.id", "=", "store_supply.user_id")
+        $data = StoreSupply::join("users", "users.id", "=", "store_supply.user_id")->join("store","store.user_id","=","store_supply.user_id")
             ->where($condition)
             ->orderBy("store_supply.status")
-            ->select("store_supply.*", "users.phone")
+            ->select("store_supply.*", "users.phone","store.front_image","store.back_image")
             ->paginate($size);
         return $this->executeSuccess("请求", $data);
     }

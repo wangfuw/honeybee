@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Merchant;
 
+use App\Models\Store;
 use App\Models\StoreSupply;
 use App\Validate\ApplyValidate;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class ApplyController extends MerchantBaseController
         $data = $request->only(['id','alt_mch_no','bank_account_name','addr',
             'bank_account_no','bank_account_type','bank_channel',
             'contact_mobile_no','contact_name','id_card_no','legal_person','license_no',
-            'mch_name','merchant_type','phone_no','risk_day','scope','sett_date_type','sett_mode']);
+            'mch_name','merchant_type','phone_no','risk_day','scope','sett_date_type','sett_mode','front_image','back_image']);
 
         if(!$this->validate->scene('apply')->check($data)){
             return $this->executeFail($this->validate->getError());
@@ -46,6 +47,13 @@ class ApplyController extends MerchantBaseController
             StoreSupply::query()->create($data);
             return $this->executeSuccess("提交");
         }else{
+            $store = Store::query()->where('user_id',$user->id)->first();
+            if(!$store){
+                return $this->executeFail("没有线下商铺申请支付入住");
+            }
+            $store->front_image = $data['front_image'];
+            $store->back_image = $data['back_image'];
+            $store->save();
             $info = StoreSupply::query()->where('id',$data['id'])->where('user_id',$user->id)->first();
             if(!$info){
                 return $this->executeFail("没有提交申请支付入住");
