@@ -42,7 +42,7 @@ EOF;
         if ($request->id) {
             $an = AsacNode::where("user_id", $request->id)->first();
             if ($an) {
-                $condition[] = ["from_address", "=", $an->wallet_address];
+                $condition[] = ["to_address", "=", $an->wallet_address];
             } else {
                 $condition[] = ["id", "=", -1];
             }
@@ -52,7 +52,7 @@ EOF;
             if ($user) {
                 $an = AsacNode::where("user_id", $request->id)->first();
                 if ($an) {
-                    $condition[] = ["from_address", "=", $an->wallet_address];
+                    $condition[] = ["to_address", "=", $an->wallet_address];
                 } else {
                     $condition[] = ["id", "=", -1];
                 }
@@ -71,7 +71,7 @@ EOF;
             ->orderByDesc("id")
             ->paginate($size)->toArray();
         foreach ($data["data"] as $k => &$v) {
-            $an = AsacNode::where("wallet_address", $v["from_address"])->first();
+            $an = AsacNode::where("wallet_address", $v["to_address"])->first();
             $user = User::find($an->user_id);
             $v["user"] = $user->toArray();
         }
