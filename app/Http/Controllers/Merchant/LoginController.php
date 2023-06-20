@@ -42,6 +42,20 @@ class LoginController extends MerchantBaseController
 
     public function menuList(Request $request)
     {
+        $menus_on = [
+            [
+                "id" => 1,
+                "title" => "首页",
+                "icon" => "HomeFilled",
+                "path" => "/dashboard"
+            ],
+            [
+                "id" => 9,
+                "title"=>"支付申请",
+                "icon"=>"Apple",
+                "path"=>"/apply"
+            ]
+        ];
         $menus = [
             [
                 "id" => 1,
@@ -90,13 +104,8 @@ class LoginController extends MerchantBaseController
                         "title" => "燃烧记录",
                         "icon" => "Notebook",
                         "path" => "/burnLog"
-                    ],
-                    [
-                        "id" => 9,
-                        "title"=>"支付申请",
-                        "icon"=>"Apple",
-                        "path"=>"/apply"
                     ]
+
                 ],
             ],
         ];
@@ -105,7 +114,7 @@ class LoginController extends MerchantBaseController
         if ($store->on_line == 1) {
             return $this->executeSuccess("请求", $menus);
         } else {
-            return $this->executeSuccess("请求", array_splice($menus, 0, 1));
+            return $this->executeSuccess("请求", $menus_on);
         }
     }
 
