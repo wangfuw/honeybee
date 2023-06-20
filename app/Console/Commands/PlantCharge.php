@@ -24,7 +24,7 @@ class PlantCharge extends Command
      * @var string
      */
     protected $description = 'plan_charge';
-    private $url = "http://4619p19v09.qicp.vip/app/token/transferAccounts";
+    private $url = "http://47.109.88.30:9020/app/token/getList";
     private $publicKeyString = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5GnfqIyYaaat8MLYofU49fjghLR2X5j4Dy/FQMu+IAWVKtum/yUOFwTWI1lFD6qGLTFAPdFwaVhpLeZqnpIyuwcgnTGfEONKYUg+NSUMwMe2QhE/KqoyexL1xmB3O5V99xGxUPrGqFKU092AjLzYiWhvWNuUOFvSyVvmXduGgHQIDAQAB";
     private $privateKeyString=
         <<<EOF
