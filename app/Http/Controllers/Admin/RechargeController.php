@@ -154,9 +154,9 @@ EOF;
             ];
             $str = formatBizQueryParaMap($data,false);
             $data["sign"] = rsaSign($str,self::PRIVATE_KEY);
-            $ret = post_url($this->url,$data);
-            $ret = json_decode($ret);
-            if($ret["orderSn"]){
+            $result = post_url($this->url,$data);
+            $ret = json_decode($result);
+            if($ret["code"] == 200){
                 AsacTrade::query()->create([
                     'from_address'=>$user_address->wallet_address,
                     'to_address' => $withdraw->withdraw_address,
@@ -164,9 +164,9 @@ EOF;
                     'type'       => AsacTrade::WITHDRAW,
                     'trade_hash' => rand_str_pay(64),
                 ]);
-                return $this->executeSuccess("提现成功");
+                return $this->executeSuccess("提现");
             }else{
-                return $this->executeFail("提现失败,服务访问错误");
+                return $this->executeFail($ret['message']);
             }
         }
 
