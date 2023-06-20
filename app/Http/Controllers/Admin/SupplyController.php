@@ -162,7 +162,7 @@ class SupplyController extends AdminBaseController
     public function agree_back(Request $request)
     {
         $data = $request->all();
-        if($data['resp_code'] == "A1000" && $data['resp_msg']=="success"){
+        if($data['resp_code'] == "A1000"){
             $alt_mch_no = $data['data']['alt_mch_no'];
             $store = StoreSupply::query()->where('alt_mch_no',$alt_mch_no)->first();
             $store->sign_status = $data['data']['sign_status'] == "P1000"?1:2;
@@ -170,6 +170,7 @@ class SupplyController extends AdminBaseController
             $store->sign_trx_no = $data['data']['sign_trx_no'];
             $store->save();
         }
+        return json(['resp_code'=>$data['resp_code'],'resp_msg'=>'success']);
     }
 
     //文件抽查回调 -- 发送消息给商家联系人
