@@ -160,7 +160,7 @@ EOF;
                 AsacTrade::query()->create([
                     'from_address'=>$user_address->wallet_address,
                     'to_address' => $withdraw->withdraw_address,
-                    'num'        => $withdraw->amonut,
+                    'num'        => $withdraw->amount,
                     'type'       => AsacTrade::WITHDRAW,
                     'trade_hash' => rand_str_pay(64),
                 ]);
