@@ -166,6 +166,7 @@ EOF;
         $data["sign"] = $sign;
         $data['endTime'] = date("Y-m-d H:i:s");
         $data['startTime'] = date('Y-m-d H:i:s',strtotime("-30 minute"));
+
         $result = $this->post_url($this->url,$data);
         $ret = json_decode($result,true);
         if(!isset($ret['code']) || $ret['code'] != 200){
@@ -175,36 +176,41 @@ EOF;
             Log::info("暂无充值".date('Y-m-d H:i:s'));
             return false;
         }
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-            foreach ($ret['data'] as $r){
-                if(AsacTrade::query()->where('order_nu',$r['orderSn'])->exists()){
-                    continue;
-                }
-                if(!$r['remark']){
-                    continue;
-                }
-                $user_id = AsacNode::query()->where('wallet_address',$r['remark'])->value('user_id');
-                if(!$user_id){
-                    continue;
-                }
-                AsacTrade::query()->create([
-                    'from_address'=>$r['address'],
-                    'to_address'  => $r['remark'],
-                    'num'=>$r['num'],
-                    'type'=>AsacTrade::RECHARGE,
-                    'trade_hash'=>$this->rand_str_pay(64)
-                ]);
-                $user = User::query()->where('id',$user_id)->first();
-                $user->coin_num += $r['num'];
-                $user->save();
-            }
+            $this->in($ret['data']);
             DB::commit();
             Log::info('同步充值结束'.date('Y-m-d H:i:s'));
-            return false;
+            return true;
         }catch (\Exception $e){
             DB::rollBack();
             Log::info($e->getMessage());
+        }
+    }
+
+    protected function in($data = []){
+        foreach ($data as $r){
+            if(AsacTrade::query()->where('order_no',$r['orderSn'])->exists()){
+                continue;
+            }
+            if(!$r['remark']){
+                continue;
+            }
+            $user_id = AsacNode::query()->where('wallet_address',$r['remark'])->value('user_id');
+            if(!$user_id){
+                continue;
+            }
+            AsacTrade::query()->create([
+                'from_address'=>$r['wallet'],
+                'to_address'  => $r['remark'],
+                'num'=>$r['num'],
+                'type'=>AsacTrade::RECHARGE,
+                'trade_hash'=>$this->rand_str_pay(64),
+                'order_no'=>$r['orderSn']
+            ]);
+            $user = User::query()->where('id',$user_id)->first();
+            $user->coin_num += $r['num'];
+            $user->save();
         }
     }
 }
