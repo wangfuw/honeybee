@@ -269,7 +269,7 @@ class AsacController extends BaseController
         $address = Rsa::decodeByPrivateKey($to_address);
         $num = $request->num;
         $fee_rate = Config::get_fee();
-        $fee = bcmul($num/100,$fee_rate);
+        $fee = bcmul($num,$fee_rate,2)/100;
         $user_address = AsacNode::query()->where('user_id',$user->id)->value('wallet_address');
         $admin_address = AsacNode::query()->where('user_id',1)->value('wallet_address');
         try{
