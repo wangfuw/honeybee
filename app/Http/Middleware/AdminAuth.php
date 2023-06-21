@@ -17,18 +17,18 @@ class AdminAuth
 
     public function handle($request, Closure $next)
     {
-//        $uri = $request->path();
-//        $admin = auth("admin")->user();
-//        $rule = AdminRule::where("uri", "/" . $uri)->first();
-//        if(!$rule){
-//            return $this->fail("权限不足");
-//        }
-//        $group = AdminGroup::find($admin->group_id);
-//        $rules = explode(",", $group->rules);
-//        if (!in_array($rule->id, $rules)) {
-//            return $this->fail("权限不足");
-//        }
-//        $request->offsetSet("rule_type", 2);
+        $uri = $request->path();
+        $admin = auth("admin")->user();
+        $rule = AdminRule::where("uri", "/" . $uri)->first();
+        if(!$rule){
+            return $this->fail("权限不足");
+        }
+        $group = AdminGroup::find($admin->group_id);
+        $rules = explode(",", $group->rules);
+        if (!in_array($rule->id, $rules)) {
+            return $this->fail("权限不足");
+        }
+        $request->offsetSet("rule_type", 2);
         return $next($request);
     }
 
