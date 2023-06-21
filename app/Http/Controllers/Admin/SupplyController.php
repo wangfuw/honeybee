@@ -138,6 +138,7 @@ class SupplyController extends AdminBaseController
     //上传汇聚材料
     public function upload_to_pay(Request $request)
     {
+        $this->get_file_base64('');
         if (!$request->id) {
             return $this->error("ID");
         }
@@ -284,9 +285,10 @@ class SupplyController extends AdminBaseController
 
     protected function get_file_base64($file='')
     {
-        $file = '.'.$file;
+        $file = '.'."/storage/banners/9322b9b20f43df3064f7fb5cea544c91.png";
         $image_info             = getimagesize($file);
         $base64_image_content   = "data:{$image_info['mime']};base64," . base64_encode(file_get_contents($file));
+        dd($base64_image_content);
         return $base64_image_content;
     }
     private function sign_str($data)
