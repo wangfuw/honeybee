@@ -146,10 +146,11 @@ class SupplyController extends AdminBaseController
         [$data,$sign] = $this->upload_data($store_s->alt_mch_no,$store_info);
         $data['sign'] = $sign;
         unset($data['key']);
+        dd($data);
         try {
             $ret = post_url(self::url,$data);
             $result = json_decode($ret,true);
-            dd($result);
+
             if($result['resp_code'] == "A1000"){
                 $store_s->is_upload = 1;
                 $store_s->save();
