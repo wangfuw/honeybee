@@ -149,6 +149,7 @@ class SupplyController extends AdminBaseController
         try {
             $ret = post_url(self::url,$data);
             $result = json_decode($ret,true);
+            dd($result);
             if($result['resp_code'] == "A1000"){
                 $store_s->is_upload = 1;
                 $store_s->save();

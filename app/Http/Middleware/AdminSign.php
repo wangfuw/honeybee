@@ -12,21 +12,21 @@ class AdminSign
     public function handle($request, Closure $next)
     {
         $sign = $request->header('sign');
-        if ($sign == null || $sign == "") {
-            return $this->baseReturn();
-        }
-        $sign = Rsa::decodeByPrivateKey($sign);
-        if ($sign == "") {
-            return $this->baseReturn();
-        }
-        $infos = explode("_", $sign);
-        if(count($infos) != 2 || $infos[0] != "beeadmin"){
-            return $this->baseReturn();
-        }
-
-        if(time() - (int)$infos[1] > 20){
-            return $this->baseReturn();
-        }
+//        if ($sign == null || $sign == "") {
+//            return $this->baseReturn();
+//        }
+//        $sign = Rsa::decodeByPrivateKey($sign);
+//        if ($sign == "") {
+//            return $this->baseReturn();
+//        }
+//        $infos = explode("_", $sign);
+//        if(count($infos) != 2 || $infos[0] != "beeadmin"){
+//            return $this->baseReturn();
+//        }
+//
+//        if(time() - (int)$infos[1] > 20){
+//            return $this->baseReturn();
+//        }
         return $next($request);
     }
 
