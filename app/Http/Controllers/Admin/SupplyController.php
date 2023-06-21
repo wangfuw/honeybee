@@ -146,9 +146,9 @@ class SupplyController extends AdminBaseController
         [$data,$sign] = $this->upload_data($store_s->alt_mch_no,$store_info);
         $data['sign'] = $sign;
         unset($data['key']);
-        return json_encode($data,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+        $url = "https://upload.joinpay.com/allocFunds";
         try {
-            $ret = post_url(self::url,$data);
+            $ret = post_url($url,$data);
             $result = json_decode($ret,true);
 
             if($result['resp_code'] == "A1000"){
