@@ -76,7 +76,6 @@ class ApplyController extends MerchantBaseController
             $info->sett_date_type = $data['sett_date_type'];
             $info->sett_mode = $data['sett_mode'];
             $info->msg = "";
-            $info->status = 1;
             $info->save();
             return $this->executeSuccess("修改");
         }
