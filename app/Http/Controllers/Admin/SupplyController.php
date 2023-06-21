@@ -146,7 +146,7 @@ class SupplyController extends AdminBaseController
         [$data,$sign] = $this->upload_data($store_s->alt_mch_no,$store_info);
         $data['sign'] = $sign;
         unset($data['key']);
-        dd($data);
+        return json_encode($data,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
         try {
             $ret = post_url(self::url,$data);
             $result = json_decode($ret,true);
