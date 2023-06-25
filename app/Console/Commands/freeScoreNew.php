@@ -181,10 +181,14 @@ class freeScoreNew extends Command
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
 
                 $sale_num = bcmul($user->sale_score / 1000, $sale_rate, self::DE);
-                $asac_num = bcdiv($sale_num, $last_price, self::DE);
+                //消费积分一半变通证  一半变消费卷
+                $asac_num = bcdiv($sale_num / 2, $last_price, self::DE);
+                $sale_ticket_num = bcdiv($sale_num, 2, self::DE);
+
                 if ($asac_num >= self::MIN) {
                     $user->coin_num += $asac_num;
                     $user->sale_score -= $sale_num;
+                    $user->ticket_num = bcadd($sale_ticket_num, $user->ticket_num, self::DE);
                     AsacTrade::query()->create([
                         'from_address' => $pre_address->wallet_address,
                         'to_address' => $user_address,
@@ -199,6 +203,14 @@ class freeScoreNew extends Command
                         'type' => 2,
                         'f_type' => Score::FREE_USED,
                         'amount' => $asac_num,
+                    ]);
+                    Score::query()->create([
+                        'user_id' => $user->id,
+                        'flag' => 1,
+                        'num' => $sale_ticket_num,
+                        'type' => 4,
+                        'f_type' => Score::FREE_HAVE,
+                        'amount' => 0,
                     ]);
                     $pre_address->number = bcsub($pre_address->number, $asac_num, self::DE);
                     $sale_free_num[$user->id] = $sale_num;
@@ -725,6 +737,7 @@ class freeScoreNew extends Command
         }
         $master_poss_arr =  explode(',', substr($master_poss, 1, strlen($master_poss) - 2));
         $user_tt_phone = User::query()->where('id',$current_user_id)->value('phone');
+
         $xx_store = User::query()->whereIn('id',$master_poss_arr)
             ->where("identity_status", 1)
             ->where("identity", 1)
