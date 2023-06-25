@@ -44,8 +44,8 @@ class freeScoreNew extends Command
 
     const DE = 4;
     const MIN = 0.0001;
-    const GREEN_FREE_RATE = 0.9;
-    const SALE_FREE_RATE = 0.1;
+    const GREEN_FREE_RATE = 0.8;
+    const SALE_FREE_RATE = 0.2;
 
     const DICT_RATE = 0.1;
 
