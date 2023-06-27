@@ -227,14 +227,14 @@ class freeScoreNew extends Command
                     $num = bcmul($user->green_score / 1000, $rate, self::DE);
 
 
-                    $num = min($user->luck_score, $num);
+//                    $num = min($user->luck_score, $num);
 
                     $asac_num = bcdiv($num * self::GREEN_FREE_RATE, $last_price, self::DE);
                     if ($asac_num >= self::MIN) {
                         $user->coin_num = bcadd($asac_num, $user->coin_num, self::DE);
                         $user->green_score = bcsub($user->green_score, $num, self::DE);
                         $ticket_num = bcmul($num, self::SALE_FREE_RATE, self::DE);
-                        $user->luck_score = bcsub($user->luck_score, $num, self::DE);
+//                        $user->luck_score = bcsub($user->luck_score, $num, self::DE);
                         $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
                         //写释放日志 绿色积分 幸运值 消费卷
                         Score::query()->create([
@@ -245,14 +245,14 @@ class freeScoreNew extends Command
                             'f_type' => Score::FREE_USED,
                             'amount' => $asac_num,
                         ]);
-                        Score::query()->create([
-                            'user_id' => $user->id,
-                            'flag' => 2,
-                            'num' => $num,
-                            'type' => 3,
-                            'f_type' => Score::FREE_USED,
-                            'amount' => 0,
-                        ]);
+//                        Score::query()->create([
+//                            'user_id' => $user->id,
+//                            'flag' => 2,
+//                            'num' => $num,
+//                            'type' => 3,
+//                            'f_type' => Score::FREE_USED,
+//                            'amount' => 0,
+//                        ]);
                         Score::query()->create([
                             'user_id' => $user->id,
                             'flag' => 1,
@@ -299,10 +299,11 @@ class freeScoreNew extends Command
         if ($re_dict_user->luck_score > 0 && $re_dict_user->green_score > 0) {
             $re_dict_user_address = AsacNode::query()->where('user_id', $re_dict_user->id)->value('wallet_address') ?? '';
             $free_num = bcmul($num, self::DICT_RATE, 4);
-            $num1 = min($re_dict_user->green_score, $re_dict_user->luck_score, $free_num);
+//            $num1 = min($re_dict_user->green_score, $re_dict_user->luck_score, $free_num);
+            $num1 = min($re_dict_user->green_score,$free_num);
             if ($num1 >= self::MIN) {
                 $re_dict_user->green_score -= $num1;
-                $re_dict_user->luck_score -= $num1;
+               // $re_dict_user->luck_score -= $num1;
                 $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
                 $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
                 $re_dict_user->coin_num += $asac_num;
@@ -319,15 +320,15 @@ class freeScoreNew extends Command
                     'amount' => $asac_num,
                     'help_phone'=> $user->phone,
                 ]);
-                Score::query()->create([
-                    'user_id' => $re_dict_user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 3,
-                    'f_type' => $f_type,
-                    'amount' => 0,
-                    'help_phone'=> $user->phone,
-                ]);
+//                Score::query()->create([
+//                    'user_id' => $re_dict_user->id,
+//                    'flag' => 2,
+//                    'num' => $num1,
+//                    'type' => 3,
+//                    'f_type' => $f_type,
+//                    'amount' => 0,
+//                    'help_phone'=> $user->phone,
+//                ]);
                 Score::query()->create([
                     'user_id' => $re_dict_user->id,
                     'flag' => 1,
@@ -364,7 +365,8 @@ class freeScoreNew extends Command
 
         $free_num = bcmul($num, self::J_RATE, 4);
 
-        $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
+       // $num2 = min($rej_dict_user->green_score, $rej_dict_user->luck_score, $free_num);
+        $num2 = min($rej_dict_user->green_score, $free_num);
 
         if ($num2 < self::MIN) {
             return true;
@@ -372,7 +374,7 @@ class freeScoreNew extends Command
         $rej_dict_user->green_score -= $num2;
         $asac_num = bcdiv($num2 * self::GREEN_FREE_RATE, $last_price, self::DE);
         $ticket_num = bcmul($num2, self::SALE_FREE_RATE, self::DE);
-        $rej_dict_user->luck_score -= $num2;
+       // $rej_dict_user->luck_score -= $num2;
         $rej_dict_user->coin_num += $asac_num;
         $rej_dict_user->ticket_num += $ticket_num;
         $rej_dict_user->save();
@@ -388,15 +390,15 @@ class freeScoreNew extends Command
             'amount' => $asac_num,
             'help_phone'=> $user->phone,
         ]);
-        Score::query()->create([
-            'user_id' => $rej_dict_user->id,
-            'flag' => 2,
-            'num' => $num2,
-            'type' => 3,
-            'f_type' => $f_j_type,
-            'amount' => 0,
-            'help_phone'=> $user->phone,
-        ]);
+//        Score::query()->create([
+//            'user_id' => $rej_dict_user->id,
+//            'flag' => 2,
+//            'num' => $num2,
+//            'type' => 3,
+//            'f_type' => $f_j_type,
+//            'amount' => 0,
+//            'help_phone'=> $user->phone,
+//        ]);
         Score::query()->create([
             'user_id' => $rej_dict_user->id,
             'flag' => 1,
@@ -436,7 +438,8 @@ class freeScoreNew extends Command
             } else {
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                 //按小释放
-                $num1 = min($user->green_score, $user->luck_score, $free_num);
+//                $num1 = min($user->green_score, $user->luck_score, $free_num);
+                $num1 = min($user->green_score, $free_num);
                 $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
                 if ($num1 < self::MIN) {
                     continue;
@@ -445,7 +448,7 @@ class freeScoreNew extends Command
                 $user->coin_num += $asac_num;
                 $user->green_score -= $num1;
                 $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
-                $user->luck_score -= $num1;
+               // $user->luck_score -= $num1;
                 $user->ticket_num += $ticket_num;
                 $user->save();
 
@@ -459,15 +462,15 @@ class freeScoreNew extends Command
                     'amount' => $asac_num,
                     'help_phone'=> $dict_person_phone,
                 ]);
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 3,
-                    'f_type' => Score::DICT_FREE_USED,
-                    'amount' => 0,
-                    'help_phone'=> $dict_person_phone,
-                ]);
+//                Score::query()->create([
+//                    'user_id' => $user->id,
+//                    'flag' => 2,
+//                    'num' => $num1,
+//                    'type' => 3,
+//                    'f_type' => Score::DICT_FREE_USED,
+//                    'amount' => 0,
+//                    'help_phone'=> $dict_person_phone,
+//                ]);
                 Score::query()->create([
                     'user_id' => $user->id,
                     'flag' => 1,
@@ -511,11 +514,13 @@ class freeScoreNew extends Command
             return true;
         }
         foreach ($up_users as $user) {
-            if ($user->luck_score <= 0 || $user->green_score <= 0) {
+            //if ($user->luck_score <= 0 || $user->green_score <= 0) {
+            if ($user->green_score <= 0) {
                 continue;
             } else {
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
-                $num1 = min($user->green_score, $user->luck_score, $free_num);
+//                $num1 = min($user->green_score, $user->luck_score, $free_num);
+                $num1 = min($user->green_score, $free_num);
                 $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
                 if ($num1 < self::MIN) {
                     continue;
@@ -524,7 +529,7 @@ class freeScoreNew extends Command
                 $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                 $user->green_score = bcsub($user->green_score, $num1, self::DE);
                 $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
-                $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
+               // $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
                 $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
 
                 //写释放日志 绿色积分 幸运值 消费卷
@@ -537,15 +542,15 @@ class freeScoreNew extends Command
                     'amount' => $asac_num,
                     'help_phone'=> $user_phone,
                 ]);
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 3,
-                    'f_type' => Score::SORT_FREE_USED,
-                    'amount' => 0,
-                    'help_phone'=> $user_phone,
-                ]);
+//                Score::query()->create([
+//                    'user_id' => $user->id,
+//                    'flag' => 2,
+//                    'num' => $num1,
+//                    'type' => 3,
+//                    'f_type' => Score::SORT_FREE_USED,
+//                    'amount' => 0,
+//                    'help_phone'=> $user_phone,
+//                ]);
                 Score::query()->create([
                     'user_id' => $user->id,
                     'flag' => 1,
@@ -663,7 +668,8 @@ class freeScoreNew extends Command
             $user_rate += $rate;
             $last_grade = $grade;
 
-            if($user->green_score <= 0 || $user->luck_score <= 0){
+//            if($user->green_score <= 0 || $user->luck_score <= 0){
+            if($user->green_score <= 0){
                 continue;
             }
 
@@ -679,7 +685,7 @@ class freeScoreNew extends Command
                 $user->coin_num = bcadd($asac_num, $user->coin_num, self::DE);
                 $user->green_score -= $free_num;
                 $ticket_num = bcmul($free_num, self::SALE_FREE_RATE, self::DE);
-                $user->luck_score -= $free_num;
+               // $user->luck_score -= $free_num;
                 $user->ticket_num += $ticket_num;
 
 
@@ -693,15 +699,15 @@ class freeScoreNew extends Command
                     'amount' => $asac_num,
                     'help_phone'=> $current_user->phone,
                 ]);
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 2,
-                    'num' => $free_num,
-                    'type' => 3,
-                    'f_type' => $f_type,
-                    'amount' => 0,
-                    'help_phone'=> $current_user->phone,
-                ]);
+//                Score::query()->create([
+//                    'user_id' => $user->id,
+//                    'flag' => 2,
+//                    'num' => $free_num,
+//                    'type' => 3,
+//                    'f_type' => $f_type,
+//                    'amount' => 0,
+//                    'help_phone'=> $current_user->phone,
+//                ]);
                 Score::query()->create([
                     'user_id' => $user->id,
                     'flag' => 1,
@@ -757,7 +763,8 @@ class freeScoreNew extends Command
             $free_num = bcmul($num, 0.05, self::DE);
             foreach ($xx_store as $user) {
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
-                $num1 = min($user->green_score, $user->luck_score, $free_num);
+//                $num1 = min($user->green_score, $user->luck_score, $free_num);
+                $num1 = min($user->green_score, $free_num);
                 $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
                 if ($num1 < self::MIN) {
                     continue;
@@ -765,7 +772,7 @@ class freeScoreNew extends Command
                 $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                 $user->green_score = bcsub($user->green_score, $num1, self::DE);
                 $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
-                $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
+               // $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
                 $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
 
                 //写释放日志 绿色积分 幸运值 消费卷
@@ -778,15 +785,15 @@ class freeScoreNew extends Command
                     'amount' => $asac_num,
                     'help_phone'=> $user_tt_phone
                 ]);
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 3,
-                    'f_type' => Score::XX_TEAM_USED,
-                    'amount' => 0,
-                    'help_phone'=> $user_tt_phone,
-                ]);
+//                Score::query()->create([
+//                    'user_id' => $user->id,
+//                    'flag' => 2,
+//                    'num' => $num1,
+//                    'type' => 3,
+//                    'f_type' => Score::XX_TEAM_USED,
+//                    'amount' => 0,
+//                    'help_phone'=> $user_tt_phone,
+//                ]);
                 Score::query()->create([
                     'user_id' => $user->id,
                     'flag' => 1,
@@ -813,7 +820,8 @@ class freeScoreNew extends Command
             $free_num = bcmul($num, 0.03, self::DE);
             foreach ($qj_store as $user) {
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
-                $num1 = min($user->green_score, $user->luck_score, $free_num);
+//                $num1 = min($user->green_score, $user->luck_score, $free_num);
+                $num1 = min($user->green_score,$free_num);
                 $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
                 if ($num1 < self::MIN) {
                     continue;
@@ -822,7 +830,7 @@ class freeScoreNew extends Command
                 $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
                 $user->green_score = bcsub($user->green_score, $num1, self::DE);
                 $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
-                $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
+                //$user->luck_score = bcsub($user->luck_score, $num1, self::DE);
                 $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
 
                 //写释放日志 绿色积分 幸运值 消费卷
@@ -835,15 +843,15 @@ class freeScoreNew extends Command
                     'amount' => $asac_num,
                     'help_phone'=> $user_tt_phone,
                 ]);
-                Score::query()->create([
-                    'user_id' => $user->id,
-                    'flag' => 2,
-                    'num' => $num1,
-                    'type' => 3,
-                    'f_type' => Score::QJ_TEAM_USED,
-                    'amount' => 0,
-                    'help_phone'=> $user_tt_phone,
-                ]);
+//                Score::query()->create([
+//                    'user_id' => $user->id,
+//                    'flag' => 2,
+//                    'num' => $num1,
+//                    'type' => 3,
+//                    'f_type' => Score::QJ_TEAM_USED,
+//                    'amount' => 0,
+//                    'help_phone'=> $user_tt_phone,
+//                ]);
                 Score::query()->create([
                     'user_id' => $user->id,
                     'flag' => 1,
@@ -888,7 +896,8 @@ class freeScoreNew extends Command
         $free_num = bcmul($num, 0.05, self::DE);
         foreach ($xx as $user) {
             $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
-            $num1 = min($user->green_score, $user->luck_score, $free_num);
+//            $num1 = min($user->green_score, $user->luck_score, $free_num);
+            $num1 = min($user->green_score,$free_num);
             $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
             if ($num1 < self::MIN) {
                 continue;
@@ -897,7 +906,7 @@ class freeScoreNew extends Command
             $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
             $user->green_score = bcsub($user->green_score, $num1, self::DE);
             $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
-            $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
+           // $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
             $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
 
             //写释放日志 绿色积分 幸运值 消费卷
@@ -910,15 +919,15 @@ class freeScoreNew extends Command
                 'amount' => $asac_num,
                 'help_phone'=> $user_tt_phone
             ]);
-            Score::query()->create([
-                'user_id' => $user->id,
-                'flag' => 2,
-                'num' => $num1,
-                'type' => 3,
-                'f_type' => Score::XX_USED,
-                'amount' => 0,
-                'help_phone'=> $user_tt_phone,
-            ]);
+//            Score::query()->create([
+//                'user_id' => $user->id,
+//                'flag' => 2,
+//                'num' => $num1,
+//                'type' => 3,
+//                'f_type' => Score::XX_USED,
+//                'amount' => 0,
+//                'help_phone'=> $user_tt_phone,
+//            ]);
             Score::query()->create([
                 'user_id' => $user->id,
                 'flag' => 1,
@@ -957,7 +966,7 @@ class freeScoreNew extends Command
             ->where("identity_status", 1)
             ->where("identity", 2)
             ->where("green_score", ">", 0)
-            ->where("luck_score", ">", 0)
+//            ->where("luck_score", ">", 0)
             ->where("is_ban", 1)
             ->get();
 
@@ -965,7 +974,8 @@ class freeScoreNew extends Command
         $free_num = bcmul($num, 0.03, self::DE);
         foreach ($qj as $user) {
             $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
-            $num1 = min($user->green_score, $user->luck_score, $free_num);
+//            $num1 = min($user->green_score, $user->luck_score, $free_num);
+            $num1 = min($user->green_score,$free_num);
             $asac_num = bcdiv($num1 * self::GREEN_FREE_RATE, $last_price, self::DE);
             if ($num1 < self::MIN) {
                 continue;
@@ -974,7 +984,7 @@ class freeScoreNew extends Command
             $user->coin_num = bcadd($user->coin_num, $asac_num, self::DE);
             $user->green_score = bcsub($user->green_score, $num1, self::DE);
             $ticket_num = bcmul($num1, self::SALE_FREE_RATE, self::DE);
-            $user->luck_score = bcsub($user->luck_score, $num1, self::DE);
+            //$user->luck_score = bcsub($user->luck_score, $num1, self::DE);
             $user->ticket_num = bcadd($ticket_num, $user->ticket_num, self::DE);
 
             //写释放日志 绿色积分 幸运值 消费卷
@@ -987,15 +997,15 @@ class freeScoreNew extends Command
                 'amount' => $asac_num,
                 'help_phone'=> $user_tt_phone,
             ]);
-            Score::query()->create([
-                'user_id' => $user->id,
-                'flag' => 2,
-                'num' => $num1,
-                'type' => 3,
-                'f_type' => Score::QJ_USED,
-                'amount' => 0,
-                'help_phone'=> $user_tt_phone,
-            ]);
+//            Score::query()->create([
+//                'user_id' => $user->id,
+//                'flag' => 2,
+//                'num' => $num1,
+//                'type' => 3,
+//                'f_type' => Score::QJ_USED,
+//                'amount' => 0,
+//                'help_phone'=> $user_tt_phone,
+//            ]);
             Score::query()->create([
                 'user_id' => $user->id,
                 'flag' => 1,
