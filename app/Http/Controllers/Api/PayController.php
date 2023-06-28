@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\BaseController;
 use App\Models\AsacNode;
 use App\Models\Config;
+use App\Models\PayOrder;
 use App\Models\Score;
 use App\Models\Store;
 use App\Models\StoreSupply;
@@ -78,7 +79,7 @@ class PayController extends BaseController
                 [$data,$sign] = $this->pre_data($data,$info['openid'],$store_info->alt_mch_no);
                 unset($data['key']);
                 $data['hmac'] = $sign;
-                return $this->success('请求成功',$data);
+//                return $this->success('请求成功',$data);
                 $result = post_url(self::URL,$data);
                 $ret = json_decode($result,true);
                 return $this->success('请求成功',$ret);
@@ -124,6 +125,10 @@ class PayController extends BaseController
             'qi_FqSellerPercen' => 0,
             'key'=> self::M_SECRET
         ];
+        PayOrder::query()->create([
+            'order_no'=>$data['p2_OrderNo'],
+            'merchant_no'=>$data['p1_MerchantNo'],
+        ]);
         return $this->sign_str($data);
     }
     //加密
