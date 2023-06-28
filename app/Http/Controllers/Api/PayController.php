@@ -83,8 +83,11 @@ class PayController extends BaseController
                // return $this->success('请求成功',$data);
                 $result = post_url_pay(self::URL,$data);
                 $ret = json_decode($result,true);
-                return $this->success('请求成功',$ret);
-
+                if($ret['ra_Code' == 100]){
+                    return $this->success('请求成功',$ret["rc_Result"]);
+                }else{
+                    return $this->fail($ret['rb_CodeMsg']);
+                }
                 //预支付信息返回前
             }else{
                 //支付宝支付
