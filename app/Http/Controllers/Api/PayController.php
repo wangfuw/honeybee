@@ -79,7 +79,7 @@ class PayController extends BaseController
                 [$data,$sign] = $this->pre_data($data,$info['openid'],$store_info->alt_mch_no);
                 unset($data['key']);
                 $data['hmac'] = $sign;
-                $result = post_url(self::URL,$data);
+               // $result = post_url(self::URL,$data);
                 return $this->success('请求成功',$data);
                 $ret = json_encode($result,true);
                 DB::commit();
