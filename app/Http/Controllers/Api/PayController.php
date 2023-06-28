@@ -78,6 +78,7 @@ class PayController extends BaseController
                 //调汇聚接口生成预支付订单
                 [$data,$sign] = $this->pre_data($data,$info['openid'],$store_info->alt_mch_no);
                 unset($data['key']);
+                $data['qe_AltInfo'] = json_encode($data['qe_AltInfo'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
                 $data['hmac'] = $sign;
                // return $this->success('请求成功',$data);
                 $result = post_url_pay(self::URL,$data);
