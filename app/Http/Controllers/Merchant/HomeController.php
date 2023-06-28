@@ -47,7 +47,7 @@ class HomeController extends MerchantBaseController
             return $this->fail("您不是商家");
         }
         $data = $store->toArray();
-        $url = "http://pay.yuanyutong.shop/#/?id=$store->user_id";
+        $url = "http://pay.yuanyutong.shop/?id=$store->user_id";
         $img =  QrCode::format('png')->size(200)->generate($url);
         $qr = 'data:image/png;base64,' . base64_encode($img );
         $data["qr"] = $qr;
