@@ -79,7 +79,7 @@ class PayController extends BaseController
                 unset($data['key']);
                 $data['hmac'] = $sign;
                // return $this->success('请求成功',$data);
-                $result = post_url(self::URL,$data);
+                $result = post_url_pay(self::URL,$data);
                 $ret = json_decode($result,true);
                 return $this->success('请求成功',$ret);
 
@@ -115,7 +115,7 @@ class PayController extends BaseController
             'qe_AltInfo'=>[
                 [
                     'altMchNo'=>$mch_no,"altAmount"=>bcmul($data['money'],
-                    self::QE_RATE)
+                    self::QE_RATE,2)
                 ]
             ],
             //实时分账在支付完成后，分账信息会异步通知商户结果，回调 qf_AltUrl 中的地址

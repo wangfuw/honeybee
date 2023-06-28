@@ -281,7 +281,71 @@ if(!function_exists('post_url')){
         return $res;
     }
 }
+if(!function_exists('post_url')){
+    /**
+     * PHP发送Json对象数据
+     * @param $url 请求url
+     * @param $data 发送的json字符串/数组
+     * @return array
+     */
+    function post_url($url, $data )
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        if(is_array($data)){
+            $data = json_encode($data,JSON_UNESCAPED_UNICODE);
+        }
 
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_HTTPHEADER,array(
+            'Content-Type: application/json; charset=utf-8'
+        ));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $res = curl_exec($curl);
+        $errorno = curl_errno($curl);
+        if ($errorno) {
+            return $errorno;
+        }
+        curl_close($curl);
+        return $res;
+    }
+}
+
+if(!function_exists('post_url_pay')){
+    /**
+     * PHP发送Json对象数据
+     * @param $url 请求url
+     * @param $data 发送的json字符串/数组
+     * @return array
+     */
+    function post_url_pay($url, $data )
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+//        if(is_array($data)){
+//            $data = json_encode($data,JSON_UNESCAPED_UNICODE);
+//        }
+
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_HTTPHEADER,array(
+            'Content-Type:application/x-www-form-urlencoded'
+        ));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $res = curl_exec($curl);
+        $errorno = curl_errno($curl);
+        if ($errorno) {
+            return $errorno;
+        }
+        curl_close($curl);
+        return $res;
+    }
+}
 if(!function_exists('curl_get')){
 //    function curl_get($appid,$secret,$code,$type = "authorization_code"){
 //        $client = new \GuzzleHttp\Client();
