@@ -323,27 +323,18 @@ if(!function_exists('post_url_pay')){
      */
     function post_url_pay($url, $data )
     {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-//        if(is_array($data)){
-//            $data = json_encode($data,JSON_UNESCAPED_UNICODE);
-//        }
-
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($curl, CURLOPT_HTTPHEADER,array(
-            'Content-Type:application/x-www-form-urlencoded'
-        ));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $res = curl_exec($curl);
-        $errorno = curl_errno($curl);
-        if ($errorno) {
-            return $errorno;
-        }
-        curl_close($curl);
-        return $res;
+        $postData = http_build_query($data);
+        $options = array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => 'Content-type:application/x-www-form-urlencoded',
+                'content' => $postData,
+                'timeout' => 15 * 60 // 超时时间（单位:s）
+            )
+        );
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        return $result;
     }
 }
 if(!function_exists('curl_get')){
