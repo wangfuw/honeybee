@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Hash;
 class PayController extends BaseController
 {
     //微信appid
-//    const WX_APPID="wx1f331c16c0da4ede";
-    const WX_APPID="wxd10ff0420840ca8e";
+    const WX_APPID="wx1f331c16c0da4ede";
+//    const WX_APPID="wx590a33db7af62cba";
     //微信密钥
-//    const WX_SECRET="3b5c0e3bd111f8ab14d338b3e67140d0";
-    const WX_SECRET="60586f311c62cdcd5dd574762e69f901";
+    const WX_SECRET="3b5c0e3bd111f8ab14d338b3e67140d0";
+//    const WX_SECRET="7b8746071ca479736fa29a0fc06eca4e";
 
     const VERSION = '2.2';
 
@@ -65,22 +65,21 @@ class PayController extends BaseController
         if(!check_phone($data['phone'])){
             return $this->fail('电话号码错误');
         }
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             if($data['pay_type'] == 'wx_pay'){
                 //获取用户openid
-                $info = curl_get(self::WX_APPID,self::WX_SECRET,$data['code'],'authorization_code','GET');
-                dd($info);
+                $info = curl_get("https://api.weixin.qq.com/sns/oauth2/access_token",["appid"=>self::WX_APPID,"secret"=>self::WX_SECRET,'code'=>$data['code'],'grant_type'=>'authorization_code']);
                 //根据用户id 获取用户商户编号
                 $store_info = StoreSupply::query()->where('user_id',$data['id'])->first();
                 //注册用户，默认密码是123456
-               // $ret = $this->auto_register($data);
+                $this->auto_register($data);
                 //调汇聚接口生成预支付订单
                 [$data,$sign] = $this->pre_data($data,$info['openid'],$store_info->alt_mch_no);
-                //[$data,$sign] = $this->pre_data($data,$openid,$store_info->alt_mch_no);
                 unset($data['key']);
                 $data['hmac'] = $sign;
-                $ret = post_url(self::URL,$data);
+                $result = post_url(self::URL,$data);
+                $ret = json_encode($result,true);
                 //预支付信息返回前端
                 return $this->success('请求成功',$ret['rc_Result']);
             }else{
@@ -124,7 +123,6 @@ class PayController extends BaseController
             'qi_FqSellerPercen' => 0,
             'key'=> self::M_SECRET
         ];
-
         return $this->sign_str($data);
     }
     //加密
