@@ -75,7 +75,7 @@ class PayController extends BaseController
                 $store_info = StoreSupply::query()->where('user_id',$data['id'])->first();
                 //注册用户，默认密码是123456
                 //调汇聚接口生成预支付订单
-                DB::beginTransaction();
+              //  DB::beginTransaction();
 //                $this->auto_register($data);
                 [$data,$sign] = $this->pre_data($data,$info['openid'],$store_info->alt_mch_no);
                 unset($data['key']);
@@ -86,7 +86,7 @@ class PayController extends BaseController
 
                 if($ret['ra_Code'] == 100){
 
-                    DB::commit();
+                   // DB::commit();
                     return $this->success('请求成功',json_decode($ret["rc_Result"],true));
                 }else{
                     return $this->fail($ret['rb_CodeMsg']);
