@@ -76,7 +76,7 @@ class PayController extends BaseController
                 //注册用户，默认密码是123456
                 //调汇聚接口生成预支付订单
                 DB::beginTransaction();
-                $this->auto_register($data);
+//                $this->auto_register($data);
                 [$data,$sign] = $this->pre_data($data,$info['openid'],$store_info->alt_mch_no);
                 unset($data['key']);
                 $data['qe_AltInfo'] = json_encode($data['qe_AltInfo'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
