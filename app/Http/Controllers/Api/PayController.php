@@ -17,9 +17,11 @@ use Illuminate\Support\Facades\Hash;
 class PayController extends BaseController
 {
     //微信appid
-    const WX_APPID="wx1f331c16c0da4ede";
+//    const WX_APPID="wx1f331c16c0da4ede";
+    const WX_APPID="wxd10ff0420840ca8e";
     //微信密钥
-    const WX_SECRET="3b5c0e3bd111f8ab14d338b3e67140d0";
+//    const WX_SECRET="3b5c0e3bd111f8ab14d338b3e67140d0";
+    const WX_SECRET="60586f311c62cdcd5dd574762e69f901";
 
     const VERSION = '2.2';
 
