@@ -140,6 +140,7 @@ class PayController extends BaseController
             $str.="$value";
         }
         $str = rtrim($str,'');
+        dd(str);
         return [$data,md5($str)];
     }
 
