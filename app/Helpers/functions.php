@@ -3,6 +3,7 @@
 use \Illuminate\Support\Facades\Redis;
 use App\Models\Area;
 use Illuminate\Support\Env;
+use GuzzleHttp\Client as client;
 /**
  * 生成邀请码
  */
@@ -282,20 +283,50 @@ if(!function_exists('post_url')){
 }
 
 if(!function_exists('curl_get')){
-    function curl_get($appid,$secret,$code,$type = "authorization_code",$method){
-        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid =".$appid."&secret=".$secret."&code=".$code.'&grant_type='.$type;
-        $ch = curl_init();//1.初始化
-        curl_setopt($ch, CURLOPT_URL, $url);//2.请求地址
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);//3.请求方式
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $tmpInfo = curl_Exec($ch);
+//    function curl_get($appid,$secret,$code,$type = "authorization_code"){
+//        $client = new \GuzzleHttp\Client();
+//        $res = $client->request('GET',$url);
+//        dd($res);
+//    }
+//    function curl_get($appid,$secret,$code,$type = "authorization_code")
+//    { // 模拟获取内容函数
+//        $headerArray = array("Content-type:application/json;", "Accept:application/json");
+//        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid."&secret=".$secret."&code=".$code.'&grant_type='.$type;
+//        $ch = curl_init();
+//        curl_setopt($ch, CURLOPT_URL, $url);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+//        curl_setopt($url, CURLOPT_HTTPHEADER, $headerArray);
+//        $output = curl_exec($ch);
+//        dd($output);
+//        curl_close($ch);
+//        $output = json_decode($output, true);
+//        return $output;
+//    }
 
-        if (curl_errno($ch)) {
-            return curl_errno($ch);
+    function curl_get($url,$data=[]){
+        if($url == "" ){
+            return false;
         }
-        curl_close($ch);//关闭
-
-        return  $data = json_decode($tmpInfo);
+        $url = $url.'?'.http_build_query($data);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true) ;
+        curl_setopt($ch, CURLOPT_URL, $url);
+        //参数为1表示传输数据，为0表示直接输出显示。
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        //参数为0表示不带头文件，为1表示带头文件
+        curl_setopt($ch, CURLOPT_HEADER,0);
+        // 关闭SSL验证
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        $output = curl_exec($ch);
+        if(curl_exec($ch) === false){
+            echo 'Curl error: ' . curl_error($ch);
+        }
+        curl_close($ch);
+        return json_decode($output);
     }
 }
 
