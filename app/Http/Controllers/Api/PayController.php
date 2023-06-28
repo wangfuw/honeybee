@@ -83,11 +83,11 @@ class PayController extends BaseController
                 $data['hmac'] = $sign;
                 $result = post_url_pay(self::URL,$data);
                 $ret = json_decode($result,true);
-
+                return $this->success('请求成功',json_decode($ret["rc_Result"],true));
                 if($ret['ra_Code'] == 100){
 
                    // DB::commit();
-                    return $this->success('请求成功',json_decode($ret["rc_Result"],true));
+
                 }else{
                     return $this->fail($ret['rb_CodeMsg']);
                 }
