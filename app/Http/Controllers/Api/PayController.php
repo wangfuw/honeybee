@@ -71,8 +71,6 @@ class PayController extends BaseController
                 //获取用户openid
                 $info = curl_get("https://api.weixin.qq.com/sns/oauth2/access_token",["appid"=>self::WX_APPID,"secret"=>self::WX_SECRET,'code'=>$data['code'],'grant_type'=>'authorization_code']);
                 //根据用户id 获取用户商户编号
-//                $info = json_decode($info);
-                return $this->success('请求成功',$info);
                 $store_info = StoreSupply::query()->where('user_id',$data['id'])->first();
                 //注册用户，默认密码是123456
                // $this->auto_register($data);
@@ -80,8 +78,8 @@ class PayController extends BaseController
                 [$data,$sign] = $this->pre_data($data,$info['openid'],$store_info->alt_mch_no);
                 unset($data['key']);
                 $data['hmac'] = $sign;
-               // $result = post_url(self::URL,$data);
-
+                return $this->success('请求成功',$data);
+                $result = post_url(self::URL,$data);
                 $ret = json_encode($result,true);
                 DB::commit();
                 //预支付信息返回前端
