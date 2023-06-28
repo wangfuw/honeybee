@@ -326,7 +326,7 @@ if(!function_exists('curl_get')){
             echo 'Curl error: ' . curl_error($ch);
         }
         curl_close($ch);
-        return json_decode($output);
+        return json_decode($output,true);
     }
 }
 
