@@ -20,7 +20,10 @@ class CreatePayOrderTable extends Migration
             $table->decimal('amount',16,2)->nullable()->comment('支付金额');
             $table->tinyInteger('cur')->nullable()->default('1')->comment('1人民币');
             $table->string('fre_code')->nullable()->comment('交易类型');
+            $table->string('phone')->nullable()->comment('交易人手机号');
+            $table->integer('store_id')->comment('商家id');
             $table->string('trx_no')->nullable()->comment('交易流水号');
+            $table->string('f_trx_no')->nullable()->comment('分账到账流水号');
             $table->decimal('free',16,2)->default(0)->comment('订单手续费');
             $table->string('bank_order_no')->nullable()->comment('银行订单号');
             $table->string('bank_trx_no')->nullable()->comment('银行流水号');
