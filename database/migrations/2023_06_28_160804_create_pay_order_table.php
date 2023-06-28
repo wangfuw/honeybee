@@ -21,8 +21,6 @@ class CreatePayOrderTable extends Migration
             $table->tinyInteger('cur')->nullable()->default('1')->comment('1人民币');
             $table->string('fre_code')->nullable()->comment('交易类型');
             $table->string('trx_no')->nullable()->comment('交易流水号');
-            $table->string('code')->nullable()->comment('响应码');
-            $table->string('code_msg')->nullable()->comment('响应码描述');
             $table->decimal('free',16,2)->default(0)->comment('订单手续费');
             $table->string('bank_order_no')->nullable()->comment('银行订单号');
             $table->string('bank_trx_no')->nullable()->comment('银行流水号');
@@ -32,7 +30,6 @@ class CreatePayOrderTable extends Migration
             $table->string('card_type')->nullable()->comment('卡类型');
             $table->string('bank_type')->nullable()->comment('银行类型');
             $table->string('alt_info')->nullable()->comment('分账信息');
-            $table->string('hmac')->nullable()->comment('签名');
             $table->string('pay_status')->default(0)->comment('支付状态 0 待支付 100 支付成功 101 支付失败');
             $table->integer('created_at')->comment('插入时间');
             $table->integer('updated_at')->comment('修改时间');
