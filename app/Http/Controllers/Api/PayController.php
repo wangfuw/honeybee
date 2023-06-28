@@ -54,7 +54,7 @@ class PayController extends BaseController
     public function __construct(PayValidate $validate)
     {
         $this->validate = $validate;
-        $this->middleware('auth:api', ['except' => ['to_pey','notify_url']]);
+        $this->middleware('auth:api', ['except' => ['to_pey','notify_url','qf_alt_url']]);
     }
 
     //输入电话 金额 选着支付方式 调取api/to_pay （注册用户，异步生成预支付订单）返回订单信息 拉去微信或支付宝jsapi支付，支付成功给用户加消费积分，商家加积分
