@@ -142,7 +142,7 @@ class PayController extends BaseController
         }
         $str = rtrim($str,'');
         Log::info($str);
-        return [$data,md5(urlencode($str))];
+        return [$data,md5($str)];
     }
 
     //服务器异步通知地址
