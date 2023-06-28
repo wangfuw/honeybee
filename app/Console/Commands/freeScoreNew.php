@@ -891,7 +891,7 @@ class freeScoreNew extends Command
             ->where("identity_status", 1)
             ->where("identity", 1)
             ->where("green_score", ">", 0)
-            ->where("luck_score", ">", 0)
+//            ->where("luck_score", ">", 0)
             ->where("is_ban", 1)
             ->get();
 
