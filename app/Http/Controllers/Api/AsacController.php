@@ -26,7 +26,7 @@ class AsacController extends BaseController
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['excharge','withdraw','coin_info',
-            'asac_login','search','info','index','blocks','owners','get_notices','get_destory','get_flue',
+            'asac_login','search','info','index','blocks','owners','get_notices','get_destory','get_flue','block_info'
         ]]);
     }
     public function coin_info()
