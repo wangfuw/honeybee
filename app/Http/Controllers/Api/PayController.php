@@ -66,7 +66,6 @@ class PayController extends BaseController
         if(!check_phone($data['phone'])){
             return $this->fail('电话号码错误');
         }
-        DB::beginTransaction();
         try {
             if($data['pay_type'] == 'wx_pay'){
                 //获取用户openid
@@ -82,7 +81,6 @@ class PayController extends BaseController
 //                return $this->success('请求成功',$data);
                 $result = post_url(self::URL,$data);
                 $ret = json_decode($result,true);
-                DB::commit();
                 return $this->success('请求成功',$ret);
 
                 //预支付信息返回前
