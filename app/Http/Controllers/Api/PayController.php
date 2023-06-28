@@ -14,6 +14,7 @@ use App\Validate\PayValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class PayController extends BaseController
 {
@@ -140,7 +141,7 @@ class PayController extends BaseController
             $str.="$value";
         }
         $str = rtrim($str,'');
-        dd(str);
+        Log::info($str);
         return [$data,md5($str)];
     }
 
