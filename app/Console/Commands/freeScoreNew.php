@@ -201,6 +201,7 @@ class freeScoreNew extends Command
                         'flag' => 2,
                         'num' => $sale_num,
                         'type' => 2,
+
                         'f_type' => Score::FREE_USED,
                         'amount' => $asac_num,
                     ]);
@@ -219,7 +220,9 @@ class freeScoreNew extends Command
 
                 // 2. 释放绿色积分
                 //消费总额
-                $all_moeny = Order::query()->where('user_id', $user->id)->where('give_green_score', '>', 0)->sum('price');
+                $all_moeny = Order::query()->where('user_id', $user->id)
+                    ->where('give_green_score', '>', 0)
+                    ->where('status',2)->sum('price');
                 //检查幸运值
                 if ($user->luck_score >= 0 && $user->green_score >= 0) {
                     //检查回本
