@@ -83,8 +83,8 @@ class PayController extends BaseController
                // return $this->success('请求成功',$data);
                 $result = post_url_pay(self::URL,$data);
                 $ret = json_decode($result,true);
-                if($ret['ra_Code' == 100]){
-                    return $this->success('请求成功',['data'=>$ret["rc_Result"],'open_id'=>$info['openid']]);
+                if($ret['ra_Code'] == 100){
+                    return $this->success('请求成功',$ret["rc_Result"]);
                 }else{
                     return $this->fail($ret['rb_CodeMsg']);
                 }
