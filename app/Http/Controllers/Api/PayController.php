@@ -137,9 +137,9 @@ class PayController extends BaseController
             'amount'=> $data['money'],
             'cur' => self::CUR,
             'fre_code'=>'WEIXIN_GZH',
-            'openid' => $data['q5_OpenId'],
-            'phone'  => $data['phone'],
-            'store_id' => $data['id']
+//            'openid' => $data['q5_OpenId'],
+//            'phone'  => $data['phone'],
+//            'store_id' => $data['id']
         ]);
         return $this->sign_str($data);
     }
