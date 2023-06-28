@@ -82,10 +82,10 @@ class PayController extends BaseController
 //                return $this->success('请求成功',$data);
                 $result = post_url(self::URL,$data);
                 $ret = json_decode($result,true);
-                return $this->success('请求成功',$ret);
                 DB::commit();
-                //预支付信息返回前端
-                return $this->success('请求成功',$data);
+                return $this->success('请求成功',$ret);
+
+                //预支付信息返回前
             }else{
                 //支付宝支付
 
