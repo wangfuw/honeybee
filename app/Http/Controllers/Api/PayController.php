@@ -81,14 +81,13 @@ class PayController extends BaseController
                 $data['hmac'] = $sign;
                 $result = post_url(self::URL,$data);
                 $ret = json_encode($result,true);
+                DB::commit();
                 //预支付信息返回前端
                 return $this->success('请求成功',$ret);
             }else{
                 //支付宝支付
 
             }
-            DB::commit();
-            return $this->success('请求成功',[]);
         }catch (\Exception $e){
 
         }
