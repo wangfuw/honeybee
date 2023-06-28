@@ -216,6 +216,8 @@ Route::controller(UserController::class)->group(function () {
 
     Route::group([],function(){
         Route::post('to_pay',[PayController::class,'to_pey']);
+        Route::post('notify_url',[PayController::class,'notify_url']);
+        Route::post('qf_alt_url',[PayController::class,'qf_alt_url']);
     });
 });
 
