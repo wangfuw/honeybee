@@ -74,7 +74,7 @@ class PayController extends BaseController
                 $info = json_decode($info);
                 $store_info = StoreSupply::query()->where('user_id',$data['id'])->first();
                 //注册用户，默认密码是123456
-                $this->auto_register($data);
+               // $this->auto_register($data);
                 //调汇聚接口生成预支付订单
                 [$data,$sign] = $this->pre_data($data,$info['openid'],$store_info->alt_mch_no);
                 unset($data['key']);
@@ -82,7 +82,7 @@ class PayController extends BaseController
                 $result = post_url(self::URL,$data);
                 $ret = json_encode($result,true);
                 //预支付信息返回前端
-                return $this->success('请求成功',$ret['rc_Result']);
+                return $this->success('请求成功',$ret);
             }else{
                 //支付宝支付
 
