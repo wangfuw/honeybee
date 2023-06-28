@@ -131,16 +131,16 @@ class PayController extends BaseController
             'qi_FqSellerPercen' => 0,
             'key'=> self::M_SECRET
         ];
-        PayOrder::query()->create([
-            'order_no'=>$data['p2_OrderNo'],
-            'merchant_no'=>$data['p1_MerchantNo'],
-            'amount'=> $data['money'],
-            'cur' => self::CUR,
-            'fre_code'=>'WEIXIN_GZH',
+//        PayOrder::query()->create([
+//            'order_no'=>$data['p2_OrderNo'],
+//            'merchant_no'=>$data['p1_MerchantNo'],
+//            'amount'=> $data['money'],
+//            'cur' => self::CUR,
+//            'fre_code'=>'WEIXIN_GZH',
 //            'openid' => $data['q5_OpenId'],
 //            'phone'  => $data['phone'],
 //            'store_id' => $data['id']
-        ]);
+//        ]);
         return $this->sign_str($data);
     }
     //加密
