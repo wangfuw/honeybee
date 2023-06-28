@@ -26,6 +26,8 @@ class CreatePayOrderTable extends Migration
             $table->string('result')->nullable()->comment('结果');
             $table->string('hmac')->nullable()->comment('签名');
             $table->string('pay_status')->nullable()->comment('支付状态');
+            $table->integer('created_at')->comment('插入时间');
+            $table->integer('updated_at')->comment('修改时间');
         });
     }
 
