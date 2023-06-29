@@ -100,8 +100,8 @@ class StoreController extends AdminBaseController
                 $condition[] = ["pay_order.id", "=", "-1"];
             }
         }
-        if($request->status){
-            $condition[] = ["pay_status", "=", $request->status];
+        if($request->pay_status){
+            $condition[] = ["pay_status", "=", $request->pay_status];
         }
         $data = PayOrder::join("store", "store.user_id", "=", "pay_order.store_id")->join("users","users.id","=","pay_order.store_id")
             ->where($condition)
