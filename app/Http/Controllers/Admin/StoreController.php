@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\PayOrder;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -84,6 +85,31 @@ class StoreController extends AdminBaseController
         return $this->executeSuccess("操作");
     }
 
+    //支付订单
+    public function payOrder(Request $request){
+        $size = $request->size ?? $this->size;
+        $condition = [];
+        if($request->id){
+            $condition[] = ["store_id", "=", $request->id];
+        }
+        if ($request->phone) {
+            $user = User::where("phone", $request->phone)->first();
+            if ($user) {
+                $condition[] = ["store_id", "=", $user->id];
+            } else {
+                $condition[] = ["pay_order.id", "=", "-1"];
+            }
+        }
+        if($request->status){
+            $condition[] = ["status", "=", $request->status];
+        }
+        $data = PayOrder::join("store", "store.user_id", "=", "pay_order.store_id")->join("users","users.id","=","pay_order.store_id")
+            ->where($condition)
+            ->orderBy("pay_order.pay_time desc")
+            ->select("pay_order.*", "store.store_name","store.mobile")
+            ->paginate($size);
+        return $this->executeSuccess("请求", $data);
+    }
 
     public function storeReviewList(Request $request)
     {
@@ -106,7 +132,9 @@ class StoreController extends AdminBaseController
         if ($request->filled("mobile")) {
             $condition[] = ["store.mobile", "=", $request->mobile];
         }
-
+        if($request->filled("on_line")){
+            $condition[] = ["store,on_line","=",$request->on_line];
+        }
         $condition[] =["store.type", "=", 0];
 
         $data = Store::join("users", "users.id", "=", "store.user_id")

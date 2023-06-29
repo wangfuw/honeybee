@@ -159,33 +159,42 @@ class PayController extends BaseController
     public function notify_url(Request $request)
     {
         $data = $request->all();
-        if($data){
-            $info = PayOrder::query()->where('order_no',$data['r2_OrderNo'])->first();
-            $info->pay_status = $data['r6_Status'];
-            $info->trx_no = $data['r7_TrxNo'];
-            $info->bank_order_no = $data['r8_BankOrderNo'];
-            $info->bank_trx_no = isset($data['r9_BankTrxNo'])?$data['r9_BankTrxNo']:'';
-            $info->free = $data["r10_Fee"];
-            $info->pay_time = urldecode(urldecode($data['ra_PayTime']));
-            $info->bank_code = $data['rc_BankCode'];
-            $info->card_type = $data['rh_cardType'];
-            $info->bank_type = $data['ri_BankType'];
-            $info->save();
-            if($data['r6_Status'] == 100){
-                //支付成功给用户加消费积分
-                $this->auto_register($info);
-                $user = User::query()->where('phone',$info->phone)->first();
-                if($user){
-                    $user->sale_score += $info->money;
-                    $user->sale_score_total += $info->money;
-                    $user->save();
-                }
 
+        try {
+            if($data){
+                DB::beginTransaction();
+                $info = PayOrder::query()->where('order_no',$data['r2_OrderNo'])->first();
+                $info->pay_status = $data['r6_Status'];
+                $info->trx_no = $data['r7_TrxNo'];
+                $info->bank_order_no = $data['r8_BankOrderNo'];
+                $info->bank_trx_no = isset($data['r9_BankTrxNo'])?$data['r9_BankTrxNo']:'';
+                $info->free = $data["r10_Fee"];
+                $info->pay_time = urldecode(urldecode($data['ra_PayTime']));
+                $info->bank_code = $data['rc_BankCode'];
+                $info->card_type = $data['rh_cardType'];
+                $info->bank_type = $data['ri_BankType'];
+                $info->save();
+                if($data['r6_Status'] == 100){
+                    //支付成功给用户加消费积分
+                    $this->auto_register($info);
+                    $user = User::query()->where('phone',$info->phone)->first();
+                    if($user){
+                        $user->sale_score += $info->money;
+                        $user->sale_score_total += $info->money;
+                        $user->save();
+                    }
+
+                }
+                DB::commit();
+                return 'success';
+            }else{
+                return 'error';
             }
-            return 'success';
-        }else{
+        }catch (\Exception $e){
+            DB::rollBack();
             return 'error';
         }
+
     }
     //分账通知地
     public function qf_alt_url(Request $request)
