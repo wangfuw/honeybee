@@ -81,6 +81,7 @@ class StoreController extends AdminBaseController
             return  $this->fail('让利比列只支持8,16,32');
         }
         $store->amount += $num;
+        $store->rate = $rate;
         $store->save();
         return $this->executeSuccess("操作");
     }
