@@ -186,6 +186,14 @@ class PayController extends BaseController
                         $user->sale_score += $info->amount;
                         $user->sale_score_total += $info->amount;
                         $user->save();
+
+                        Score::query()->create([
+                            "user_id"=>$user->id,
+                            "flag"   => 1,
+                            "num"    =>$info->amount,
+                            "type"=>2,
+                            "f_type"=>Score::DOWN_LINE_BUY_HAVE
+                        ]);
                     }
                     //给商家加绿色积分
                     $store_id = $info->store_id;
@@ -193,8 +201,16 @@ class PayController extends BaseController
                     $rate = $rate >= 8 ? $rate : 8;
                     $user_s = User::query()->where('id',$store_id)->first();
                     if($user_s){
-                        $user_s->sale_score += bcmul($info->amount / 100,$rate * 2 ,2);
+                        $user_s->sale_score += bcmul($info->amount / 100,$rate ,2);
                         $user_s->save();
+
+                        Score::query()->create([
+                            "user_id"=>$user_s->id,
+                            "flag"   => 1,
+                            "num"    =>bcmul($info->amount / 100,$rate ,2),
+                            "type"=>2,
+                            "f_type"=>Score::DOWN_LINE_SALE_HAVE
+                        ]);
                     }
 //                    switch (int($rate)){
 //                        case 8:

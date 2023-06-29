@@ -7,6 +7,7 @@ use App\Http\Controllers\Merchant\OrderController;
 use App\Http\Controllers\Merchant\HomeController;
 use App\Http\Controllers\Merchant\AsacController;
 use App\Http\Controllers\Merchant\ApplyController;
+use App\Http\Controllers\Merchant\PayOrderController;
 
 Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
     Route::post("login", [LoginController::class, "login"]);
@@ -35,5 +36,6 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
         Route::get('applyInfo',[ApplyController::class,"applyInfo"]);
         //提交支付申请
         Route::post('apply',[ApplyController::class,"apply"]);
+        Route::post('payOrder',[PayOrderController::class,"payOrderList"]);
     });
 });

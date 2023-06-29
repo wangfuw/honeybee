@@ -54,6 +54,12 @@ class LoginController extends MerchantBaseController
                 "title"=>"支付申请",
                 "icon"=>"Apple",
                 "path"=>"/apply"
+            ],
+            [
+                "id" => 10,
+                "title"=>"支付记录",
+                "icon"=>"Memo",
+                "path"=>"/payOrder"
             ]
         ];
         $menus = [

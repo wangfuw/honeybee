@@ -55,6 +55,8 @@ class Score extends Base
     // 旗舰店加速
     const QJ_USED = 21;
     const QJ_TEAM_USED = 23;
+    const DOWN_LINE_BUY_HAVE = 24;
+    const DOWN_LINE_SALE_HAVE = 25;
 
     const F_TYPES = [
         self::BACK_ADD => "后台增加",
@@ -80,6 +82,8 @@ class Score extends Base
         self::QJ_USED => '旗舰店加速',
         self::XX_TEAM_USED => '形象店团队加速',
         self::QJ_TEAM_USED => '旗舰店团队加速',
+        self::DOWN_LINE_BUY_HAVE => '线下购买获得',
+        self::DOWN_LINE_SALE_HAVE => '线下销售获得',
     ];
 
 
