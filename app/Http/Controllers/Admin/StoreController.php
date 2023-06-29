@@ -34,7 +34,7 @@ class StoreController extends AdminBaseController
             $condition[] = ["store.mobile", "=", $request->mobile];
         }
         if($request->filled("on_line")){
-            $condition[] = ["store,on_line","=",$request->on_line];
+            $condition[] = ["store.on_line","=",$request->on_line];
         }
         $condition[] =["store.type", "=", 1];
 
@@ -133,7 +133,7 @@ class StoreController extends AdminBaseController
             $condition[] = ["store.mobile", "=", $request->mobile];
         }
         if($request->filled("on_line")){
-            $condition[] = ["store,on_line","=",$request->on_line];
+            $condition[] = ["store.on_line","=",$request->on_line];
         }
         $condition[] =["store.type", "=", 0];
 
