@@ -36,6 +36,6 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
         Route::get('applyInfo',[ApplyController::class,"applyInfo"]);
         //提交支付申请
         Route::post('apply',[ApplyController::class,"apply"]);
-        Route::post('payOrder',[PayOrderController::class,"payOrderList"]);
+        Route::get('payOrder',[PayOrderController::class,"payOrderList"]);
     });
 });
