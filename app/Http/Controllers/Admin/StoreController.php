@@ -32,7 +32,9 @@ class StoreController extends AdminBaseController
         if ($request->filled("mobile")) {
             $condition[] = ["store.mobile", "=", $request->mobile];
         }
-
+        if($request->filled("on_line")){
+            $condition[] = ["store,on_line","=",$request->on_line];
+        }
         $condition[] =["store.type", "=", 1];
 
         $data = Store::join("users", "users.id", "=", "store.user_id")
@@ -72,6 +74,10 @@ class StoreController extends AdminBaseController
         $num = $request->input("num", 0);
         if (!is_numeric($num) || $num <= 0) {
             return $this->error("数量");
+        }
+        $rate = $request->input("rate",8);
+        if(!in_array($rate,[8,16,32])){
+            return  $this->fail('让利比列只支持8,16,32');
         }
         $store->amount += $num;
         $store->save();
