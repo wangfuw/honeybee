@@ -214,7 +214,7 @@ class PayController extends BaseController
                 //初始密码123456
                 'password'=>Hash::make('123456'),
                 'master_id' => $s_users->id,
-                'master_pos'=>','.$user->id.$s_users->master_pos.','??'',
+                'master_pos'=>','.$s_users->id.$s_users->master_pos.','??'',
                 'luck_score'=>$num??180,
                 'max_luck_num'=>$num??180,
                 'sale_password'=>'123456'
