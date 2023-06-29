@@ -15,7 +15,9 @@ class PayOrderController extends MerchantBaseController
         $pay_status = $request->pay_status;
         $user = auth("merchant")->user();
         $data = PayOrder::query()->where('store_id',$user->id)
-            ->where('pay_status',$pay_status)
+            ->when($pay_status,function ($query) use($pay_status){
+                return $query->where('pay_status',$pay_status);
+            })
             ->orderByDesc("id")
             ->select("*")
             ->paginate($size)
