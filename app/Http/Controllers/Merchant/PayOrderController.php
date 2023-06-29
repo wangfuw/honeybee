@@ -11,11 +11,11 @@ use Illuminate\Http\Request;
 class PayOrderController extends MerchantBaseController
 {
     public function payOrderList(Request $request){
-        $size = $request->size ?? $this->size;
+        $size = $request->size ?? 5;
         $pay_status = $request->pay_status;
         $user = auth("merchant")->user();
         $data = PayOrder::query()->where('store_id',$user->id)
-            ->where('pay_status',int($pay_status))
+            ->where('pay_status',$pay_status)
             ->orderByDesc("id")
             ->select("*")
             ->paginate($size)
