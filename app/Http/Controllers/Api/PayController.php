@@ -180,6 +180,7 @@ class PayController extends BaseController
                     $user->sale_score_total += $info->money;
                     $user->save();
                 }
+
             }
             return 'success';
         }else{
