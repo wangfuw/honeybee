@@ -93,9 +93,9 @@ class StoreController extends AdminBaseController
             $condition[] = ["store_id", "=", $request->id];
         }
         if ($request->phone) {
-            $user = User::where("phone", $request->phone)->first();
+            $user = Store::where("mobile", $request->phone)->first();
             if ($user) {
-                $condition[] = ["store_id", "=", $user->id];
+                $condition[] = ["store_id", "=", $user->user_id];
             } else {
                 $condition[] = ["pay_order.id", "=", "-1"];
             }
