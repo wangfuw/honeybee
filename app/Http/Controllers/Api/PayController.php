@@ -60,34 +60,43 @@ class PayController extends BaseController
     //输入电话 金额 选着支付方式 调取api/to_pay （注册用户，异步生成预支付订单）返回订单信息 拉去微信或支付宝jsapi支付，支付成功给用户加消费积分，商家加积分
     public function to_pey(Request $request){
         //测试
-        $data = $request->only(['code','id','phone','money','pay_type']);
-        if(!$this->validate->scene('pre_pay')->check($data)){
+        $p_data = $request->only(['code','id','phone','money','pay_type']);
+        if(!$this->validate->scene('pre_pay')->check($p_data)){
             return $this->success($this->validate->getError());
         }
-        if(!check_phone($data['phone'])){
+        if(!check_phone($p_data['phone'])){
             return $this->fail('电话号码错误');
         }
         try {
-            if($data['pay_type'] == 'wx_pay'){
+            if($p_data['pay_type'] == 'wx_pay'){
                 //获取用户openid
-                $info = curl_get("https://api.weixin.qq.com/sns/oauth2/access_token",["appid"=>self::WX_APPID,"secret"=>self::WX_SECRET,'code'=>$data['code'],'grant_type'=>'authorization_code']);
+                $info = curl_get("https://api.weixin.qq.com/sns/oauth2/access_token",["appid"=>self::WX_APPID,"secret"=>self::WX_SECRET,'code'=>$p_data['code'],'grant_type'=>'authorization_code']);
                 //根据用户id 获取用户商户编号
-                $store_info = StoreSupply::query()->where('user_id',$data['id'])->first();
+                $store_info = StoreSupply::query()->where('user_id',$p_data['id'])->first();
                 //注册用户，默认密码是123456
                 //调汇聚接口生成预支付订单
               //  DB::beginTransaction();
-//                $this->auto_register($data);
-                [$data,$sign] = $this->pre_data($data,$info['openid'],$store_info->alt_mch_no);
+                $this->auto_register($p_data);
+                [$data,$sign] = $this->pre_data($p_data,$info['openid'],$store_info->alt_mch_no);
                 unset($data['key']);
                 $data['qe_AltInfo'] = json_encode($data['qe_AltInfo'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
                 $data['hmac'] = $sign;
+
+                PayOrder::query()->create([
+                    'order_no'=>$data['p2_OrderNo'],
+                    'merchant_no'=>$data['p1_MerchantNo'],
+                    'amount'=> $data['money'],
+                    'cur' => self::CUR,
+                    'fre_code'=>'WEIXIN_GZH',
+                    'openid' => $info['openid'],
+                    'phone'  => $p_data['phone'],
+                    'store_id' => $p_data['id']
+                ]);
+
                 $result = post_url_pay(self::URL,$data);
                 $ret = json_decode($result,true);
-                return $this->success('请求成功',json_decode($ret["rc_Result"],true));
                 if($ret['ra_Code'] == 100){
-
-                   // DB::commit();
-
+                    return $this->success('请求成功',json_decode($ret["rc_Result"],true));
                 }else{
                     return $this->fail($ret['rb_CodeMsg']);
                 }
@@ -97,7 +106,7 @@ class PayController extends BaseController
             }
 
         }catch (\Exception $e){
-
+            return  $this->fail($e->getMessage());
         }
 
     }
@@ -131,16 +140,6 @@ class PayController extends BaseController
             'qi_FqSellerPercen' => 0,
             'key'=> self::M_SECRET
         ];
-//        PayOrder::query()->create([
-//            'order_no'=>$data['p2_OrderNo'],
-//            'merchant_no'=>$data['p1_MerchantNo'],
-//            'amount'=> $data['money'],
-//            'cur' => self::CUR,
-//            'fre_code'=>'WEIXIN_GZH',
-//            'openid' => $data['q5_OpenId'],
-//            'phone'  => $data['phone'],
-//            'store_id' => $data['id']
-//        ]);
         return $this->sign_str($data);
     }
     //加密
@@ -161,8 +160,6 @@ class PayController extends BaseController
     //服务器异步通知地址
     public function notify_url(Request $request)
     {
-        Log::info($request->all());
-        return 'success';
         $data = $request->all();
         if($data){
             $info = PayOrder::query()->where('order_no',$data['r2_OrderNo'])->first();
@@ -178,6 +175,7 @@ class PayController extends BaseController
             $info->save();
             if($data['r6_Status'] == 100){
                 //支付成功给用户加消费积分
+                $this->auto_register($info);
                 $user = User::query()->where('phone',$info->phone)->first();
                 if($user){
                     $user->sale_score += $info->money;
@@ -193,8 +191,6 @@ class PayController extends BaseController
     //分账通知地
     public function qf_alt_url(Request $request)
     {
-        Log::info($request->all());
-        return 'success';
         $data = $request->all();
         if($data){
             $info = PayOrder::query()->where('order_no',$data['r2_OrderNo'])->first();
@@ -208,16 +204,15 @@ class PayController extends BaseController
         }
     }
     //自动注册
-    protected function auto_register($data):void
+    protected function auto_register($info):void
     {
-        $s_users = User::query()->where('id',$data['id'])->first();
-        $user = User::query()->where('phone',$data['phone'])->first();
+        $user = User::query()->where('phone',$info->phone)->first();
         if(!$user){
-            $myself_invite_code = inviteCode($data['phone']);
+            $s_users = User::query()->where('id',$info->store_id)->first();
             $num = Config::register_give_lucky();
             $d = [
-                'phone' => $data['phone'],
-                'invite_code'=> $myself_invite_code,
+                'phone' => $info->phone,
+                'invite_code'=> inviteCode($info->phone),
                 //初始密码123456
                 'password'=>Hash::make('123456'),
                 'master_id' => $s_users->id,
@@ -240,8 +235,8 @@ class PayController extends BaseController
                 'wallet_address' => rand_str_pay(40),
                 'private_key' => rand_str_pay(64)
             ]);
-            $content = "【源宇通商城】您已注册源宇通商城。您的账户是:".$data['phone']."您的登录初始密码是:123456。";
-            send_sms($data['phone'],$content);
+            $content = "【源宇通商城】您已注册源宇通商城。您的账户是:".$info->phone."您的登录初始密码是:123456。";
+            send_sms($info->phone,$content);
         }
 
     }
