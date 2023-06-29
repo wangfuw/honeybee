@@ -41,8 +41,6 @@ class PayController extends BaseController
     //md5 密钥
     const M_SECRET = '82315039593446e3a81d61e71dfdac99';
 
-    //分配率
-    const QE_RATE = 0.7;
     const PAY_APPID="";
 
     const PAY_SECRET="";
@@ -72,14 +70,20 @@ class PayController extends BaseController
                 //获取用户openid
                 $info = curl_get("https://api.weixin.qq.com/sns/oauth2/access_token",["appid"=>self::WX_APPID,"secret"=>self::WX_SECRET,'code'=>$p_data['code'],'grant_type'=>'authorization_code']);
                 //根据用户id 获取用户商户编号
-                $store_info = StoreSupply::query()->where('user_id',$p_data['id'])->first();
+                if($p_data['money'] < 1){
+                    return $this->fail('支付金额不低于1元');
+                }
+                $store_info = StoreSupply::query()->where('user_id',$p_data['id'])->where('sign_status',1)->first();
+                if(!$store_info){
+                    return $this->fail('商家不存在，或未申请入住');
+                }
                 //调汇聚接口生成预支付订单
-              //  $this->auto_register($p_data);
-                [$data,$sign] = $this->pre_data($p_data,$info['openid'],$store_info->alt_mch_no);
+                $rate = Store::query()->where('user_id',$p_data['id'])->value('rate');
+                $rate = $rate >= 8?$rate:8;
+                [$data,$sign] = $this->pre_data($p_data,$info['openid'],$store_info->alt_mch_no,$rate);
                 unset($data['key']);
                 $data['qe_AltInfo'] = json_encode($data['qe_AltInfo'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
                 $data['hmac'] = $sign;
-                Log::info($data);
                 PayOrder::create([
                     'order_no'=>$data['p2_OrderNo'],
                     'merchant_no'=>$data['p1_MerchantNo'],
@@ -110,7 +114,7 @@ class PayController extends BaseController
     }
 
     //wx - 支付参数
-    protected function pre_data($data,$openid,$mch_no)
+    protected function pre_data($data,$openid,$mch_no,$rate)
     {
         $data =  [
             'p0_Version'=>self::VERSION,
@@ -129,8 +133,8 @@ class PayController extends BaseController
             'qd_AltType'=>self::CAI_TYPE,
             'qe_AltInfo'=>[
                 [
-                    'altMchNo'=>$mch_no,"altAmount"=>bcmul($data['money'],
-                    self::QE_RATE,2)
+                    'altMchNo'=>$mch_no,"altAmount"=>bcmul($data['money'] / 100,
+                    $rate,2)
                 ]
             ],
             //实时分账在支付完成后，分账信息会异步通知商户结果，回调 qf_AltUrl 中的地址
@@ -179,16 +183,40 @@ class PayController extends BaseController
                     $this->auto_register($info);
                     $user = User::query()->where('phone',$info->phone)->first();
                     if($user){
-                        $user->sale_score += $info->money;
-                        $user->sale_score_total += $info->money;
+                        $user->sale_score += $info->amount;
+                        $user->sale_score_total += $info->amount;
                         $user->save();
                     }
-
+                    //给商家加绿色积分
+                    $store_id = $info->store_id;
+                    $rate = Store::query()->where('user_id',$store_id)->value('rate');
+                    $rate = $rate >= 8 ? $rate : 8;
+                    $user_s = User::query()->where('id',$store_id)->first();
+                    if($user_s){
+                        $user_s->sale_score += bcmul($info->amount / 100,$rate * 2 ,2);
+                        $user_s->save();
+                    }
+//                    switch (int($rate)){
+//                        case 8:
+//                            $user_s->sale_score += bcmul($info->amount / 200,$rate ,2);
+//                            $user_s->sale_score_total +=  bcmul($info->amount / 200,$rate ,2);
+//                            break;
+//                        case 16:
+//                            $user_s->sale_score += bcmul($info->amount / 100,$rate ,2);
+//                            $user_s->sale_score_total += bcmul($info->amount / 100,$rate ,2);
+//                        case 32:
+//                            $user_s->sale_score += bcmul($info->amount / 100,$rate*2 ,2);
+//                            $user_s->sale_score_total += bcmul($info->amount / 100,$rate*2 ,2);
+//                        case 48:
+//                            $user_s->sale_score += bcmul($info->amount / 100,$rate*3 ,2);
+//                            $user_s->sale_score_total += bcmul($info->amount / 100,$rate*3 ,2);
+//                    }
+//                    $user_s->save();
                 }
                 DB::commit();
                 return 'success';
             }else{
-                return 'error';
+                return 'fail';
             }
         }catch (\Exception $e){
             DB::rollBack();
