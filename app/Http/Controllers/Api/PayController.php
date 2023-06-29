@@ -79,7 +79,7 @@ class PayController extends BaseController
                 unset($data['key']);
                 $data['qe_AltInfo'] = json_encode($data['qe_AltInfo'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
                 $data['hmac'] = $sign;
-
+                Log::info($data);
                 PayOrder::create([
                     'order_no'=>$data['p2_OrderNo'],
                     'merchant_no'=>$data['p1_MerchantNo'],
@@ -90,7 +90,7 @@ class PayController extends BaseController
                     'phone'  => $p_data['phone'],
                     'store_id' => $p_data['id']
                 ]);
-
+                Log::info(123);
                 $result = post_url_pay(self::URL,$data);
                 $ret = json_decode($result,true);
                 if($ret['ra_Code'] == 100){
