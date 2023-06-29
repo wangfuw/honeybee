@@ -122,7 +122,7 @@ class PayController extends BaseController
             'p2_OrderNo'=>generateOrderNumber(),
             'p3_Amount'=>$data['money'],
             'p4_Cur'=>self::CUR,
-            'p5_ProductName'=>'源宇通下线商品',
+            'p5_ProductName'=>'源宇通线下商品',
             //服务器异步通知地址
             'p9_NotifyUrl'=>env("CALL_BACK","http://api.yuanyutong.shop").'/api/notify_url',
             'q1_FrpCode'=>'WEIXIN_GZH',
