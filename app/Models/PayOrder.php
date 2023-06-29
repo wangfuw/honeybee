@@ -15,6 +15,4 @@ class PayOrder extends Base
         'alt_info','pay_status','created_at','updated_at'
     ];
 
-
-
 }
