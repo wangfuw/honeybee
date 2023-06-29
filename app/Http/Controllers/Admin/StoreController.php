@@ -105,7 +105,7 @@ class StoreController extends AdminBaseController
         }
         $data = PayOrder::join("store", "store.user_id", "=", "pay_order.store_id")->join("users","users.id","=","pay_order.store_id")
             ->where($condition)
-            ->orderBy("pay_order.pay_time desc")
+            ->orderBy("pay_order.pay_time","desc")
             ->select("pay_order.*", "store.store_name","store.mobile")
             ->paginate($size);
         return $this->executeSuccess("请求", $data);
