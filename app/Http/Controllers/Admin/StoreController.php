@@ -73,7 +73,7 @@ class StoreController extends AdminBaseController
             return $this->fail("不是线下商家");
         }
         $num = $request->input("num", 0);
-        if (!is_numeric($num) || $num <= 0) {
+        if (!is_numeric($num)) {
             return $this->error("数量");
         }
         $rate = $request->input("rate",8);
