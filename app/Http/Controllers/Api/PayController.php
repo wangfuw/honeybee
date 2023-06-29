@@ -83,7 +83,7 @@ class PayController extends BaseController
                 PayOrder::create([
                     'order_no'=>$data['p2_OrderNo'],
                     'merchant_no'=>$data['p1_MerchantNo'],
-                    'amount'=> $data['money'],
+                    'amount'=> $data['p3_Amount'],
                     'cur' => self::CUR,
                     'fre_code'=>'WEIXIN_GZH',
                     'openid' => $info['openid'],
