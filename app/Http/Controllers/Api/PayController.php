@@ -74,7 +74,7 @@ class PayController extends BaseController
                 //根据用户id 获取用户商户编号
                 $store_info = StoreSupply::query()->where('user_id',$p_data['id'])->first();
                 //调汇聚接口生成预支付订单
-                $this->auto_register($p_data);
+              //  $this->auto_register($p_data);
                 [$data,$sign] = $this->pre_data($p_data,$info['openid'],$store_info->alt_mch_no);
                 unset($data['key']);
                 $data['qe_AltInfo'] = json_encode($data['qe_AltInfo'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
