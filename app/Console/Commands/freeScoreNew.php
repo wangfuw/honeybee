@@ -679,7 +679,8 @@ class freeScoreNew extends Command
             if ($free_num <= 0) {
                 continue;
             } else {
-                $free_num = min($user->green_score, $user->luck_score, $free_num);
+//                $free_num = min($user->green_score, $user->luck_score, $free_num);
+                $free_num = min($user->green_score, $free_num);
                 $user_address = AsacNode::query()->where('user_id', $user->id)->value('wallet_address');
                 $asac_num = bcdiv($free_num * self::GREEN_FREE_RATE, $last_price, self::DE);
                 if ($free_num < self::MIN) {
@@ -751,14 +752,14 @@ class freeScoreNew extends Command
             ->where("identity_status", 1)
             ->where("identity", 1)
             ->where("green_score", ">", 0)
-            ->where("luck_score", ">", 0)
+//            ->where("luck_score", ">", 0)
             ->where("is_ban", 1)
             ->get();
         $qj_store =User::query()->whereIn('id',$master_poss_arr)
             ->where("identity_status", 1)
             ->where("identity", 2)
             ->where("green_score", ">", 0)
-            ->where("luck_score", ">", 0)
+//            ->where("luck_score", ">", 0)
             ->where("is_ban", 1)
             ->get();
         $pre_address = AsacNode::query()->where('id', 2)->select('id', 'wallet_address', 'number')->first();
