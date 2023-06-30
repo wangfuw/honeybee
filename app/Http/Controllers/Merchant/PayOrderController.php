@@ -4,12 +4,19 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Admin\SupplyController;
 use App\Http\Controllers\Controller;
+use App\Models\CashOut;
 use App\Models\PayOrder;
 use App\Models\StoreSupply;
+use App\Validate\ApplyValidate;
 use Illuminate\Http\Request;
 
 class PayOrderController extends MerchantBaseController
 {
+    private $validate;
+
+    public function __construct(ApplyValidate $validate){
+        $this->validate = $validate;
+    }
     public function payOrderList(Request $request){
         $size = $request->size ?? 5;
         $pay_status = $request->pay_status;
@@ -23,14 +30,53 @@ class PayOrderController extends MerchantBaseController
             ->paginate($size)
             ->toArray();
         $alt_mch_no = StoreSupply::query()->where('user_id',$user->id)->value('alt_mch_no');
+        $all_money = 0;
+        $out_money = CashOut::query()->where('user_id',$user->id)->where('status',2)->sum('amount');
         foreach ($data["data"] as $k => &$v) {
             $v["alt_mch_no"] = $alt_mch_no;
             if($v['alt_info']){
                 $temp = explode('|',$v['alt_info']);
                 $f = explode('-',$temp[1]);
                 $v["money"] = $f["2"];
+                $all_money += $f["2"];
             }
         }
-        return $this->executeSuccess("请求", $data);
+        return $this->executeSuccess("请求", ["data"=>$data,"all_money"=>$all_money,"out_money"=>$out_money]);
+    }
+
+    public function outCashList(Request $request)
+    {
+        $size = $request->size ?? 5;
+        $status = $request->status;
+        $user = auth("merchant")->user();
+        $data = CashOut::query()->where('user_id',$user->id)
+            ->when($status,function ($query) use($status){
+                return $query->where('status',$status);
+            })
+            ->orderByDesc("id")
+            ->select("*")
+            ->paginate($size)
+            ->toArray();
+        return $this->success('请求',$data);
+    }
+
+    public function applyCash(Request $request)
+    {
+        $user = auth("merchant")->user();
+        $data = $request->only(['bank_name','bank_card','fax_name','amount']);
+        if(!$this->validate->scene('out')->check($data)){
+            return $this->fail($this->validate->getError());
+        }
+        $ret = StoreSupply::query()->create(
+            [
+                "user_id" => $user->id,
+                "bank_card" => $data["bank_card"],
+                "bank_name" => $data["bank_name"],
+                "fax_name" => $data["fax_name"],
+                "amount" => $data["amount"]
+            ]
+        );
+        if($ret) return $this->success("申请成功,待审核打款");
+        return $this->fail('申请失败');
     }
 }

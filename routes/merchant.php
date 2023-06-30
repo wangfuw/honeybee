@@ -37,5 +37,7 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
         //提交支付申请
         Route::post('apply',[ApplyController::class,"apply"]);
         Route::get('payOrder',[PayOrderController::class,"payOrderList"]);
+        Route::get('cashList',[PayOrderController::class,"outCashList"]);
+        Route::post('applyOutCash',[PayOrderController::class,"applyCash"]);
     });
 });

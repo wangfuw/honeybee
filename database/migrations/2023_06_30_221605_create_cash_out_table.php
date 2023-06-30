@@ -22,7 +22,7 @@ class CreateCashOutTable extends Migration
             $table->decimal('amount',10,2)->nullable(false)->comment('提现额度');
             $table->string('payment_image')->nullable()->comment('银行回执单');
             $table->string('note')->nullable()->comment('驳回原因');
-            $table->tinyInteger('status')->default(0)->comment('0待审核 1 审核打开 2 驳回');
+            $table->tinyInteger('status')->default(1)->comment('1待审核 2已打款 3 驳回');
             $table->integer('created_at')->comment('插入时间');
             $table->integer('updated_at')->comment('修改时间');
         });
