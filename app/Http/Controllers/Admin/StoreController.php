@@ -182,7 +182,7 @@ class StoreController extends AdminBaseController
                 $all_money += $f["2"];
             }
         }
-        return compact('alt_mch_no','all_money','out_money');
+        return [$alt_mch_no,$all_money,$out_money];
     }
     public function storeReviewList(Request $request)
     {
