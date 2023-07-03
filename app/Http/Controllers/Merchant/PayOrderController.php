@@ -52,7 +52,7 @@ class PayOrderController extends MerchantBaseController
                 $all_money += $f["2"];
             }
         }
-        return $this->executeSuccess("请求", ["data"=>$data,"all_money"=>$all_money,"out_money"=>$out_money,"leave_money"=>$all_money - $out_money]);
+        return $this->executeSuccess("请求", ["data"=>$data,"all_money"=>round($all_money,2),"out_money"=>round($out_money,2),"leave_money"=>bcsub($all_money,$out_money,2)]);
     }
 
     public function outCashList(Request $request)
