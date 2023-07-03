@@ -216,6 +216,7 @@ Route::controller(UserController::class)->group(function () {
 
     Route::group([],function(){
         Route::post('to_pay',[PayController::class,'to_pey']);
+        Route::get('get_openid',[PayController::class,'getOpenid']);
         Route::get('notify_url',[PayController::class,'notify_url']);
         Route::get('qf_alt_url',[PayController::class,'qf_alt_url']);
     });

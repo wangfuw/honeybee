@@ -55,10 +55,19 @@ class PayController extends BaseController
         $this->middleware('auth:api', ['except' => ['to_pey','notify_url','qf_alt_url']]);
     }
 
+    public function getOpenid(Request $request)
+    {
+        $code = $request->code;
+        $info = curl_get("https://api.weixin.qq.com/sns/oauth2/access_token",["appid"=>self::WX_APPID,"secret"=>self::WX_SECRET,'code'=>$code,'grant_type'=>'authorization_code']);
+        $open_id = $info['openid'];
+        $phone = User::query()->where('open_id',$open_id)->value('phone');
+        $phone = $phone??'';
+        return $this->success('请求成功',compact('open_id','phone'));
+    }
     //输入电话 金额 选着支付方式 调取api/to_pay （注册用户，异步生成预支付订单）返回订单信息 拉去微信或支付宝jsapi支付，支付成功给用户加消费积分，商家加积分
     public function to_pey(Request $request){
         //测试
-        $p_data = $request->only(['code','id','phone','money','pay_type']);
+        $p_data = $request->only(['openid','id','phone','money','pay_type']);
         if(!$this->validate->scene('pre_pay')->check($p_data)){
             return $this->success($this->validate->getError());
         }
@@ -67,9 +76,6 @@ class PayController extends BaseController
         }
         try {
             if($p_data['pay_type'] == 'wx_pay'){
-                //获取用户openid
-                $info = curl_get("https://api.weixin.qq.com/sns/oauth2/access_token",["appid"=>self::WX_APPID,"secret"=>self::WX_SECRET,'code'=>$p_data['code'],'grant_type'=>'authorization_code']);
-                //根据用户id 获取用户商户编号
                 if($p_data['money'] < 1){
                     return $this->fail('支付金额不低于1元');
                 }
@@ -80,7 +86,7 @@ class PayController extends BaseController
                 //调汇聚接口生成预支付订单
                 $rate = Store::query()->where('user_id',$p_data['id'])->value('rate');
                 $rate = $rate >= 8?$rate:8;
-                [$data,$sign] = $this->pre_data($p_data,$info['openid'],$store_info->alt_mch_no,$rate);
+                [$data,$sign] = $this->pre_data($p_data,$p_data['openid'],$store_info->alt_mch_no,$rate);
                 unset($data['key']);
                 $data['qe_AltInfo'] = json_encode($data['qe_AltInfo'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
                 $data['hmac'] = $sign;

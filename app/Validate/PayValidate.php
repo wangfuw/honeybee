@@ -6,7 +6,7 @@ class PayValidate extends BaseValidate
 {
     protected $rule =[
         'id'=>'required|numeric',
-        'code' => 'required',
+        'openid' => 'required',
         'phone'=>'required',
         'money'=>'required|numeric',
         'pay_type'=>'required|numeric'
@@ -16,7 +16,7 @@ class PayValidate extends BaseValidate
     protected $message = [
         'id.required'  => 'ID不能为空',
         'id.numeric'   => 'ID类型为数字',
-        'code.required'   => 'CODE必须',
+        'openid.required'   => 'CODE必须',
         'phone.required'   => '电话号码必须',
         'money.required'   => '金额必须',
         'money.numeric'   => '金额必须是数字',
@@ -25,6 +25,6 @@ class PayValidate extends BaseValidate
 
     //自定义场景
     protected $scene = [
-        'pre_pay'  => "id,code,phone,money"
+        'pre_pay'  => "id,openid,phone,money"
     ];
 }
