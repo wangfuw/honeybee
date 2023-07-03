@@ -160,6 +160,7 @@ class StoreController extends AdminBaseController
             $cashApply->status = $data['status'];
             $cashApply->note = $data['note'];
             $cashApply->save();
+            return $this->executeSuccess("审核",[]);
         }catch (\Exception $e){
             return $this->fail($e->getMessage());
         }
