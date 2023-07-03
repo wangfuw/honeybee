@@ -49,7 +49,7 @@ class PayOrderController extends MerchantBaseController
             if($a['alt_info']){
                 $temp = explode('|',$a['alt_info']);
                 $f = explode('-',$temp[1]);
-                $all_money = $f["2"];
+                $all_money += $f["2"];
             }
         }
         return $this->executeSuccess("请求", ["data"=>$data,"all_money"=>$all_money,"out_money"=>$out_money,"leave_money"=>$all_money - $out_money]);
