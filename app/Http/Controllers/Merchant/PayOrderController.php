@@ -29,8 +29,7 @@ class PayOrderController extends MerchantBaseController
             ->select("*")
             ->paginate($size)
             ->toArray();
-        $alt_mch_no = StoreSupply::query()->where('user_id',$user->id)->value('alt_mch_no');
-        $out_money = CashOut::query()->where('user_id',$user->id)->where('status',2)->sum('amount');
+        [$alt_mch_no,$all_money,$out_money] = $this->getCashInfo($user->id);
         foreach ($data["data"] as $k => &$v) {
             $v["alt_mch_no"] = $alt_mch_no;
             if($v['alt_info']){
@@ -39,10 +38,17 @@ class PayOrderController extends MerchantBaseController
                 $v["money"] = $f["2"];
             }
         }
-        $all = PayOrder::query()->where('store_id',$user->id)
-                ->where('pay_status',100)
-                ->orderByDesc("id")
-                ->select("*")->get();
+        return $this->executeSuccess("请求", ["data"=>$data,"all_money"=>round($all_money,2),"out_money"=>round($out_money,2),"leave_money"=>bcsub($all_money,$out_money,2)]);
+    }
+
+    protected function getCashInfo($id)
+    {
+        $alt_mch_no = StoreSupply::query()->where('user_id',$id)->value('alt_mch_no');
+        $out_money = CashOut::query()->where('user_id',$id)->where('status',2)->sum('amount');
+        $all = PayOrder::query()->where('store_id',$id)
+            ->where('pay_status',100)
+            ->orderByDesc("id")
+            ->select("*")->get();
         $all_money = 0;
         foreach ($all as $a) {
             $a["alt_mch_no"] = $alt_mch_no;
@@ -52,9 +58,8 @@ class PayOrderController extends MerchantBaseController
                 $all_money += $f["2"];
             }
         }
-        return $this->executeSuccess("请求", ["data"=>$data,"all_money"=>round($all_money,2),"out_money"=>round($out_money,2),"leave_money"=>bcsub($all_money,$out_money,2)]);
+        return compact('alt_mch_no','all_money','out_money');
     }
-
     public function outCashList(Request $request)
     {
         $size = $request->size ?? 5;
@@ -78,7 +83,14 @@ class PayOrderController extends MerchantBaseController
         if(!$this->validate->scene('out')->check($data)){
             return $this->fail($this->validate->getError());
         }
-
+        if(CashOut::query()->where('user_id',$user->id)->where('status',1)->exists()){
+            return  $this->fail('有未申请未处理');
+        }
+        [$alt_mch_no,$all_money,$out_money] = $this->getCashInfo($user->id);
+        $leave_num = bcsub($all_money,$out_money,2);
+        if($data["amount"] > $leave_num){
+            return $this->fail('可用提现额度不足:可用提现'.$leave_num.'(元)');
+        }
         $ret = CashOut::query()->create(
             [
                 "user_id" => $user->id,
