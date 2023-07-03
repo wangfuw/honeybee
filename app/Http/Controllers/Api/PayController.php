@@ -52,7 +52,7 @@ class PayController extends BaseController
     public function __construct(PayValidate $validate)
     {
         $this->validate = $validate;
-        $this->middleware('auth:api', ['except' => ['to_pey','notify_url','qf_alt_url']]);
+        $this->middleware('auth:api', ['except' => ['to_pey','notify_url','qf_alt_url','getOpenid']]);
     }
 
     public function getOpenid(Request $request)
