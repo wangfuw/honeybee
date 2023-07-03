@@ -30,6 +30,7 @@ class PayOrderController extends MerchantBaseController
             ->paginate($size)
             ->toArray();
         [$alt_mch_no,$all_money,$out_money] = $this->getCashInfo($user->id);
+        return $this->success(123,[$alt_mch_no,$all_money,$out_money]);
         foreach ($data["data"] as $k => &$v) {
             $v["alt_mch_no"] = $alt_mch_no;
             if($v['alt_info']){
