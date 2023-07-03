@@ -60,8 +60,15 @@ class PayController extends BaseController
         $code = $request->code;
         $info = curl_get("https://api.weixin.qq.com/sns/oauth2/access_token",["appid"=>self::WX_APPID,"secret"=>self::WX_SECRET,'code'=>$code,'grant_type'=>'authorization_code']);
         $openid = $info['openid'];
-        $phone = User::query()->where('open_id',$openid)->value('phone');
-        $phone = $phone??'';
+        $user = User::query()->where('open_id',$openid)->first();
+        $phone = '';
+        if($user){
+            $phone = $user->phone;
+            if(!$user->open_id){
+                $user->open_id = $openid;
+                $user->save();
+            }
+        }
         return $this->success('请求成功',compact('openid','phone'));
     }
     //输入电话 金额 选着支付方式 调取api/to_pay （注册用户，异步生成预支付订单）返回订单信息 拉去微信或支付宝jsapi支付，支付成功给用户加消费积分，商家加积分
@@ -277,7 +284,8 @@ class PayController extends BaseController
                 'master_pos'=>','.$s_users->id.$s_users->master_pos.','??'',
                 'luck_score'=>$num??180,
                 'max_luck_num'=>$num??180,
-                'sale_password'=>'123456'
+                'sale_password'=>'123456',
+                'open_id' => $info["openid"]
             ];
             $user = User::create($d);
             //注册赠送幸运值
@@ -295,6 +303,9 @@ class PayController extends BaseController
             ]);
             $content = "【源宇通商城】您已注册源宇通商城。您的账户是:".$info->phone."您的登录初始密码是:123456。";
             send_sms($info->phone,$content);
+        }else{
+            $user->open_id;
+            $user->save();
         }
 
     }
