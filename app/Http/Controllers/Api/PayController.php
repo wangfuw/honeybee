@@ -64,7 +64,7 @@ class PayController extends BaseController
         $phone = '';
         if($user){
             $phone = $user->phone;
-            if(!$user->open_id){
+            if(!$user->open_id || $user->open_id = ''){
                 $user->open_id = $openid;
                 $user->save();
             }
