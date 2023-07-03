@@ -40,11 +40,9 @@ class PayOrderController extends MerchantBaseController
             }
         }
         $all = PayOrder::query()->where('store_id',$user->id)
-            ->when($pay_status,function ($query) use($pay_status){
-                return $query->where('pay_status',$pay_status);
-            })
-            ->orderByDesc("id")
-            ->select("*");
+                ->where('pay_status',100)
+                ->orderByDesc("id")
+                ->select("*")->get();
         $all_money = 0;
         foreach ($all as $a) {
             $a["alt_mch_no"] = $alt_mch_no;
