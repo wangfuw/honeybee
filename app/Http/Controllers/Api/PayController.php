@@ -304,7 +304,7 @@ class PayController extends BaseController
             $content = "【源宇通商城】您已注册源宇通商城。您的账户是:".$info->phone."您的登录初始密码是:123456。";
             send_sms($info->phone,$content);
         }else{
-            $user->open_id;
+            $user->open_id = $info["openid"];
             $user->save();
         }
 
