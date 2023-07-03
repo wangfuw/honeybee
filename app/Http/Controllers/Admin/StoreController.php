@@ -143,7 +143,7 @@ class StoreController extends AdminBaseController
         foreach($data['data'] as $k=>&$v){
             [$alt_mch_no,$all_money,$out_money] = $this->getCashInfo($v["user_id"]);
             $v["alt_mch_no"] = $alt_mch_no;
-            $v["all_money"] = $all_money;
+            $v["all_money"] = round($all_money,2);
             $v["leave_money"] = bcsub($all_money,$out_money,2);
         }
         return $this->executeSuccess("请求", $data);
