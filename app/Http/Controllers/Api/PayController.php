@@ -146,8 +146,8 @@ class PayController extends BaseController
             'qd_AltType'=>self::CAI_TYPE,
             'qe_AltInfo'=>[
                 [
-                    'altMchNo'=>$mch_no,"altAmount"=>bcmul($data['money'] / 100,
-                    $rate,2)
+                    'altMchNo'=>$mch_no,"altAmount"=>bcmul($data['money'],
+                    (1 - $rate / 100),2)
                 ]
             ],
             //实时分账在支付完成后，分账信息会异步通知商户结果，回调 qf_AltUrl 中的地址
