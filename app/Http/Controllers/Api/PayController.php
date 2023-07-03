@@ -59,10 +59,10 @@ class PayController extends BaseController
     {
         $code = $request->code;
         $info = curl_get("https://api.weixin.qq.com/sns/oauth2/access_token",["appid"=>self::WX_APPID,"secret"=>self::WX_SECRET,'code'=>$code,'grant_type'=>'authorization_code']);
-        $open_id = $info['openid'];
-        $phone = User::query()->where('open_id',$open_id)->value('phone');
+        $openid = $info['openid'];
+        $phone = User::query()->where('open_id',$openid)->value('phone');
         $phone = $phone??'';
-        return $this->success('请求成功',compact('open_id','phone'));
+        return $this->success('请求成功',compact('openid','phone'));
     }
     //输入电话 金额 选着支付方式 调取api/to_pay （注册用户，异步生成预支付订单）返回订单信息 拉去微信或支付宝jsapi支付，支付成功给用户加消费积分，商家加积分
     public function to_pey(Request $request){
@@ -96,7 +96,7 @@ class PayController extends BaseController
                     'amount'=> $data['p3_Amount'],
                     'cur' => self::CUR,
                     'fre_code'=>'WEIXIN_GZH',
-                    'openid' => $info['openid'],
+                    'openid' => $p_data['openid'],
                     'phone'  => $p_data['phone'],
                     'store_id' => $p_data['id']
                 ]);
