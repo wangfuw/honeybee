@@ -30,7 +30,6 @@ class PayOrderController extends MerchantBaseController
             ->paginate($size)
             ->toArray();
         $alt_mch_no = StoreSupply::query()->where('user_id',$user->id)->value('alt_mch_no');
-        $all_money = 0;
         $out_money = CashOut::query()->where('user_id',$user->id)->where('status',2)->sum('amount');
         foreach ($data["data"] as $k => &$v) {
             $v["alt_mch_no"] = $alt_mch_no;
@@ -38,7 +37,21 @@ class PayOrderController extends MerchantBaseController
                 $temp = explode('|',$v['alt_info']);
                 $f = explode('-',$temp[1]);
                 $v["money"] = $f["2"];
-                $all_money += $f["2"];
+            }
+        }
+        $all = PayOrder::query()->where('store_id',$user->id)
+            ->when($pay_status,function ($query) use($pay_status){
+                return $query->where('pay_status',$pay_status);
+            })
+            ->orderByDesc("id")
+            ->select("*");
+        $all_money = 0;
+        foreach ($all as $a) {
+            $a["alt_mch_no"] = $alt_mch_no;
+            if($a['alt_info']){
+                $temp = explode('|',$a['alt_info']);
+                $f = explode('-',$temp[1]);
+                $all_money = $f["2"];
             }
         }
         return $this->executeSuccess("请求", ["data"=>$data,"all_money"=>$all_money,"out_money"=>$out_money,"leave_money"=>$all_money - $out_money]);
