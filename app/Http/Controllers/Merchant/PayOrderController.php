@@ -41,7 +41,7 @@ class PayOrderController extends MerchantBaseController
                 $all_money += $f["2"];
             }
         }
-        return $this->executeSuccess("请求", ["data"=>$data,"all_money"=>$all_money,"out_money"=>$out_money]);
+        return $this->executeSuccess("请求", ["data"=>$data,"all_money"=>$all_money,"out_money"=>$out_money,"leave_money"=>$all_money - $out_money]);
     }
 
     public function outCashList(Request $request)
@@ -67,7 +67,8 @@ class PayOrderController extends MerchantBaseController
         if(!$this->validate->scene('out')->check($data)){
             return $this->fail($this->validate->getError());
         }
-        $ret = StoreSupply::query()->create(
+
+        $ret = CashOut::query()->create(
             [
                 "user_id" => $user->id,
                 "bank_card" => $data["bank_card"],
