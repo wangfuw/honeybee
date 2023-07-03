@@ -86,11 +86,11 @@ class PayOrderController extends MerchantBaseController
         if(CashOut::query()->where('user_id',$user->id)->where('status',1)->exists()){
             return  $this->fail('有未申请未处理');
         }
-        [$alt_mch_no,$all_money,$out_money] = $this->getCashInfo($user->id);
-        $leave_num = bcsub($all_money,$out_money,2);
-        if($data["amount"] > $leave_num){
-            return $this->fail('可用提现额度不足:可用提现'.$leave_num.'(元)');
-        }
+//        [$alt_mch_no,$all_money,$out_money] = $this->getCashInfo($user->id);
+//        $leave_num = bcsub($all_money,$out_money,2);
+//        if($data["amount"] > $leave_num){
+//            return $this->fail('可用提现额度不足:可用提现'.$leave_num.'(元)');
+//        }
         $ret = CashOut::query()->create(
             [
                 "user_id" => $user->id,
