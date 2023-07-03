@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\CashOut;
 use App\Models\PayOrder;
 use App\Models\Store;
+use App\Models\StoreSupply;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use mysql_xdevapi\Exception;
 
 class StoreController extends AdminBaseController
 {
@@ -101,6 +104,7 @@ class StoreController extends AdminBaseController
                 $condition[] = ["pay_order.id", "=", "-1"];
             }
         }
+
         if($request->pay_status){
             $condition[] = ["pay_status", "=", $request->pay_status];
         }
@@ -112,6 +116,74 @@ class StoreController extends AdminBaseController
         return $this->executeSuccess("请求", $data);
     }
 
+    public function applyCash(Request $request){
+        $size = $request->size ?? $this->size;
+        $condition = [];
+        if($request->id){
+            $condition[] = ["user_id", "=", $request->id];
+        }
+        if ($request->phone) {
+            $user = Store::where("mobile", $request->phone)->first();
+            if ($user) {
+                $condition[] = ["user_id", "=", $user->user_id];
+            } else {
+                $condition[] = ["id", "=", "-1"];
+            }
+        }
+        if($request->status){
+            $condition[] = ["status", "=", $request->status];
+        }
+        $data = CashOut::join("store", "store.user_id", "=", "cash_out.user_id")
+            ->where($condition)
+            ->orderby('cash_out.status','asc')
+            ->orderBy('created_at','desc')
+            ->sselect("cash_out.*", "store.store_name","store.mobile")
+            ->paginate($size);
+
+        foreach($data['data'] as $k=>&$v){
+            [$alt_mch_no,$all_money,$out_money] = $this->getCashInfo($v["user_id"]);
+            $v["alt_mch_no"] = $alt_mch_no;
+            $v["all_money"] = $all_money;
+            $v["leave_money"] = bcsub($all_money,$out_money,2);
+        }
+        return $this->executeSuccess("请求", $data);
+    }
+
+    public function checkCashApply(Request $request)
+    {
+        $data = $request->only(['id','status','note']);
+        $cashApply =  CashOut::query()->where('id',$data['id'])->where('status',1)->first();
+        if(!$cashApply){
+            return $this->fail("无该记录");
+        }
+        try{
+            $cashApply->status = $data['status'];
+            $cashApply->note = $data['note'];
+            $cashApply->save();
+        }catch (\Exception $e){
+            return $this->fail("审核失败");
+        }
+    }
+
+    protected function getCashInfo($id)
+    {
+        $alt_mch_no = StoreSupply::query()->where('user_id',$id)->value('alt_mch_no');
+        $out_money = CashOut::query()->where('user_id',$id)->where('status',2)->sum('amount');
+        $all = PayOrder::query()->where('store_id',$id)
+            ->where('pay_status',100)
+            ->orderByDesc("id")
+            ->select("*")->get();
+        $all_money = 0;
+        foreach ($all as $a) {
+            $a["alt_mch_no"] = $alt_mch_no;
+            if($a['alt_info']){
+                $temp = explode('|',$a['alt_info']);
+                $f = explode('-',$temp[1]);
+                $all_money += $f["2"];
+            }
+        }
+        return compact('alt_mch_no','all_money','out_money');
+    }
     public function storeReviewList(Request $request)
     {
         $size = $request->size ?? $this->size;

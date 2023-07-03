@@ -112,6 +112,11 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("storeList", [StoreController::class, "storeList"]);
             Route::get("storeReviewList", [StoreController::class, "storeReviewList"]);
             Route::get("payOrderList", [StoreController::class, "payOrder"]);
+            # 提现申请
+            Route::get("cashList", [StoreController::class, "applyCash"]);
+            # 审核
+            Route::post("editCash", [StoreController::class, "checkCashApply"]);
+
             Route::post("editStore", [StoreController::class, "editStore"])->middleware(["admin.response"]);
             Route::post("editReview", [StoreController::class, "editReview"])->middleware(["admin.response"]);
             Route::post("addAmount", [StoreController::class, "addAmount"])->middleware(["admin.response"]);
