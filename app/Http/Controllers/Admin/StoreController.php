@@ -137,7 +137,7 @@ class StoreController extends AdminBaseController
             ->where($condition)
             ->orderby('cash_out.status','asc')
             ->orderBy('created_at','desc')
-            ->sselect("cash_out.*", "store.store_name","store.mobile")
+            ->select("cash_out.*", "store.store_name","store.mobile")
             ->paginate($size);
 
         foreach($data['data'] as $k=>&$v){
