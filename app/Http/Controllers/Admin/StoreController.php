@@ -138,7 +138,7 @@ class StoreController extends AdminBaseController
             ->orderby('cash_out.status','asc')
             ->orderBy('created_at','desc')
             ->select("cash_out.*", "store.store_name","store.mobile")
-            ->paginate($size);
+            ->paginate($size)->toArray();
 
         foreach($data['data'] as $k=>&$v){
             [$alt_mch_no,$all_money,$out_money] = $this->getCashInfo($v["user_id"]);
