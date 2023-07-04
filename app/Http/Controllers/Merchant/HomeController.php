@@ -49,7 +49,7 @@ class HomeController extends MerchantBaseController
         $door_phote = $store->front_image;
         $data = $store->toArray();
         $url = "http://pay.yuanyutong.shop/?id=$store->user_id";
-        $img =  QrCode::format('png')->merge("http://api.yuanyutong.shop/".$door_phote,.2,true)->size(200)->generate($url);
+        $img =  QrCode::format('png')->size(200)->generate($url);
         $qr = 'data:image/png;base64,' . base64_encode($img );
         $data["qr"] = $qr;
         return $this->executeSuccess("请求", $data);
