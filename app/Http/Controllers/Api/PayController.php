@@ -333,18 +333,4 @@ class PayController extends BaseController
         }
 
     }
-
-    public function address()
-    {
-        $list = Store::query()->where('on_line',2)->select('id','area','address','longitude','latitude')->get()->toArray();
-        foreach ($list as $v){
-            $all_address = city_name($v['area']).$v['address'];
-            $rest = addressAdd($all_address);
-            $one = Store::query()->where('id',$v['id'])->first();
-            $one->longitude = $rest["longitude"];
-            $one->latitude = $rest["latitude"];
-            $one->save();
-            unset($rest);
-        }
-    }
 }

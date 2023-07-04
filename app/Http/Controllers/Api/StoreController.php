@@ -36,6 +36,10 @@ class StoreController extends BaseController
         if(check_phone($data['mobile']) == false){
             return $this->fail('电话号码格式错误');
         }
+        $all_address = city_name($data['area']).$data['address'];
+        $rest = addressAdd($all_address);
+        $data['longitude'] = $rest['longitude'];
+        $data['latitude'] = $rest['latitude'];
         $data['user_id'] = auth()->id();
         if(Store::query()->where('user_id',auth()->id())->whereIn('status',[self::STEP_type_1,self::STEP_type_2])->exists()){
             return $this->fail('你的申请正在审核中');
@@ -65,6 +69,12 @@ class StoreController extends BaseController
         $info->images = $data['images'];
         $info->area = $data['area'];
         $info->address = $data['address'];
+        if($data['area'] || $data['address']){
+            $all_address = city_name($data['area']).$data['address'];
+            $rest = addressAdd($all_address);
+            $info->longitude = $rest['longitude'];
+            $info->latitude = $rest['latitude'];
+        }
         $info->on_line = $data['on_line'];
         $info->type = 0;
         $info->save();
