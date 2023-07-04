@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Merchant;
 use App\Models\Order;
 use App\Models\Score;
 use App\Models\Store;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -46,7 +47,8 @@ class HomeController extends MerchantBaseController
         if (!$store || $store->status != 1) {
             return $this->fail("您不是商家");
         }
-        $door_phote = $store->front_image;
+
+        $door_phote = $user->image;
         $data = $store->toArray();
         $url = "http://pay.yuanyutong.shop/?id=$store->user_id";
         $img =  QrCode::format('png')->merge("http://api.yuanyutong.shop/".$door_phote,.15,true)->size(200)->generate($url);
