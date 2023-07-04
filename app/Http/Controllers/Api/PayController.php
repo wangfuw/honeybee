@@ -62,14 +62,16 @@ class PayController extends BaseController
         $openid = $info['openid'];
         $user = User::query()->where('open_id',$openid)->first();
         $phone = '';
+        $ticket_num = 0;
         if($user){
             $phone = $user->phone;
+            $ticket_num = $user->ticket_num;
             if(!$user->open_id || $user->open_id == ''){
                 $user->open_id = $openid;
                 $user->save();
             }
         }
-        return $this->success('请求成功',compact('openid','phone'));
+        return $this->success('请求成功',compact('openid','phone','ticket_num'));
     }
     //输入电话 金额 选着支付方式 调取api/to_pay （注册用户，异步生成预支付订单）返回订单信息 拉去微信或支付宝jsapi支付，支付成功给用户加消费积分，商家加积分
     public function to_pey(Request $request){
@@ -115,9 +117,24 @@ class PayController extends BaseController
                 }else{
                     return $this->fail($ret['rb_CodeMsg']);
                 }
-            }else{
-                //支付宝支付
-
+            }
+            if($p_data['pay_type'] == 'ticket_pay'){
+                $user = User::query()->where('phone',$p_data["phone"])->first();
+                if(!$user){
+                    $this->fail("您还未注册");
+                }
+                if($user->ticket_num < $p_data["money"]){
+                    $this->fail("您得消费额度不足");
+                }
+                $store_user = Store::query()->where('user_id',$p_data["id"])->first();
+                if($store_user->amount < $p_data["money"]){
+                    $this->fail('商家消费卷可用额度不足');
+                }
+                $user->ticket_num = bcsub($user->ticket_num,$p_data['amount']);
+                $user->save();
+                $store_user->amount = bcsub($store_user->amount,$p_data['amount']);
+                $store_user->save();
+                return $this->success('支付成功');
             }
 
         }catch (\Exception $e){
