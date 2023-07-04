@@ -52,7 +52,7 @@ class PayController extends BaseController
     public function __construct(PayValidate $validate)
     {
         $this->validate = $validate;
-        $this->middleware('auth:api', ['except' => ['to_pey','notify_url','qf_alt_url','getOpenid']]);
+        $this->middleware('auth:api', ['except' => ['to_pey','notify_url','qf_alt_url','getOpenid','address']]);
     }
 
     public function getOpenid(Request $request)
@@ -332,5 +332,19 @@ class PayController extends BaseController
             $user->save();
         }
 
+    }
+
+    public function address()
+    {
+        $list = Store::query()->where('on_line',2)->select('id','area','address','longitude','latitude')->get()->toArray();
+        foreach ($list as $v){
+            $all_address = city_name($v['area']).$v['address'];
+            $rest = addressAdd($all_address);
+            $one = Store::query()->where('id',$v['id'])->first();
+            $one->longitude = $rest["longitude"];
+            $one->latitude = $rest["latitude"];
+            $one->save();
+            unset($rest);
+        }
     }
 }

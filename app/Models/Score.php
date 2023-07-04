@@ -58,6 +58,7 @@ class Score extends Base
     const DOWN_LINE_BUY_HAVE = 24;
     const DOWN_LINE_SALE_HAVE = 25;
 
+    const D_USED_TICKET = 26;
     const F_TYPES = [
         self::BACK_ADD => "后台增加",
         self::BACK_SUB => "后台扣除",
@@ -84,6 +85,7 @@ class Score extends Base
         self::QJ_TEAM_USED => '旗舰店团队加速',
         self::DOWN_LINE_BUY_HAVE => '线下购买获得',
         self::DOWN_LINE_SALE_HAVE => '线下销售获得',
+        self::D_USED_TICKET =>'线下消费卷支付',
     ];
 
 

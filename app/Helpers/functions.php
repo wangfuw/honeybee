@@ -493,4 +493,23 @@ function hmacRequest($params="dasdas", $key, $encryptType = "1")
     }
 }
 
+function addressAdd($address = '')
+{
+    $key = env("GAODE_KEY","929e84fab7a1717ef75959ace597685b");
+    $url = "https://restapi.amap.com/v3/geocode/geo?address=".$address."&output=json&key=".$key;
+    $client = new GuzzleHttp\Client(["timeout"=>5]);
+    $response = $client->get($url);
+    $body = (string)
+    $response->getBody();
+    //转换成数组
+    $arr=json_decode($body,true);
+    $location=explode(',',$arr['geocodes'][0]['location']);
+    $res=[
+        //经度
+        'longitude'=>$location[0],
+        //纬度
+        'latitude'=>$location[1]
+    ];
+    return $res;
+}
 
