@@ -130,9 +130,9 @@ class PayController extends BaseController
                 if($store_user->amount < $p_data["money"]){
                     $this->fail('商家消费卷可用额度不足');
                 }
-                $user->ticket_num = bcsub($user->ticket_num,$p_data['amount']);
+                $user->ticket_num = bcsub($user->ticket_num,$p_data['money']);
                 $user->save();
-                $store_user->amount = bcsub($store_user->amount,$p_data['amount']);
+                $store_user->amount = bcsub($store_user->amount,$p_data['money']);
                 $store_user->save();
                 return $this->success('支付成功');
             }
