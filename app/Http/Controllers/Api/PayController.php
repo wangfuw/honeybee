@@ -123,17 +123,24 @@ class PayController extends BaseController
                 if(!$user){
                     $this->fail("您还未注册");
                 }
-                if($user->ticket_num < $p_data["money"]){
+                if($user->ticket_num < $p_data["money"] || $user->ticket_num <= 0){
                     $this->fail("您得消费额度不足");
                 }
                 $store_user = Store::query()->where('user_id',$p_data["id"])->first();
-                if($store_user->amount < $p_data["money"]){
+                if($store_user->amount < $p_data["money"] || $store_user->amount <= 0){
                     $this->fail('商家消费卷可用额度不足');
                 }
                 $user->ticket_num = bcsub($user->ticket_num,$p_data['money']);
                 $user->save();
                 $store_user->amount = bcsub($store_user->amount,$p_data['money']);
                 $store_user->save();
+                Score::create([
+                    'user_id' => $user->id,
+                    'flag' => 2,
+                    'num' => $p_data["money"],
+                    'type' => 4,
+                    'f_type' => Score::D_USED_TICKET,
+                ]);
                 return $this->success('支付成功');
             }
 
