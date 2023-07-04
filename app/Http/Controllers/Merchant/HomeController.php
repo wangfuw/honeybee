@@ -46,7 +46,7 @@ class HomeController extends MerchantBaseController
         if (!$store || $store->status != 1) {
             return $this->fail("您不是商家");
         }
-        $door_phote = $store->images["door_phote"];
+        $door_phote = $store->front_image;
         $data = $store->toArray();
         $url = "http://pay.yuanyutong.shop/?id=$store->user_id";
         $img =  QrCode::format('png')->merge("http://api.yuanyutong.shop/".$door_phote,.2,true)->size(200)->generate($url);
