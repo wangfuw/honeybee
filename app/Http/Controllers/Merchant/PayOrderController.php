@@ -83,6 +83,10 @@ class PayOrderController extends MerchantBaseController
         if(!$this->validate->scene('out')->check($data)){
             return $this->fail($this->validate->getError());
         }
+        $s_supply = StoreSupply::query()->where('user_id',$user->id)->where('sign_status',1)->first();
+        if(!$s_supply){
+            return $this->fail('您还未申请支付入住，请先申请支付入职');
+        }
         if(CashOut::query()->where('user_id',$user->id)->where('status',1)->exists()){
             return  $this->fail('有未申请未处理');
         }
@@ -94,9 +98,9 @@ class PayOrderController extends MerchantBaseController
         $ret = CashOut::query()->create(
             [
                 "user_id" => $user->id,
-                "bank_card" => $data["bank_card"],
-                "bank_name" => $data["bank_name"],
-                "fax_name" => $data["fax_name"],
+                "bank_card" => $s_supply->bank_account_no,
+                "bank_name" => '',
+                "fax_name" => $s_supply->bank_account_name,
                 "amount" => $data["amount"]
             ]
         );
