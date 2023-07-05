@@ -71,7 +71,7 @@ class LoginController extends MerchantBaseController
                 "id" => 12,
                 "title"=>"消费卷记录",
                 "icon"=>"Ticket",
-                "path"=>"/ticket"
+                "path"=>"/tickets"
             ],
         ];
         $menus = [
