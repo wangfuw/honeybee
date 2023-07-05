@@ -131,25 +131,32 @@ class PayController extends BaseController
                 if($store_user->amount < $p_data["money"] || $store_user->amount <= 0){
                     $this->fail('商家消费卷可用额度不足');
                 }
-                $user->ticket_num = bcsub($user->ticket_num,$p_data['money']);
-                $user->save();
-                $store_user->amount = bcsub($store_user->amount,$p_data['money']);
-                $store_user->save();
-                Score::create([
-                    'user_id' => $user->id,
-                    'flag' => 2,
-                    'num' => $p_data["money"],
-                    'type' => 4,
-                    'f_type' => Score::D_USED_TICKET,
-                ]);
-                TicketPay::create(
-                    [
-                        'user_id' => $p_data['id'],
-                        'pay_phone' => $p_data['phone'],
-                        'amount' => $p_data["money"],
-                    ]
-                );
-                return $this->success('支付成功');
+                DB::beginTransaction();
+                try {
+                    $user->ticket_num = bcsub($user->ticket_num,$p_data['money']);
+                    $user->save();
+                    $store_user->amount = bcsub($store_user->amount,$p_data['money']);
+                    $store_user->save();
+                    Score::create([
+                        'user_id' => $user->id,
+                        'flag' => 2,
+                        'num' => $p_data["money"],
+                        'type' => 4,
+                        'f_type' => Score::D_USED_TICKET,
+                    ]);
+                    TicketPay::create(
+                        [
+                            'user_id' => $p_data['id'],
+                            'pay_phone' => $p_data['phone'],
+                            'amount' => $p_data["money"],
+                        ]
+                    );
+                    DB::commit();
+                    return $this->success('支付成功');
+                }catch (\Exception $e){
+                    DB::rollBack();
+                    return $this->fail("支付失败");
+                }
             }
 
         }catch (\Exception $e){
