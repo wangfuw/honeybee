@@ -99,7 +99,7 @@ class PayOrderController extends MerchantBaseController
             [
                 "user_id" => $user->id,
                 "bank_card" => $s_supply->bank_account_no,
-                "bank_name" => '',
+                "bank_name" => $s_supply->bank_name,
                 "fax_name" => $s_supply->bank_account_name,
                 "amount" => $data["amount"]
             ]

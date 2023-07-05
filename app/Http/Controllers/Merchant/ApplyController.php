@@ -27,7 +27,7 @@ class ApplyController extends MerchantBaseController
         $data = $request->only(['id','alt_mch_no','bank_account_name','addr',
             'bank_account_no','bank_account_type','bank_channel',
             'contact_mobile_no','contact_name','id_card_no','legal_person','license_no',
-            'mch_name','merchant_type','phone_no','risk_day','scope','sett_date_type','sett_mode','front_image','back_image']);
+            'mch_name','merchant_type','phone_no','risk_day','scope','sett_date_type','sett_mode','front_image','back_image','bank_name']);
 
         if(!$this->validate->scene('apply')->check($data)){
             return $this->executeFail($this->validate->getError());
@@ -76,6 +76,7 @@ class ApplyController extends MerchantBaseController
             $info->sett_date_type = $data['sett_date_type'];
             $info->sett_mode = $data['sett_mode'];
             $info->msg = "";
+            $info->bank_name = $data["bank_name"];
             $info->save();
             return $this->executeSuccess("修改");
         }

@@ -21,7 +21,7 @@ class ApplyValidate extends BaseValidate
         'scope'=>'required',
         'sett_date_type'=>'required|numeric',
         'sett_mode'=>'required|numeric',
-//        'bank_name'=>'required',
+        'bank_name'=>'required',
 //        'bank_card'=>'required',
 //        'fax_name'=>'required',
         'amount'=>'required|numeric',
@@ -50,7 +50,7 @@ class ApplyValidate extends BaseValidate
         'sett_mode.required'=>'结算方式必须',
         'sett_mode.numeric'=>'结算方式型错误',
 //        'bank_card.required'=>'银行卡号必须',
-//        'bank_name.required'=>'银行名称必须',
+        'bank_name.required'=>'银行名称必须',
 //        'fax_name.required'=>'银行账户必须',
         'amount.required'=>'提现金额',
         'amount.numeric'=>'金额类型错误',
@@ -60,7 +60,7 @@ class ApplyValidate extends BaseValidate
     protected $scene = [
         'apply'  => "id,bank_account_name,
             bank_account_no,bank_account_type,contact_mobile_no,contact_name,id_card_no,legal_person,license_no,
-            mch_name,merchant_type,phone_no,risk_day,scope,sett_date_type,sett_mode",
+            mch_name,merchant_type,phone_no,risk_day,scope,sett_date_type,sett_mode,bank_name",
 //        'out'    => "bank_card,bank_name,fax_name,amount"
         'out'    => "amount"
     ];
