@@ -134,6 +134,9 @@ class StoreController extends AdminBaseController
         if($request->status){
             $condition[] = ["status", "=", $request->status];
         }
+        if($request->pay_status){
+            $condition[] = ["pay_status", "=", $request->status];
+        }
         $data = CashOut::join("store", "store.user_id", "=", "cash_out.user_id")
             ->where($condition)
             ->orderby('cash_out.status','asc')
