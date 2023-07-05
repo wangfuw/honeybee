@@ -80,7 +80,7 @@ class PayOrderController extends MerchantBaseController
     public function applyCash(Request $request)
     {
         $user = auth("merchant")->user();
-        $data = $request->only(['bank_name','bank_card','fax_name','amount']);
+        $data = $request->only(['bank_name','bank_card','fax_name','amount','pay_status']);
         if(!$this->validate->scene('out')->check($data)){
             return $this->fail($this->validate->getError());
         }
@@ -102,7 +102,8 @@ class PayOrderController extends MerchantBaseController
                 "bank_card" => $s_supply->bank_account_no,
                 "bank_name" => $s_supply->bank_name,
                 "fax_name" => $s_supply->bank_account_name,
-                "amount" => $data["amount"]
+                "amount" => $data["amount"],
+                "pay_status" => $data["pay_status"]??1
             ]
         );
         if($ret) return $this->success("申请成功,待审核打款");
