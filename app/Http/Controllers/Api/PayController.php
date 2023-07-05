@@ -146,7 +146,7 @@ class PayController extends BaseController
                     [
                         'user_id' => $p_data['id'],
                         'pay_phone' => $p_data['phone'],
-                        'amount' => $p_data["amount"],
+                        'amount' => $p_data["money"],
                     ]
                 );
                 return $this->success('支付成功');
