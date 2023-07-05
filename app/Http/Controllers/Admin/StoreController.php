@@ -172,14 +172,14 @@ class StoreController extends AdminBaseController
         $size = $request->size ?? $this->size;
         $condition = [];
         if($request->id){
-            $condition[] = ["user_id", "=", $request->id];
+            $condition[] = ["ticket_pay.user_id", "=", $request->id];
         }
         if ($request->phone) {
             $user = Store::where("mobile", $request->phone)->first();
             if ($user) {
-                $condition[] = ["user_id", "=", $user->user_id];
+                $condition[] = ["ticket_pay.user_id", "=", $user->user_id];
             } else {
-                $condition[] = ["id", "=", "-1"];
+                $condition[] = ["ticket_pay.id", "=", "-1"];
             }
         }
         $data = TicketPay::join("store", "store.user_id", "=", "ticket_pay.user_id")
