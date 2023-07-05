@@ -66,7 +66,13 @@ class LoginController extends MerchantBaseController
                 "title"=>"提现记录",
                 "icon"=>"Sell",
                 "path"=>"/cash"
-            ]
+            ],
+            [
+                "id" => 12,
+                "title"=>"消费卷记录",
+                "icon"=>"Ticket",
+                "path"=>"/ticket"
+            ],
         ];
         $menus = [
             [

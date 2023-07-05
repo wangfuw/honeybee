@@ -6,6 +6,7 @@ use App\Models\CashOut;
 use App\Models\PayOrder;
 use App\Models\Store;
 use App\Models\StoreSupply;
+use App\Models\TicketPay;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -164,6 +165,29 @@ class StoreController extends AdminBaseController
         }catch (\Exception $e){
             return $this->fail($e->getMessage());
         }
+    }
+
+    public function ticketPay(Request $request)
+    {
+        $size = $request->size ?? $this->size;
+        $condition = [];
+        if($request->id){
+            $condition[] = ["user_id", "=", $request->id];
+        }
+        if ($request->phone) {
+            $user = Store::where("mobile", $request->phone)->first();
+            if ($user) {
+                $condition[] = ["user_id", "=", $user->user_id];
+            } else {
+                $condition[] = ["id", "=", "-1"];
+            }
+        }
+        $data = TicketPay::join("store", "store.user_id", "=", "ticket_pay.user_id")
+            ->where($condition)
+            ->orderBy('created_at','desc')
+            ->select("ticket_pay.*", "store.store_name","store.mobile")
+            ->paginate($size)->toArray();
+        return $this->executeSuccess("请求", $data);
     }
 
     protected function getCashInfo($id)

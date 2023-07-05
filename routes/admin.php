@@ -114,6 +114,8 @@ Route::middleware(['admin.sign'])->prefix("hack")->group(function () {
             Route::get("payOrderList", [StoreController::class, "payOrder"]);
             # 提现申请
             Route::get("cashList", [StoreController::class, "applyCash"]);
+            # 消费卷支付记录
+            Route::get("ticketList", [StoreController::class, "ticketPay"]);
             # 审核
             Route::post("editCash", [StoreController::class, "checkCashApply"]);
 

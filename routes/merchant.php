@@ -38,6 +38,7 @@ Route::middleware(['admin.sign'])->prefix("merchant")->group(function () {
         Route::post('apply',[ApplyController::class,"apply"]);
         Route::get('payOrder',[PayOrderController::class,"payOrderList"]);
         Route::get('cashList',[PayOrderController::class,"outCashList"]);
+        Route::get('tickets',[PayOrderController::class,"ticketPays"]);
         Route::post('applyOutCash',[PayOrderController::class,"applyCash"]);
     });
 });

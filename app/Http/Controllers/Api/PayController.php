@@ -9,6 +9,7 @@ use App\Models\PayOrder;
 use App\Models\Score;
 use App\Models\Store;
 use App\Models\StoreSupply;
+use App\Models\TicketPay;
 use App\Models\User;
 use App\Validate\PayValidate;
 use Illuminate\Http\Request;
@@ -141,6 +142,13 @@ class PayController extends BaseController
                     'type' => 4,
                     'f_type' => Score::D_USED_TICKET,
                 ]);
+                TicketPay::create(
+                    [
+                        'user_id' => $p_data['id'],
+                        'pay_phone' => $p_data['phone'],
+                        'amount' => $p_data["amount"],
+                    ]
+                );
                 return $this->success('支付成功');
             }
 

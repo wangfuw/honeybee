@@ -47,7 +47,6 @@ class HomeController extends MerchantBaseController
         if (!$store || $store->status != 1) {
             return $this->fail("您不是商家");
         }
-
         $door_phote = $user->image;
         $data = $store->toArray();
         $url = "http://pay.yuanyutong.shop/?id=$store->user_id";

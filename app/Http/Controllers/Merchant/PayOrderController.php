@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CashOut;
 use App\Models\PayOrder;
 use App\Models\StoreSupply;
+use App\Models\TicketPay;
 use App\Validate\ApplyValidate;
 use Illuminate\Http\Request;
 
@@ -106,5 +107,16 @@ class PayOrderController extends MerchantBaseController
         );
         if($ret) return $this->success("申请成功,待审核打款");
         return $this->fail('申请失败');
+    }
+
+    public function ticketPays(Request $request){
+        $size = $request->size ?? 5;
+        $user = auth("merchant")->user();
+        $data = TicketPay::query()->where('user_id',$user->id)
+            ->orderByDesc("id")
+            ->select("*")
+            ->paginate($size)
+            ->toArray();
+        return $this->success('请求',$data);
     }
 }
