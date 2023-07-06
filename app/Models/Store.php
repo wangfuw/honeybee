@@ -81,7 +81,8 @@ class Store extends Base
 //                continue;
 //            }
         }
-        return collect($new)->sortBy('distance')->toArray();
+        $data =  collect($new)->toArray();
+        return collect($data)->sortBy('distance')->toArray();
     }
 
 }
