@@ -67,7 +67,7 @@ class Store extends Base
         $list = self::query()->where('on_line',2)->when($keyword,function ($query) use($keyword){
             return $query->where('store_name','like','%'.$keyword.'%');
         })->forPage($page,$page_size)->get();
-        if(isEmpty($list)) return [];
+        if($list->isEmpty()) return [];
         $new = [];
         foreach ($list as $l){
 //            if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 500000){
