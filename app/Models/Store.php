@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use function PHPUnit\Framework\isEmpty;
 
 class Store extends Base
 {
@@ -66,7 +67,7 @@ class Store extends Base
         $list = self::query()->where('on_line',2)->when($keyword,function ($query) use($keyword){
             return $query->where('store_name','like','%'.$keyword.'%');
         })->forPage($page,$page_size)->get();
-        if(!$list) return [];
+        if(isEmpty($list)) return [];
         $new = [];
         foreach ($list as $l){
 //            if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 500000){
