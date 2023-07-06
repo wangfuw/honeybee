@@ -71,7 +71,7 @@ class Store extends Base
         foreach ($list as $l){
             if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 500000){
                 $distance = getdistance($longitude,$latitude,$l->longitude,$l->latitude);
-                $l->distance =$distance;
+                $l->distance =round($distance,1);
                 $l->area_china = city_name($l->area);
                 $l->business = MallCategory::query()->where('id',$l->business_type)->value('name')??'';
                 $l->door_phote = $l->images['door_phote'];
