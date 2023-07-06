@@ -83,7 +83,7 @@ class Store extends Base
         }
         $data =  collect($new)->sortBy('distance')->toArray();
         Log::info($data);
-        return $data;
+        return array_merge($data);
     }
 
 }
