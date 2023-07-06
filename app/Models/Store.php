@@ -60,7 +60,7 @@ class Store extends Base
 
     public function get_near_store($data){
         $page = $data['page']??1;
-        $page_size = $data['page_size']??5;
+        $page_size = 5;
         $keyword = $data['keyword']??'';
         $longitude = $data['longitude'];
         $latitude  = $data['latitude'];
