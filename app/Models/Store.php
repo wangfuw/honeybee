@@ -69,16 +69,16 @@ class Store extends Base
         if(!$list) return [];
         $new = [];
         foreach ($list as $l){
-            if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 500000){
+//            if(getdistance($longitude,$latitude,$l->longitude,$l->latitude) < 500000){
                 $distance = getdistance($longitude,$latitude,$l->longitude,$l->latitude);
                 $l->distance =ceil($distance);
                 $l->area_china = city_name($l->area);
                 $l->business = MallCategory::query()->where('id',$l->business_type)->value('name')??'';
                 $l->door_phote = $l->images['door_phote'];
                 array_push($new,$l);
-            }else{
-                continue;
-            }
+//            }else{
+//                continue;
+//            }
         }
         return collect([])->merge($new)->sortBy('distance')->toArray();
     }
