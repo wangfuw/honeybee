@@ -232,7 +232,7 @@ if(!function_exists('getdistance')){
         $radLng2=deg2rad($lng2);
         $a=$radLat1-$radLat2;
         $b=$radLng1-$radLng2;
-        $s=2*asin(sqrt(pow(sin($a/2),2)+cos($radLat1)*cos($radLat2)*pow(sin($b/2),2)))*6378.137*1000;
+        $s=2*asin(sqrt(pow(sin($a/2),2)+cos($radLat1)*cos($radLat2)*pow(sin($b/2),2)))*6378*1000;
         return round($s,1);
     }
 }
