@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class PayController extends BaseController
 {
@@ -120,6 +121,11 @@ class PayController extends BaseController
                 }
             }
             if($p_data['pay_type'] == 'ticket_pay'){
+                $string = $p_data["pay_type"].$p_data["phone"].$p_data["id"];
+                if(Redis::get('tick_pay'.$p_data["phone"])){
+                    return  $this->fail("请不要重复提交");
+                }
+                Redis::setex('ticket_pay'.$p_data["phone"],5,$string);
                 $user = User::query()->where('phone',$p_data["phone"])->first();
                 if(!$user){
                     $this->fail("您还未注册");
